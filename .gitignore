@@ -21,9 +21,7 @@
 *.yaml
 *.yml
 
-# Other disallowed files/folders
-outputs/
-templates/
+# Other ignored files/folders
 secret/
 scenarios.R
 
