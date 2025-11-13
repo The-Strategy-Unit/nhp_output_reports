@@ -17,6 +17,7 @@ Note that this repository continues development in the open from the archived [n
 Before you begin, you must:
 
 1. Clone this repo to your computer.
+1. Run `renv::restore()` to load dependencies listed in the `renv.lock` lockfile.
 1. Add to the root of your clone an `.Renviron` file, which should be a populated version of the provided `.Renviron.example` template file.
 This is needed for connecting to Azure and Sharepoint.
 You can ask a member of the Data Science team to help populate these variables.
