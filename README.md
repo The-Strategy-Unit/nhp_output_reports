@@ -20,6 +20,7 @@ Before you begin, you must:
 1. Add to the root of your clone an `.Renviron` file, which should be a populated version of the provided `.Renviron.example` template file.
 This is needed for connecting to Azure and Sharepoint.
 You can ask a member of the Data Science team to help populate these variables.
+1. Ensure you've 'followed' the SharePoint site that contains the template (click the star in the top-right conrer).
 1. Check that the scenarios selected for reporting are present in the [tagged scenarios and site selections table](https://connect.strategyunitwm.nhs.uk/nhp/tagged_runs/) (though alternatively you can use the the `scenario_files` and `site_codes` arguments of `populate_template()` in `populate-report.R`).
 1. Make sure you're connected to the VPN (you're likely to get a 'curl' error if not).
 
