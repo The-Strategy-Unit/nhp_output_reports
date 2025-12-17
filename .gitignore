@@ -22,6 +22,7 @@
 *.yml
 
 # Other ignored files/folders
+outputs/
 README_files/
 secret/
 scenarios.R
