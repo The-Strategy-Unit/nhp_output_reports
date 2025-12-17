@@ -1,5 +1,9 @@
 #' Generate a Report Folder and Populate with Content
 #'
+#' Provide at least a scheme code and desired scenario run-stages to generate a
+#' folder containing a populated report, standaline files of data and charts,
+#' and a logfile.
+#'
 #' @param scheme_code Character. Mandatory. Three-digit ODS code.
 #' @param site_codes List of three character vectors. Optional. To supply your
 #'   own site codes, the three list elements should be named `ip`, `op` and
@@ -28,53 +32,23 @@
 #'
 #' @return Nothing. A populated folder structure in `outputs/`.
 #'
-#' @noRd
+#' @export
 populate_template <- function(
   scheme_code,
   site_codes = NULL,
   result_sets = read_az_table(),
-  run_stages = NULL,
+  run_stages = list(
+    secondary = "final_report_ndg1",
+    primary = "final_report_ndg2"
+  ),
   scenario_files = NULL,
   template_path = NULL,
   report_type = c("final", "addendum")
 ) {
   report_type <- match.arg(report_type)
+  check_scenario_inputs(scheme_code, run_stages, scenario_files)
 
-  # Make sure one of run_stages or scenario_files is provided
-  if (
-    is.null(run_stages) &
-      is.null(scenario_files) |
-      !is.null(run_stages) & !is.null(scenario_files)
-  ) {
-    cli::cli_abort(c(
-      "!" = "Provide one of {.arg run_stages} or {.arg scenario_files}.",
-      "i" = "Set the other to NULL."
-    ))
-  }
-
-  # Check that scenario_files are for the provided scheme_code by checking for
-  # the scheme code in the filepath (excluding the scenario name)
-  if (!is.null(scenario_files)) {
-    code_matches_path <- scenario_files |>
-      purrr::map(
-        \(path) {
-          path |>
-            stringr::str_remove(basename(path)) |>
-            stringr::str_detect(scheme_code)
-        }
-      ) |>
-      unlist() |>
-      all()
-
-    if (!code_matches_path) {
-      cli::cli_abort(c(
-        "!" = "{.arg scenario_files} must contain paths for the given {.arg scheme_code}.",
-        "i" = "Results for scheme 'XYZ' would be on a path like 'example/example/XYZ/example.json.gz'."
-      ))
-    }
-  }
-
-  # Prepare some meta info
+  # Prepare some meta info, paths
   datetime <- format(Sys.time(), "%Y-%m-%d-%H%M%S")
   site_scheme <- make_scheme_name(scheme_code, as_filestring = TRUE)
   output_dir_name <- glue::glue("{datetime}_{site_scheme}_{report_type}")
@@ -83,17 +57,10 @@ populate_template <- function(
     dir.create(output_dir)
   }
 
-  # Start the log file
+  # Start the log file, begin populating
   log_path <- file.path(output_dir, output_dir_name)
   logr::log_open(log_path, logdir = FALSE, show_notes = FALSE, compact = TRUE)
-
-  # Get scheme name
-  schemes <- readr::read_csv("data/scheme-lookup.csv", show_col_types = FALSE)
-  scheme_name <- dplyr::filter(schemes, scheme == scheme_code) |>
-    dplyr::pull(hosp_site)
-  logr::log_print(glue::glue("* Scheme: {scheme_code} ({scheme_name})"))
-  logr::log_print(glue::glue("* Execution datetime: {datetime}"))
-  logr::log_print(glue::glue("* Report type: {report_type}"))
+  log_meta(scheme_code, "data/scheme-lookup.csv", datetime, report_type)
 
   # Get results files
   if (!is.null(run_stages)) {
@@ -105,12 +72,7 @@ populate_template <- function(
     primary_file <- scenario_files[["primary"]]
     secondary_file <- scenario_files[["secondary"]]
   }
-
-  logr::log_print(glue::glue(
-    "* Scenario files:\n",
-    "- primary variant: {primary_file}\n",
-    "- secondary variant: {secondary_file}\n"
-  ))
+  log_scenario_files(primary_file, secondary_file)
 
   if (report_type == "addendum") {
     finalreportndg2_file <- get_final_report_result(
@@ -135,12 +97,7 @@ populate_template <- function(
   if (is.null(site_codes)) {
     site_codes <- get_sites(meta)
   }
-  logr::log_print(glue::glue(
-    "* Sites:\n",
-    "- Inpatients:  {paste(site_codes$ip,  collapse = ', ')}\n",
-    "- Outpatients: {paste(site_codes$op,  collapse = ',')}\n",
-    "- A&E:         {paste(site_codes$aae, collapse = ',')}"
-  ))
+  log_sites(site_codes)
 
   # Read results data
   logr::log_print(glue::glue("* Fetching results..."))
@@ -343,10 +300,11 @@ get_sites <- function(meta, preference = "primary") {
   sites <- meta |>
     purrr::pluck(glue::glue("metadata_{preference}")) |>
     dplyr::select(tidyselect::starts_with("sites_")) |>
+    dplyr::rename_with(\(nm) stringr::str_remove(nm, "sites_")) |>
     as.list() |>
     purrr::map(\(site_string) stringr::str_split_1(site_string, ","))
 
-  lapply(
+  purrr::map(
     sites,
     \(activity_type) {
       if (identical(activity_type, "ALL")) NULL else activity_type
