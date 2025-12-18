@@ -21,8 +21,8 @@ Before you begin, you must:
 1. Add to the root of your clone an `.Renviron` file, which should be a populated version of the provided `.Renviron.example` template file.
 This is needed for connecting to Azure and Sharepoint.
 You can ask a member of the Data Science team to help populate these variables.
-1. Ensure you've 'followed' the SharePoint site that contains the template (click the star in the top-right conrer).
-1. Check that the scenarios selected for reporting are present in the [tagged scenarios and site selections table](https://connect.strategyunitwm.nhs.uk/nhp/tagged_runs/) (though alternatively you can use the the `scenario_files` and `site_codes` arguments of `populate_template()` in `populate-report.R`).
+1. Ensure you've 'followed' the SharePoint site that contains the template (click the star in the top-right corner).
+1. Check that the scenarios selected for reporting are present in the [tagged scenarios and site selections table](https://connect.strategyunitwm.nhs.uk/nhp/tagged_runs/) (though alternatively you can supply arbitrary specifications to `scenario_files` and `site_codes` arguments of `populate_template()` in `populate-report.R`).
 1. Make sure you're connected to the VPN (you're likely to get a 'curl' error if not).
 
 Below is a simplified directory tree of the required structure (some files/folders not shown for brevity).
@@ -39,7 +39,7 @@ Asterisks indicate that the content doesn't exist in the repository and must be 
 ├── outputs/                 # files are generated into subfolders here
 ├── populate-report.R        # script to populate reports
 ├── R/                       # R functions (some scripts copied from named repos)
-└── templates/               # Optional location for locally-stored templates
+└── templates/               # optional location for locally-stored templates
 ```
 
 ### Steps
@@ -48,7 +48,7 @@ Having completed the requirements, you should:
 
 1. Run the code in `populate-report.R`, which:
     a. Creates a new folder in the form `outputs/YYYYMMDD-HHMMSS_scheme-name-code_final/` to store outputs.
-    a. Fetches results data and site selections from Azure for the given `scheme_code`.
+    a. Fetches results data and site selections from Azure Table Storage for the given `scheme_code`.
     a. Reads the report template from SharePoint into an {officer} rdocx-class object.
     a. Generates charts and tables as png files to the subfolder `figures/` and then inserts them into the rdocx object.
     a. Calculates all the in-text values, names them and adds them to the rdocx object as 'document properties'.
