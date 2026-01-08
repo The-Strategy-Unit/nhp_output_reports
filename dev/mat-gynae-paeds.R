@@ -5,10 +5,10 @@
 #
 # See https://github.com/The-Strategy-Unit/nhp_output_reports/issues/54
 #
-# General approach for gynae/paeds: load all functions, then overwrite certain
-# data wrangling functions so that they read datasets needed for gynae/paeds
-# plots/tables. This is controlled by setting a 'results_type' global option()
-# to "gynae" or "paeds".
+# General approach: load all functions, then overwrite certain data wrangling
+# functions to respond to global options that dictate whether to filter for
+# gynae, paeds or maternity. Requires that all steps in this script be run in
+# order, since functions are overwritten along the way.
 
 # Set up ----
 
@@ -31,23 +31,25 @@ r_secondary <- get_nhp_results(file = secondary_file)
 
 # Helper functions ----
 
-# Selects a dataset depending on the value of the "results_type" option
-switch_results_data <- function(r) {
+# Selects a dataset depending on the value of the 'results_type' option, needed
+# for paeds/gynae filtering for beeswarms, s-curves and summary tables.
+switch_results_data <- function(results) {
   switch(
     getOption("results_type", default = NA_character_),
-    "gynae" = r[["results"]][["tretspef"]] |>
+    "gynae" = results[["results"]][["tretspef"]] |>
       dplyr::filter(tretspef %in% c("502", "503")),
-    "paeds" = r[["results"]][["age"]] |>
+    "paeds" = results[["results"]][["age"]] |>
       dplyr::filter(dplyr::between(age, 0, 17)),
-    r[["results"]][["default"]] # original default behaviour
+    results[["results"]][["default"]] # otherwise original default behaviour
   )
 }
 
 # Generate beeswarms and S-curves ----
 
-# Bespoke version of existing function
+# Bespoke version of existing function (needed for paeds/gynae)
 get_model_run_distribution <- function(r, pod, measure, site_codes) {
-  filtered_results <- switch_results_data(r) |> # bespoke data switch
+  filtered_results <-
+    switch_results_data(r) |> # NEW: bespoke paeds/gynae switch
     dplyr::filter(
       .data$pod %in% .env$pod,
       .data$measure %in% .env$measure
@@ -70,38 +72,124 @@ get_model_run_distribution <- function(r, pod, measure, site_codes) {
     trust_site_aggregation(site_codes)
 }
 
+# Bespoke version of existing function (needed for maternity)
+prepare_all_activity_distribution_plots <- function(r, site_codes) {
+  atpmo_lookup <- read_atmpo()
+
+  # NEW: bespoke filter for maternity
+  is_maternity <- isTRUE(getOption("maternity"))
+  if (is_maternity) {
+    atpmo_lookup <- atpmo_lookup |>
+      dplyr::filter(stringr::str_detect(pod, "maternity"))
+  }
+
+  activity_types <- list("inpatients", "outpatients", "aae")
+
+  pods <- purrr::map(
+    activity_types,
+    \(x) {
+      atpmo_lookup |>
+        dplyr::filter(activity_type == x) |>
+        dplyr::pull(pod) |>
+        unique()
+    }
+  ) |>
+    purrr::map(list) |>
+    purrr::set_names(activity_types)
+
+  measures <- purrr::map(
+    activity_types,
+    \(x) {
+      atpmo_lookup |>
+        dplyr::filter(activity_type == x) |>
+        dplyr::pull(measure) |>
+        unique()
+    }
+  ) |>
+    purrr::map(list) |>
+    purrr::set_names(activity_types)
+
+  measures[["inpatients"]] <- "beddays" # admissions not shown in report
+
+  possibly_plot_activity_distributions <-
+    purrr::possibly(plot_activity_distributions)
+
+  activity_distribution_plots <- purrr::pmap(
+    list(activity_types, pods, measures),
+    \(activity_type, pod, measure) {
+      possibly_plot_activity_distributions(
+        data = r,
+        site_codes = site_codes,
+        activity_type = activity_type,
+        pod = pod,
+        measure = measure
+      )
+    }
+  ) |>
+    purrr::set_names(activity_types)
+
+  # Earlier model runs don't have A&E data when filtering by site, so provide
+  # data for whole-scheme level.
+  if (r$params$app_version == "v1.0" & !is.null(site_codes[["aae"]])) {
+    activity_distribution_plots[["aae"]] <-
+      possibly_plot_activity_distributions(
+        data = r,
+        site_codes = list(aae = NULL), # provide for whole scheme, not site
+        activity_type = "aae",
+        pod = pods[["aae"]],
+        measure = measures[["aae"]]
+      )
+  }
+
+  activity_distribution_plots |> purrr::list_flatten()
+}
+
 # Convenience function to generate plots and (un)set options
 plot_activity_dist <- function(
   results = r_primary,
   sites = site_codes,
-  results_type = NULL
+  results_type = NULL, # set paeds/gynae options
+  maternity = NULL # set maternity option
 ) {
-  options(results_type = results_type)
-  on.exit(options(results_type = NULL))
+  options(results_type = results_type, maternity = maternity)
+  cat(
+    "* results object:",
+    deparse(substitute(results)),
+    "\n* result-type option:",
+    getOption("results_type", default = "none"),
+    "\n* maternity option:",
+    getOption("maternity", default = "none")
+  )
+  on.exit(options(results_type = NULL, maternity = NULL))
   prepare_all_activity_distribution_plots(results, sites)
 }
 
 # Generate primary-scenario beeswarms (9.1, 9.6, 9.8), S-curves (9.2, 9.7, 9.9)
-plots_activity_distribution <- plot_activity_dist() # overall
-plots_activity_distribution_paeds <- plot_activity_dist(results_type = "paeds")
-plots_activity_distribution_gynae <- plot_activity_dist(results_type = "gynae")
+plots_actdist_pri <- plot_activity_dist() # overall
+plots_actdist_pri_paeds <- plot_activity_dist(results_type = "paeds")
+plots_actdist_pri_gynae <- plot_activity_dist(results_type = "gynae")
+plots_actdist_pri_mat <- plot_activity_dist(maternity = TRUE)
 
 # Generate secondary-scenario beeswarm (9.10) and S-curve (9.11)
-plots_activity_distribution <- plot_activity_dist(results = r_secondary) # overall
-plots_activity_distribution_paeds <- plot_activity_dist(
+plots_actdist_sec <- plot_activity_dist(results = r_secondary) # overall
+plots_actdist_sec_paeds <- plot_activity_dist(
   results = r_secondary,
   results_type = "paeds"
 )
-plots_activity_distribution_gynae <- plot_activity_dist(
+plots_actdist_sec_gynae <- plot_activity_dist(
   results = r_secondary,
   results_type = "gynae"
+)
+plots_actdist_sec_gynae <- plot_activity_dist(
+  results = r_secondary,
+  maternity = TRUE
 )
 
 # Generate summary tables ----
 
 # Bespoke version of existing function
 get_principal_high_level <- function(r, measures, sites) {
-  switch_results_data(r) |> # bespoke data switch
+  switch_results_data(r) |> # NEW: bespoke paeds/gynae switch
     dplyr::filter(.data$measure %in% measures) |>
     dplyr::select("pod", "sitetret", "baseline", "principal") |>
     dplyr::mutate(dplyr::across(
@@ -142,6 +230,8 @@ mod_principal_summary_los_data <- function(r, sites, measure) {
   pods <- mod_principal_los_pods()
 
   has_tretspef_los <- !is.null(r$results[["tretspef+los_group"]])
+
+  # NEW: Bespoke gynae check to use for filtering
   is_gynae <- getOption("results_type", default = "none") == "gynae"
 
   if (!has_tretspef_los) {
