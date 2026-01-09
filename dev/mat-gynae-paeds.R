@@ -337,7 +337,7 @@ summary_los_table <- make_summary_los_table() # overall
 summary_los_table_gynae <- make_summary_los_table(results_type = "gynae")
 summary_los_table_mat <- make_summary_los_table(maternity = TRUE)
 
-# Generate individual change-factor charts ----
+# Generate waterfall ----
 
 # Bespoke version of existing function
 prepare_all_principal_change_factors <- function(
@@ -402,6 +402,36 @@ prepare_all_principal_change_factors <- function(
 
   principal_change_data
 }
+
+# Convenience function to generate plots and (un)set options
+plot_waterfall <- function(
+  results = r_primary,
+  sites = site_codes,
+  maternity = NULL # set maternity option
+) {
+  options(maternity = maternity)
+  on.exit(options(maternity = NULL))
+
+  cat(
+    "* maternity option:",
+    getOption("maternity", default = "none"),
+    "\n"
+  )
+
+  prepare_all_principal_change_factors(results, site_codes) |>
+    _$ip |> # only need inpatients
+    mod_principal_change_factor_effects_summarised("beddays", TRUE) |>
+    mod_principal_change_factor_effects_cf_plot()
+}
+
+# Generate waterfall chart (9.4)
+waterfall <- plot_waterfall() # overall
+waterfall_mat <- plot_waterfall(maternity = TRUE)
+
+# Generate individual change-factor charts ----
+
+# Bespoke version of existing function: use the same bespoke version of the
+# prepare_all_principal_change_factors() used in the waterfall generation above.
 
 # Convenience function to generate plots and (un)set options
 make_icf_charts <- function(
