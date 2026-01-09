@@ -16,7 +16,7 @@
 purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
 # Read results/sites as per insert_into_template()
-scheme_code <- "XYZ" # replace with scheme of interest
+scheme_code <- "REF" # replace with scheme of interest
 result_sets <- get_nhp_result_sets()
 run_stages <- list(
   primary = "final_report_ndg2",
@@ -152,16 +152,23 @@ plot_activity_dist <- function(
   maternity = NULL # set maternity option
 ) {
   options(results_type = results_type, maternity = maternity)
+  scenario_dataset <- deparse(substitute(results)) # capture name of results object
+  on.exit(options(results_type = NULL, maternity = NULL))
   cat(
     "* results object:",
-    deparse(substitute(results)),
+    scenario_dataset,
     "\n* result-type option:",
     getOption("results_type", default = "none"),
     "\n* maternity option:",
-    getOption("maternity", default = "none")
+    getOption("maternity", default = "none"),
+    "\n"
   )
-  on.exit(options(results_type = NULL, maternity = NULL))
-  prepare_all_activity_distribution_plots(results, sites)
+  plots <- prepare_all_activity_distribution_plots(results, sites)
+  if (scenario_dataset == "r_secondary") {
+    # Only the inpatients ones are needed for figs 9.10 and 9.11 (secondary)
+    plots <- plots[c("inpatients_beeswarm_plot", "inpatients_ecdf_plot")]
+  }
+  plots
 }
 
 # Generate primary-scenario beeswarms (9.1, 9.6, 9.8), S-curves (9.2, 9.7, 9.9)
@@ -180,7 +187,7 @@ plots_actdist_sec_gynae <- plot_activity_dist(
   results = r_secondary,
   results_type = "gynae"
 )
-plots_actdist_sec_gynae <- plot_activity_dist(
+plots_actdist_sec_mat <- plot_activity_dist(
   results = r_secondary,
   maternity = TRUE
 )
@@ -209,19 +216,38 @@ get_principal_high_level <- function(r, measures, sites) {
 make_summary_table <- function(
   results = r_primary,
   sites = site_codes[["ip"]],
-  results_type = NULL
+  results_type = NULL, # set paeds/gynae options
+  maternity = NULL # set maternity option
 ) {
-  options(results_type = results_type)
-  on.exit(options(results_type = NULL))
-  mod_principal_summary_data(results, sites) |>
-    dplyr::filter(activity_type == "Inpatient") |>
-    mod_principal_summary_table()
+  options(results_type = results_type, maternity = maternity)
+  on.exit(options(results_type = NULL, maternity = NULL))
+
+  cat(
+    "* result-type option:",
+    getOption("results_type", default = "none"),
+    "\n* maternity option:",
+    getOption("maternity", default = "none"),
+    "\n"
+  )
+
+  summary_data <- mod_principal_summary_data(results, sites) |>
+    dplyr::filter(activity_type == "Inpatient")
+
+  # NEW: bespoke filter for maternity
+  is_maternity <- isTRUE(getOption("maternity"))
+  if (is_maternity) {
+    summary_data <- summary_data |>
+      dplyr::filter(stringr::str_detect(pod_name, "Maternity"))
+  }
+
+  summary_data |> mod_principal_summary_table()
 }
 
 # Generate summary table (9.3)
 summary_table <- make_summary_table() # overall
 summary_table_gynae <- make_summary_table(results_type = "gynae")
 summary_table_paeds <- make_summary_table(results_type = "paeds")
+summary_table_mat <- make_summary_table(maternity = TRUE)
 
 # Ganerate LoS tables ----
 
@@ -274,19 +300,39 @@ mod_principal_summary_los_data <- function(r, sites, measure) {
 make_summary_los_table <- function(
   results = r_primary,
   sites = site_codes[["ip"]],
-  results_type = NULL
+  results_type = NULL, # set paeds/gynae options
+  maternity = NULL # set maternity option
 ) {
-  options(results_type = results_type)
-  on.exit(options(results_type = NULL))
-  mod_principal_summary_los_data(results, sites, "beddays") |>
+  options(results_type = results_type, maternity = maternity)
+  on.exit(options(results_type = NULL, maternity = NULL))
+
+  cat(
+    "* result-type option:",
+    getOption("results_type", default = "none"),
+    "\n* maternity option:",
+    getOption("maternity", default = "none"),
+    "\n"
+  )
+
+  los_data <- mod_principal_summary_los_data(results, sites, "beddays") |>
     dplyr::mutate(
       pod_name = stringr::str_replace(pod_name, "Admission", "Bed Days")
     ) |>
-    dplyr::arrange(pod_name, los_group) |>
+    dplyr::arrange(pod_name, los_group)
+
+  # NEW: bespoke filter for maternity
+  is_maternity <- isTRUE(getOption("maternity"))
+  if (is_maternity) {
+    los_data <- los_data |>
+      dplyr::filter(stringr::str_detect(pod_name, "Maternity"))
+  }
+
+  los_data |>
     mod_principal_summary_los_table() |>
     gt::tab_options(table.align = "left")
 }
 
 # Generate LoS table (9.5)
-make_summary_los_table() # overall
-make_summary_los_table(results_type = "gynae")
+summary_los_table <- make_summary_los_table() # overall
+summary_los_table_gynae <- make_summary_los_table(results_type = "gynae")
+summary_los_table_mat <- make_summary_los_table(maternity = TRUE)
