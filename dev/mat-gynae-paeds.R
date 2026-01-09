@@ -249,7 +249,7 @@ summary_table_gynae <- make_summary_table(results_type = "gynae")
 summary_table_paeds <- make_summary_table(results_type = "paeds")
 summary_table_mat <- make_summary_table(maternity = TRUE)
 
-# Ganerate LoS tables ----
+# Generate LoS tables ----
 
 # Bespoke version of existing function
 mod_principal_summary_los_data <- function(r, sites, measure) {
@@ -336,3 +336,100 @@ make_summary_los_table <- function(
 summary_los_table <- make_summary_los_table() # overall
 summary_los_table_gynae <- make_summary_los_table(results_type = "gynae")
 summary_los_table_mat <- make_summary_los_table(maternity = TRUE)
+
+# Generate individual change-factor charts ----
+
+# Bespoke version of existing function
+prepare_all_principal_change_factors <- function(
+  r,
+  site_codes = list(ip = NULL, op = NULL, aae = NULL) # character vectors
+) {
+  mitigators_lookup <- read_mitigators()
+  atmpo_lookup <- read_atmpo()
+
+  activity_types_long <- list("inpatients", "outpatients", "aae")
+  activity_types_short <- list("ip", "op", "aae")
+
+  pods <- purrr::map(
+    activity_types_long,
+    \(x) {
+      atmpo_lookup |>
+        dplyr::filter(activity_type == x) |>
+        dplyr::pull(pod) |>
+        unique()
+    }
+  ) |>
+    purrr::set_names(activity_types_short)
+
+  # NEW: bespoke filter for maternity
+  is_maternity <- isTRUE(getOption("maternity"))
+  if (is_maternity) {
+    pods <- list(ip = "ip_maternity_admission")
+    activity_types_long <- list("inpatients")
+    activity_types_short <- list("ip")
+  }
+
+  possibly_prep_principal_change_factors <-
+    purrr::possibly(prep_principal_change_factors)
+
+  principal_change_data <- purrr::map2(
+    activity_types_short,
+    pods,
+    \(activity_type, pod) {
+      possibly_prep_principal_change_factors(
+        data = r,
+        site_codes = site_codes,
+        mitigators = mitigators_lookup,
+        at = activity_type,
+        pods = pod
+      )
+    }
+  ) |>
+    purrr::set_names(activity_types_short)
+
+  # Scenarios run under v1.0 don't have A&E data when filtering by site, so
+  # provide results for whole-scheme level.
+  if (r$params$app_version == "v1.0" & !is.null(site_codes[["aae"]])) {
+    principal_change_data[["aae"]] <-
+      possibly_prep_principal_change_factors(
+        data = r,
+        site_codes = list(aae = NULL), # provide for whole scheme, not site
+        mitigators = mitigators_lookup,
+        at = "aae",
+        pods = pods[["aae"]]
+      )
+  }
+
+  principal_change_data
+}
+
+# Convenience function to generate plots and (un)set options
+make_icf_charts <- function(
+  results = r_primary,
+  sites = site_codes,
+  maternity = NULL # set maternity option
+) {
+  options(maternity = maternity)
+  on.exit(options(maternity = NULL))
+
+  cat(
+    "* maternity option:",
+    getOption("maternity", default = "none"),
+    "\n"
+  )
+
+  icf_plots <- prepare_all_principal_change_factors_plots(results, site_codes)
+
+  # NEW: bespoke filter for maternity
+  is_maternity <- isTRUE(getOption("maternity"))
+  if (is_maternity) {
+    icf_plots <- icf_plots[1:3] # restrict to inpatients plots
+  }
+
+  icf_plots
+}
+
+# Generate individual change-factor charts (8.2 to 8.6, maternity is only 8.2
+# to 8.4, which are the inpatients ones)
+plots_icf <- make_icf_charts() # overall
+plots_icf_mat <- make_icf_charts(maternity = TRUE)
