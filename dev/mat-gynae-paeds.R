@@ -463,3 +463,88 @@ make_icf_charts <- function(
 # to 8.4, which are the inpatients ones)
 plots_icf <- make_icf_charts() # overall
 plots_icf_mat <- make_icf_charts(maternity = TRUE)
+
+# Generate S-curve (ECDF) text ----
+
+# The function below uses mod_model_results_distribution_get_data(), which is
+# already part of the R/nhp_outputs/ scripts in this repo. That function uses
+# get_model_run_distribution(), which we have a gynae/paeds version for in the
+# beeswarms/S-curves section above
+
+# Function adapted from a Shiny renderText and reactive in nhp_outputs
+generate_ecdf_text <- function(
+  selected_data,
+  selected_measure,
+  selected_site
+) {
+  # Extracted from the aggregated_data() Shiny reactive
+  dat <- selected_data |>
+    mod_model_results_distribution_get_data(
+      selected_measure,
+      selected_site
+    )
+
+  # Calculate y value for principal x value (find nearest % for the principal)
+  p <- dat$principal[[1]]
+  ecdf_fn <- stats::ecdf(dat[["value"]])
+  x_vals <- sort(dat[["value"]])
+  y_vals <- sort(ecdf_fn(dat[["value"]]))
+  principal_diffs <- abs(p - x_vals) # nearest x in ECDF to the principal
+  min_principal_diff_i <- which(principal_diffs == min(principal_diffs))[1]
+  p_pcnt <- y_vals[min_principal_diff_i] |> scales::percent(accuracy = 1)
+
+  list(
+    baseline = dat$baseline[[1]],
+    principal = p,
+    prinicpal_percent = p_pcnt,
+    p10_val = stats::quantile(ecdf_fn, probs = 0.1),
+    p90_val = stats::quantile(ecdf_fn, probs = 0.9)
+  )
+}
+
+generate_ecdf_text(r_primary, "beddays", "REF12")
+
+
+get_ecdf_quantiles_data <- function(data) {
+  ecdf_fn <- stats::ecdf(data[["value"]])
+
+  # Calculate x values for y-axis quantiles
+  probs_pcnts <- c(0.1, 0.9)
+  x_quantiles <- stats::quantile(ecdf_fn, probs = probs_pcnts)
+
+  return(x_quantiles)
+}
+
+get_ecdf_quantiles <- function(data, site_codes, activity_type, pods, measure) {
+  selected_measure <- list(activity_type, pods, measure)
+
+  activity_type_short <-
+    switch(activity_type, "inpatients" = "ip", "outpatients" = "op", "aae")
+  site_codes <- site_codes[[activity_type_short]]
+
+  aggregated_data <- data |>
+    mod_model_results_distribution_get_data(selected_measure, site_codes)
+
+  tibble::enframe(
+    get_ecdf_quantiles_data(aggregated_data),
+    name = "quant",
+    value = "value"
+  )
+}
+
+
+atmpo <- read_atmpo()
+at <- "inpatients"
+m <- "beddays"
+atmpo_ip <- atmpo |>
+  dplyr::filter(
+    activity_type == at,
+    measure = m
+  )
+
+get_ecdf_quantiles(r_primary, site_codes, "ip", pods, "beddays")
+options(results_type = "gynae")
+get_ecdf_quantiles(r_primary, site_codes, "ip", pods, "beddays")
+options(results_type = "paeds")
+get_ecdf_quantiles(r_primary, site_codes, "ip", pods, "beddays")
+options(results_type = NULL)
