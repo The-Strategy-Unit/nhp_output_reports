@@ -532,19 +532,20 @@ get_ecdf_quantiles <- function(data, site_codes, activity_type, pods, measure) {
   )
 }
 
-
 atmpo <- read_atmpo()
 at <- "inpatients"
 m <- "beddays"
-atmpo_ip <- atmpo |>
+pods <- atmpo |>
   dplyr::filter(
+    # could also filter for pod == ip_maternity_admission only
     activity_type == at,
-    measure = m
-  )
+    measure == m
+  ) |>
+  dplyr::pull(pod)
 
-get_ecdf_quantiles(r_primary, site_codes, "ip", pods, "beddays")
+get_ecdf_quantiles(r_primary, site_codes, at, pods, m)
 options(results_type = "gynae")
-get_ecdf_quantiles(r_primary, site_codes, "ip", pods, "beddays")
+get_ecdf_quantiles(r_primary, site_codes, at, pods, m)
 options(results_type = "paeds")
-get_ecdf_quantiles(r_primary, site_codes, "ip", pods, "beddays")
+get_ecdf_quantiles(r_primary, site_codes, at, pods, m)
 options(results_type = NULL)
