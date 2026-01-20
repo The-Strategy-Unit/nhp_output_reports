@@ -37,9 +37,12 @@ switch_results_data <- function(results) {
   switch(
     getOption("results_type", default = NA_character_),
     "gynae" = results[["results"]][["tretspef"]] |>
-      dplyr::filter(tretspef %in% c("502", "503")),
+      dplyr::filter(
+        tretspef %in% c("502", "503"), # gynae-specific treatment specialties
+        !purrr::map_lgl(model_runs, is.null) # listcol must contain runs
+      ),
     "paeds" = results[["results"]][["age"]] |>
-      dplyr::filter(dplyr::between(age, 0, 17)),
+      dplyr::filter(dplyr::between(age, 0, 17)), # inclusive of 0 and 17
     results[["results"]][["default"]] # otherwise original default behaviour
   )
 }
