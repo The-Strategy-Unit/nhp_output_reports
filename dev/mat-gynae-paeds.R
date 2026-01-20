@@ -475,39 +475,6 @@ plots_icf_mat <- make_icf_charts(maternity = TRUE)
 # beeswarms/S-curves section above
 
 # Function adapted from a Shiny renderText and reactive in nhp_outputs
-generate_ecdf_text <- function(
-  selected_data,
-  selected_measure,
-  selected_site
-) {
-  # Extracted from the aggregated_data() Shiny reactive
-  dat <- selected_data |>
-    mod_model_results_distribution_get_data(
-      selected_measure,
-      selected_site
-    )
-
-  # Calculate y value for principal x value (find nearest % for the principal)
-  p <- dat$principal[[1]]
-  ecdf_fn <- stats::ecdf(dat[["value"]])
-  x_vals <- sort(dat[["value"]])
-  y_vals <- sort(ecdf_fn(dat[["value"]]))
-  principal_diffs <- abs(p - x_vals) # nearest x in ECDF to the principal
-  min_principal_diff_i <- which(principal_diffs == min(principal_diffs))[1]
-  p_pcnt <- y_vals[min_principal_diff_i] |> scales::percent(accuracy = 1)
-
-  list(
-    baseline = dat$baseline[[1]],
-    principal = p,
-    prinicpal_percent = p_pcnt,
-    p10_val = stats::quantile(ecdf_fn, probs = 0.1),
-    p90_val = stats::quantile(ecdf_fn, probs = 0.9)
-  )
-}
-
-generate_ecdf_text(r_primary, "beddays", "REF12")
-
-
 get_ecdf_quantiles_data <- function(data) {
   ecdf_fn <- stats::ecdf(data[["value"]])
 
