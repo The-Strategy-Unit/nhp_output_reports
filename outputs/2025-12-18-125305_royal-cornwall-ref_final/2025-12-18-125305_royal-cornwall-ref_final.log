@@ -1,0 +1,40 @@
+=========================================================================
+Log Path:
+outputs/2025-12-18-125305_royal-cornwall-ref_final/2025-12-18-125305_royal-cornwall-ref_final.log
+Program Path: C:/Users/jacqueline.grout/OneDrive - Midlands and Lancashire
+CSU/Documents/GIT/nhp_output_reports/populate-report.R
+Working Directory: C:/Users/jacqueline.grout/OneDrive - Midlands and Lancashire
+CSU/Documents/GIT/nhp_output_reports
+User Name: Jacqueline.Grout
+R Version: 4.5.2 (2025-10-31 ucrt)
+Machine: MLCSU59631 x86-64
+Operating System: Windows 10 x64 build 26100
+Base Packages: stats graphics grDevices utils datasets methods base
+Other Packages: logr_1.3.9 common_1.1.3
+Log Start Time: 2025-12-18 12:53:07.144194
+=========================================================================
+* Scheme: REF (Royal Cornwall)
+* Execution datetime: 2025-12-18-125305
+* Report type: final
+* Scenario files:
+- primary variant: prod/v4.3/REF/2025-12-17-Including-Mitigations-20251217_155745.json.gz
+- secondary variant: prod/v4.3/REF/2025-12-17-Including-Mitigations-Alternate-NDG-20251217_160842.json.gz
+* Sites:
+- Inpatients:  REF12
+- Outpatients: REF12
+- A&E:         REF12
+* Fetching results...
+* Reading report template...
+* Calculating values for insertion to the template...
+* Writing values to outputs/2025-12-18-125305_royal-cornwall-ref_final/values/2025-12-18-125305_royal-cornwall-ref_final_values.csv/...
+* Calculating check values for writing to csv...
+* Writing checklist values to outputs/2025-12-18-125305_royal-cornwall-ref_final/values/2025-12-18-125305_royal-cornwall-ref_final_checklist.csv/...
+* Writing mitigator values to outputs/2025-12-18-125305_royal-cornwall-ref_final/values/2025-12-18-125305_royal-cornwall-ref_final_mitigators.csv/...
+* Setting values as custom properties in the template...
+* Writing figures to outputs/2025-12-18-125305_royal-cornwall-ref_final/figures/...
+* Writing populated report to outputs/2025-12-18-125305_royal-cornwall-ref_final/2025-12-18-125305_royal-cornwall-ref_outputs-report_final_draft.docx...
+* Done.
+=========================================================================
+Log End Time: 2025-12-18 12:56:37.499335
+Log Elapsed Time: 0 00:03:30
+=========================================================================

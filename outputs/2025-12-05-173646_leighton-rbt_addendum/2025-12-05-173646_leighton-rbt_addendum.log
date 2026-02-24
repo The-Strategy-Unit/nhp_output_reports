@@ -1,0 +1,46 @@
+=========================================================================
+Log Path:
+outputs/2025-12-05-173646_leighton-rbt_addendum/2025-12-05-173646_leighton-rbt_addendum.log
+Program Path: C:/Users/jacqueline.grout/OneDrive - Midlands and Lancashire
+CSU/Documents/GIT/nhp_output_reports/populate-report.R
+Working Directory: C:/Users/jacqueline.grout/OneDrive - Midlands and Lancashire
+CSU/Documents/GIT/nhp_output_reports
+User Name: Jacqueline.Grout
+R Version: 4.5.2 (2025-10-31 ucrt)
+Machine: MLCSU59631 x86-64
+Operating System: Windows 10 x64 build 26100
+Base Packages: stats graphics grDevices utils datasets methods base
+Other Packages: logr_1.3.9 common_1.1.3
+Log Start Time: 2025-12-05 17:36:48.295034
+=========================================================================
+* Scheme: RBT (Leighton)
+* Execution datetime: 2025-12-05-173646
+* Report type: addendum
+* Scenario files:
+- primary variant: prod/v4.1/RBT/HF20250909-NDG2-20250909_214758.json.gz
+- secondary variant: prod/v4.1/RBT/HF20250909-NDG3-20250911_131440.json.gz
+- secondary variant: prod/v4.1/RBT/HF20250909-NDG3-20250911_131440.json.gz
+- final scenario ndg2: prod/v2.1/RBT/Leighton-v6-upgraded-copy-20240913_141204.json.gz
+- final scenario ndg1: prod/v2.1/RBT/Leighton-v6-upgraded-copy-ndg1-20240916_084617.json.gz
+* Sites:
+- Inpatients:  RBT20, RBT24, unknown
+- Outpatients: RBT20, RBT24, unknown
+- A&E:         RBT20, RBTCM, unknown
+* Fetching results...
+* Reading report template...
+* Calculating values for insertion to the template...
+* Writing values to outputs/2025-12-05-173646_leighton-rbt_addendum/values/2025-12-05-173646_leighton-rbt_addendum_values.csv/...
+* Calculating check values for writing to csv...
+* Writing checklist values to outputs/2025-12-05-173646_leighton-rbt_addendum/values/2025-12-05-173646_leighton-rbt_addendum_checklist.csv/...
+* Writing checklist values to outputs/2025-12-05-173646_leighton-rbt_addendum/values_final/2025-12-05-173646_leighton-rbt_addendum_checklist.csv/...
+* Writing mitigator values to outputs/2025-12-05-173646_leighton-rbt_addendum/values/2025-12-05-173646_leighton-rbt_addendum_mitigators.csv/...
+* Writing mitigator values to outputs/2025-12-05-173646_leighton-rbt_addendum/values_final/2025-12-05-173646_leighton-rbt_addendum_mitigators.csv/...
+* Setting values as custom properties in the template...
+* Writing figures to outputs/2025-12-05-173646_leighton-rbt_addendum/figures/...
+* Writing figures to outputs/2025-12-05-173646_leighton-rbt_addendum/figures_final/...
+* Writing populated report to outputs/2025-12-05-173646_leighton-rbt_addendum/2025-12-05-173646_leighton-rbt_outputs-report_addendum_draft.docx...
+* Done.
+=========================================================================
+Log End Time: 2025-12-05 17:40:12.082727
+Log Elapsed Time: 0 00:03:23
+=========================================================================

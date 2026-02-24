@@ -1,0 +1,39 @@
+=========================================================================
+Log Path:
+outputs/2026-02-11-223109_royal-cornwall-ref_final/2026-02-11-223109_royal-cornwall-ref_final.log
+Program Path: C:/Users/jacqueline.grout/OneDrive - Midlands and Lancashire
+CSU/Documents/GIT/nhp_output_reports/R/insert-into-template.R
+Working Directory: C:/Users/jacqueline.grout/OneDrive - Midlands and Lancashire
+CSU/Documents/GIT/nhp_output_reports
+User Name: Jacqueline.Grout
+R Version: 4.5.2 (2025-10-31 ucrt)
+Machine: MLCSU59631 x86-64
+Operating System: Windows 10 x64 build 26100
+Base Packages: stats graphics grDevices datasets utils methods base
+Other Packages: logr_1.3.9 common_1.1.3
+Log Start Time: 2026-02-11 22:31:11.322454
+=========================================================================
+* Scheme: REF (Royal Cornwall)
+* Execution datetime: 2026-02-11-223109
+* Report type: final
+* Sites:
+- Inpatients:  REF12
+- Outpatients: REF12
+- A&E:         REF12
+* Fetching results...
+Error in if (nchar(operation) > 0 && substr(operation, 1, 1) != "/")
+paste0(container$name, : missing value where TRUE/FALSE needed
+Traceback:
+6: do_container_op(object, blob, options = opts, http_verb = "HEAD")
+5: get_storage_properties.blob_container(container, src, snapshot = snapshot, 
+       version = version)
+4: get_storage_properties(container, src, snapshot = snapshot, version = version)
+3: download_blob_internal(container, src, dest, blocksize = blocksize, 
+       overwrite = overwrite, lease = lease, check_md5 = check_md5, 
+       snapshot = snapshot, version = version)
+2: AzureStor::download_blob(container, file, temp_file) at azure.R#105
+1: get_nhp_results(file = secondary_file)
+=========================================================================
+Log End Time: 2026-02-11 22:33:11.317075
+Log Elapsed Time: 0 00:01:59
+=========================================================================

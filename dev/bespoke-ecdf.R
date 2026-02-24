@@ -12,7 +12,7 @@ scheme_code <- "XYZ" # change to scheme of interest
 result_sets <- get_nhp_result_sets()
 
 run_stages <- list(
-  primary = "addendum_report_ndg2",
+  primary = "validation_report_ndg2",
   secondary = "final_report_ndg2"
 )
 
@@ -228,3 +228,21 @@ ecdf_plots <- purrr::pmap(
   }
 ) |>
   purrr::set_names(ecdf_plot_names)
+
+
+# Chromote setting needed in this function to webshot the figures
+op <- options(chromote.headless = "new")
+on.exit(options(op), add = TRUE)
+
+# Set up image dimensions (inches, because that's what {officer} deals with)
+w <- 6.5
+h <- 4
+h_dist <- 2.5  # distribution plots (beeswarm and s-curves)
+
+purrr::walk2(
+  paste0(scheme_code, "-", ecdf_plot_names, ".png"),
+  ecdf_plots,
+  \(filename, plot) {
+    ggplot2::ggsave(filename, plot, width = w, height = h)
+  }
+)
