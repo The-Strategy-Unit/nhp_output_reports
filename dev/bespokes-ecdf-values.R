@@ -1,42 +1,17 @@
-purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
+get_bespoke_ecdf_values <- function(soc_scenario, obc_scenario, site_codes){
 
-scheme_code <- "XYZ" # change to scheme of interest
-
-result_sets <- get_nhp_result_sets()
-
-primary_run_stage = "validation_report_ndg2"
-secondary_run_stage = "final_report_ndg2"
-
-table_of_values_validation <- generate_ecdf_values(scheme_code, primary_run_stage,
-                                           secondary_run_stage)
-
-primary_run_stage = "validation_report_ndg2_opening"
-
-table_of_values_opening <- generate_ecdf_values(scheme_code, primary_run_stage,
-                                                   secondary_run_stage)
-
-
-generate_ecdf_values <- function(scheme_code, primary_run_stage,
-                                 secondary_run_stage) {
-
-  # Generate the values for the table
+  # Generate bespoke table of values derived from ECDF curves that show
+  # 'validation' results with a point to
+  # indicate the principal from the 'final' data.
+  #
+  # See https://github.com/The-Strategy-Unit/nhp_output_reports/issues/37
+  # See https://github.com/The-Strategy-Unit/nhp_output_reports/issues/40
 
   # Set up ----
 
-  run_stages <- list(
-    primary = primary_run_stage,
-    secondary = secondary_run_stage
-  )
-
-  meta <- get_run_metadata(scheme_code, result_sets, run_stages)
-  site_codes <- get_sites(scheme_code)
-
-  primary_file <- dplyr::pull(meta$metadata_primary, file)
-  secondary_file <- dplyr::pull(meta$metadata_secondary, file)
-
-  r_primary <- get_nhp_results(file = primary_file)
-  r_secondary <- get_nhp_results(file = secondary_file)
+  r_primary <- obc_scenario
+  r_secondary <- soc_scenario
 
   # Bespoke functions ----
 
