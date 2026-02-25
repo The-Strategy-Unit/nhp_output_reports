@@ -8,6 +8,8 @@
 *.jpeg
 *.jpg
 *.json
+*.log
+*.msg
 *.ods
 *.pdf
 *.png
