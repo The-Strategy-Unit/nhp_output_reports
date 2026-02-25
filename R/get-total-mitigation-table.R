@@ -1,5 +1,5 @@
 
-get_total_mitigation_table <- function(){
+get_total_mitigation_table <- function(r_final_report_ndg2, r_validation_report_ndg2, site_codes){
 # SOC & OBC mitigated activity
 
 mit_soc_ip <- get_stepcounts(r_final_report_ndg2)|>
