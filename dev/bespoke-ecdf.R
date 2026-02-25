@@ -1,3 +1,5 @@
+
+get_bespoke_ecdf <- function(soc_scenario, obc_scenario, site_codes){
 # Generate bespoke ECDF curves that show 'validation' results with a point to
 # indicate the principal from the 'final' data.
 #
@@ -6,24 +8,8 @@
 
 # Set up ----
 
-purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
-scheme_code <- "XYZ" # change to scheme of interest
-
-result_sets <- get_nhp_result_sets()
-
-run_stages <- list(
-  primary = "validation_report_ndg2",
-  secondary = "final_report_ndg2"
-)
-
-meta <- get_run_metadata(scheme_code, result_sets, run_stages)
-site_codes <- get_sites(scheme_code)
-
-primary_file <- dplyr::pull(meta$metadata_primary, file)
-secondary_file <- dplyr::pull(meta$metadata_secondary, file)
-
-r_primary <- get_nhp_results(file = primary_file)
-r_secondary <- get_nhp_results(file = secondary_file)
+   r_primary <- obc_scenario
+   r_secondary <- soc_scenario
 
 # Bespoke functions ----
 
@@ -246,3 +232,4 @@ purrr::walk2(
     ggplot2::ggsave(filename, plot, width = w, height = h)
   }
 )
+}
