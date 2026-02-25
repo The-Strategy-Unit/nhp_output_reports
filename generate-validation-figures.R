@@ -94,3 +94,6 @@ fc_period_obc <- get_years(r_validation_report_ndg2)
 
 # get the soc obc data
 soc_obc <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+
+# get the cagr data
+cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
