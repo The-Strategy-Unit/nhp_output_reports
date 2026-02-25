@@ -20,10 +20,13 @@
 *.xlsx
 *.yaml
 *.yml
+*.log
+*.msg
 
 # Other ignored files/folders
 README_files/
 secret/
+outputs/
 scenarios.R
 
 # Data allowed
