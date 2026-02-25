@@ -100,3 +100,15 @@ cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report
 
 # get the total mitigation data
 total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+
+# get the p90 table
+p90_table <-get_p90_table(soc_obc)
+
+# get the bespoke s curve charts
+save_bespoke_ecdf_plots <- get_bespoke_ecdf (r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+
+# get the additional risk table
+ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+
+# get the additional risk table for opening date scenario
+ecdf_vals_open <- get_bespoke_ecdf_values(r_final_report_ndg2, r_opening_date_scenario, site_codes)
