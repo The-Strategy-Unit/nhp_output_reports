@@ -97,3 +97,6 @@ soc_obc <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, site_codes
 
 # get the cagr data
 cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+
+# get the total mitigation data
+total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
