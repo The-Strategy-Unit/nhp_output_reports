@@ -1,10 +1,10 @@
-
+get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes){
 
 #### Issue 35 from nhp_output_reports ----
 
 # where they already exist, use figures from generate_values_list function
-values_list_soc <- data.frame(name = names(generate_values_list(r_final_report_ndg2, r_final_report_ndg2, site_codes)),
-                              soc = unlist(generate_values_list(r_final_report_ndg2, r_final_report_ndg2, site_codes))) |>
+values_list_soc <- data.frame(name = names(generate_values_list(soc_scenario, soc_scenario, site_codes)),
+                              soc = unlist(generate_values_list(soc_scenario, soc_scenario, site_codes))) |>
   dplyr::filter(name %in% c("item_01", "item_02", "item_03", "item_04", "item_08", "item_10", "item_13", "item_14","item_16", "item_17", "item_78", "item_79")) |>
   dplyr::mutate(name = dplyr::case_match(
     name,
@@ -23,8 +23,8 @@ values_list_soc <- data.frame(name = names(generate_values_list(r_final_report_n
   ),
   soc = as.numeric(soc))
 
-values_list_obc <- data.frame(name = names(generate_values_list(r_addendum_report_ndg2, r_addendum_report_ndg2, site_codes)),
-                              obc = unlist(generate_values_list(r_addendum_report_ndg2, r_addendum_report_ndg2, site_codes))) |>
+values_list_obc <- data.frame(name = names(generate_values_list(obc_scenario, obc_scenario, site_codes)),
+                              obc = unlist(generate_values_list(obc_scenario, obc_scenario, site_codes))) |>
   dplyr::filter(name %in% c("item_01", "item_02", "item_03", "item_04", "item_08", "item_10", "item_13", "item_14","item_16", "item_17", "item_78", "item_79")) |>
   dplyr::mutate(name = dplyr::case_match(
     name,
@@ -46,28 +46,28 @@ values_list_obc <- data.frame(name = names(generate_values_list(r_addendum_repor
 # values not already created in 'generate_values_list' function
 ### SOC
 # DG & NDG for OP
-baseline <- get_stepcounts(r_final_report_ndg2) |>
+baseline <- get_stepcounts(soc_scenario) |>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "baseline") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-demographic_adjustment <- get_stepcounts(r_final_report_ndg2) |>
+demographic_adjustment <- get_stepcounts(soc_scenario) |>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "demographic_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-non_demographic_adjustment <- get_stepcounts(r_final_report_ndg2) |>
+non_demographic_adjustment <- get_stepcounts(soc_scenario) |>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "non-demographic_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-covid_adjustment <- get_stepcounts(r_final_report_ndg2) |>
+covid_adjustment <- get_stepcounts(soc_scenario) |>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "covid_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
@@ -78,42 +78,42 @@ dg_op <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adj
 ndg_op <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
 
 # net growth for OP
-birth_adjustment <- get_stepcounts(r_final_report_ndg2)|>
+birth_adjustment <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "birth_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-health_status_adjustment <- get_stepcounts(r_final_report_ndg2)|>
+health_status_adjustment <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "health_status_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-waiting_list_adjustment <- get_stepcounts(r_final_report_ndg2)|>
+waiting_list_adjustment <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "waiting_list_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-model_interaction_term <- get_stepcounts(r_final_report_ndg2)|>
+model_interaction_term <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "model_interaction_term") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-activity_avoidance_op <- get_stepcounts(r_final_report_ndg2)|>
+activity_avoidance_op <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "activity_avoidance") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-efficiencies_op <- get_stepcounts(r_final_report_ndg2)|>
+efficiencies_op <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "efficiencies") |>
   filter_sites_conditionally(site_codes$op) |>
@@ -128,28 +128,28 @@ net_gr_op <- janitor::round_half_up((((baseline + demographic_adjustment + non_d
 
 
 # DG & NDG for A&E
-baseline <- get_stepcounts(r_final_report_ndg2)|>
+baseline <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "baseline") |>
   filter_sites_conditionally(site_codes$aae) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-demographic_adjustment <- get_stepcounts(r_final_report_ndg2)|>
+demographic_adjustment <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "demographic_adjustment") |>
   filter_sites_conditionally(site_codes$aae) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-non_demographic_adjustment <- get_stepcounts(r_final_report_ndg2)|>
+non_demographic_adjustment <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "non-demographic_adjustment") |>
   filter_sites_conditionally(site_codes$aae) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-covid_adjustment <- get_stepcounts(r_final_report_ndg2)|>
+covid_adjustment <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "covid_adjustment") |>
   filter_sites_conditionally(site_codes$aae) |>
@@ -160,14 +160,14 @@ dg_ae <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adj
 ndg_ae <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
 
 # net growth A&E
-activity_avoidance_ae <- get_stepcounts(r_final_report_ndg2)|>
+activity_avoidance_ae <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "activity_avoidance") |>
   filter_sites_conditionally(site_codes$aae) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-efficiencies_ae <- get_stepcounts(r_final_report_ndg2)|>
+efficiencies_ae <- get_stepcounts(soc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "efficiencies") |>
   filter_sites_conditionally(site_codes$aae) |>
@@ -192,28 +192,28 @@ values_list_soc <- dplyr::bind_rows(values_list_soc, new_rows)
 ### OBC
 
 # DG & NDG for OP
-baseline <- get_stepcounts(r_addendum_report_ndg2) |>
+baseline <- get_stepcounts(obc_scenario) |>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "baseline") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-demographic_adjustment <- get_stepcounts(r_addendum_report_ndg2) |>
+demographic_adjustment <- get_stepcounts(obc_scenario) |>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "demographic_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-non_demographic_adjustment <- get_stepcounts(r_addendum_report_ndg2) |>
+non_demographic_adjustment <- get_stepcounts(obc_scenario) |>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "non-demographic_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-covid_adjustment <- get_stepcounts(r_addendum_report_ndg2) |>
+covid_adjustment <- get_stepcounts(obc_scenario) |>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "covid_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
@@ -224,42 +224,42 @@ dg_op <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adj
 ndg_op <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
 
 # net growth for OP
-birth_adjustment <- get_stepcounts(r_addendum_report_ndg2)|>
+birth_adjustment <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "birth_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-health_status_adjustment <- get_stepcounts(r_addendum_report_ndg2)|>
+health_status_adjustment <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "health_status_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-waiting_list_adjustment <- get_stepcounts(r_addendum_report_ndg2)|>
+waiting_list_adjustment <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "waiting_list_adjustment") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-model_interaction_term <- get_stepcounts(r_addendum_report_ndg2)|>
+model_interaction_term <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "model_interaction_term") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-activity_avoidance_op <- get_stepcounts(r_addendum_report_ndg2)|>
+activity_avoidance_op <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "activity_avoidance") |>
   filter_sites_conditionally(site_codes$op) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-efficiencies_op <- get_stepcounts(r_addendum_report_ndg2)|>
+efficiencies_op <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "op") |>
   dplyr::filter(change_factor == "efficiencies") |>
   filter_sites_conditionally(site_codes$op) |>
@@ -274,28 +274,28 @@ net_gr_op <- janitor::round_half_up((((baseline + demographic_adjustment + non_d
 
 
 # DG & NDG for A&E
-baseline <- get_stepcounts(r_addendum_report_ndg2)|>
+baseline <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "baseline") |>
   filter_sites_conditionally(site_codes$aae) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-demographic_adjustment <- get_stepcounts(r_addendum_report_ndg2)|>
+demographic_adjustment <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "demographic_adjustment") |>
   filter_sites_conditionally(site_codes$aae) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-non_demographic_adjustment <- get_stepcounts(r_addendum_report_ndg2)|>
+non_demographic_adjustment <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "non-demographic_adjustment") |>
   filter_sites_conditionally(site_codes$aae) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-covid_adjustment <- get_stepcounts(r_addendum_report_ndg2)|>
+covid_adjustment <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "covid_adjustment") |>
   filter_sites_conditionally(site_codes$aae) |>
@@ -306,14 +306,14 @@ dg_ae <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adj
 ndg_ae <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
 
 # net growth A&E
-activity_avoidance_ae <- get_stepcounts(r_addendum_report_ndg2)|>
+activity_avoidance_ae <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "activity_avoidance") |>
   filter_sites_conditionally(site_codes$aae) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::pull()
 
-efficiencies_ae <- get_stepcounts(r_addendum_report_ndg2)|>
+efficiencies_ae <- get_stepcounts(obc_scenario)|>
   dplyr::filter(activity_type == "aae") |>
   dplyr::filter(change_factor == "efficiencies") |>
   filter_sites_conditionally(site_codes$aae) |>
@@ -395,3 +395,5 @@ tbl_impact <- dplyr::full_join(values_list_soc, values_list_obc) |>
   gt::sub_missing(
     missing_text = "-"
   )
+
+}
