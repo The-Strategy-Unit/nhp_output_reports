@@ -2,13 +2,7 @@
 ## comparison of projections
 ## comparison of upper CI with principal projection
 ## comparison of estimated mitigated activity
-
-
-# Prepare workspace
-source("R/source.R") # source source_r_scripts() from within this repo
-source_r_scripts() # defaults to sourcing R scripts from nhp_output_reports/R/
-source_r_scripts(path = "R/nhp_outputs")  # subfolder of scripts under R/
-
+purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
 scheme_code="XYZ" # add scheme_code for the scenario here to replace XYZ
 # If the scheme has site codes already recorded or if all sites are required then set site_codes=NULL, otherwise set sites manually
@@ -96,4 +90,7 @@ get_years <- function(scenario){
 }
 
 fc_period_soc <- get_years(r_final_report_ndg2)
-fc_period_obc <- get_years(r_addendum_report_ndg2)
+fc_period_obc <- get_years(r_validation_report_ndg2)
+
+# get the soc obc data
+soc_obc <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
