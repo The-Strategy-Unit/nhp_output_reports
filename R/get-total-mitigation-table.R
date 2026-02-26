@@ -72,7 +72,8 @@ tbl_mit_activity <- mit_soc_obc |>
   ) |>
   gt::tab_source_note(
     source_note = "sum of TPMA level estimates for activity avoidance and efficiencies"
-  )
+  ) |>
+  gt_theme()
 
 tbl_mit_activity
 }
