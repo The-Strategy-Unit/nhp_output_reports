@@ -1,5 +1,5 @@
 
-
+get_p90_table <- function(soc_obc){
 # pulls 90% CI from OBC and compares with SOC Principal Projection
 
 tbl_soc_obc_p90 <- soc_obc |>
@@ -34,3 +34,4 @@ tbl_soc_obc_p90 <- soc_obc |>
   gt::opt_footnote_marks(marks = "standard")
 
 tbl_soc_obc_p90
+}
