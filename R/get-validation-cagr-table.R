@@ -394,6 +394,7 @@ tbl_impact <- dplyr::full_join(values_list_soc, values_list_obc) |>
   ) |>
   gt::sub_missing(
     missing_text = "-"
-  )
+  ) |>
+  gt_theme()
 
 }
