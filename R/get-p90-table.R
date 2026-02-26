@@ -31,7 +31,8 @@ tbl_soc_obc_p90 <- soc_obc |>
       c("Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
     )
   ) |>
-  gt::opt_footnote_marks(marks = "standard")
+  gt::opt_footnote_marks(marks = "standard") |>
+  gt_theme()
 
 tbl_soc_obc_p90
 }
