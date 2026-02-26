@@ -100,7 +100,7 @@ obc <- dplyr::bind_rows(obc_ip, obc_deliv, obc_ae, obc_op) |>
   dplyr::mutate(cagr =(principal / baseline) ^ (1/fc_period_obc) - 1,
                 cagr = dplyr::na_if(cagr, Inf))
 
-soc_obc <- dplyr::full_join(soc, obc,
+soc_obc_data <- dplyr::full_join(soc, obc,
                             by = dplyr::join_by(pod, measure),
                             suffix = c(".soc", ".obc")) |>
 
@@ -134,6 +134,6 @@ soc_obc <- dplyr::full_join(soc, obc,
   ) |>
   dplyr::filter(!is.na(sort))
 
-soc_obc
+soc_obc_data
 
 }
