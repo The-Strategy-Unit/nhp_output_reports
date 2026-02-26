@@ -93,7 +93,10 @@ fc_period_soc <- get_years(r_final_report_ndg2)
 fc_period_obc <- get_years(r_validation_report_ndg2)
 
 # get the soc obc data
-soc_obc <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+soc_obc_data <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+
+# get the soc obc table
+soc_obc_table <- get_soc_obc_table(soc_obc_data)
 
 # get the cagr data
 cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
@@ -102,7 +105,7 @@ cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report
 total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
 
 # get the p90 table
-p90_table <-get_p90_table(soc_obc)
+p90_table <-get_p90_table(soc_obc_data)
 
 # get the bespoke s curve charts
 save_bespoke_ecdf_plots <- get_bespoke_ecdf (r_final_report_ndg2, r_validation_report_ndg2, site_codes)
