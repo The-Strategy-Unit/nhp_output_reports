@@ -134,6 +134,6 @@ soc_obc <- dplyr::full_join(soc, obc,
   ) |>
   dplyr::filter(!is.na(sort))
 
-
+soc_obc
 
 }
