@@ -51,7 +51,6 @@ obc_ip <- get_baseline_and_projections(obc_scenario)|>
   dplyr::summarise(baseline = sum(baseline),
                    principal = sum(principal),
                    p90 = sum(upr_ci)) |>
-  dplyr::filter(pod != "ip_regular_day_attender") |>
   dplyr::ungroup()
 
 
@@ -110,6 +109,7 @@ soc_obc_data <- dplyr::full_join(soc, obc,
   dplyr::mutate(heading = dplyr::case_when(
     startsWith(pod, "ip_elective_admission") ~ paste("Elective inpatient", measure),
     startsWith(pod, "ip_elective_daycase") ~ paste("Daycase", measure),
+    startsWith(pod, "ip_regular_day_attender") ~ paste("Regular Day Attender", measure),
     startsWith(pod, "ip_non-elective") ~ paste("Non-elective", measure),
     startsWith(pod, "ip_maternity") ~ paste("Maternity", measure),
     startsWith(pod, "delivery") ~ paste("Delivery", measure),
@@ -122,15 +122,16 @@ soc_obc_data <- dplyr::full_join(soc, obc,
       "Non-elective admissions" ~ 1,
       "Non-elective beddays" ~ 2,
       "Daycase admissions" ~ 3,
-      "Elective inpatient admissions" ~ 4,
-      "Elective inpatient beddays" ~ 5,
-      "Maternity admissions" ~ 6,
-      "Maternity beddays" ~ 7,
-      "Delivery admissions" ~ 8,
-      "Delivery beddays" ~ 9,
-      "A&E arrivals (type 1 & 3)" ~ 10,
-      "SDEC attendances (type 5)" ~ 11,
-      "Outpatient attendances" ~ 12)
+      "Regular Day Attender admissions" ~ 4,
+      "Elective inpatient admissions" ~ 5,
+      "Elective inpatient beddays" ~ 6,
+      "Maternity admissions" ~ 7,
+      "Maternity beddays" ~ 8,
+      "Delivery admissions" ~ 9,
+      "Delivery beddays" ~ 10,
+      "A&E arrivals (type 1 & 3)" ~ 11,
+      "SDEC attendances (type 5)" ~ 12,
+      "Outpatient attendances" ~ 13)
   ) |>
   dplyr::filter(!is.na(sort))
 

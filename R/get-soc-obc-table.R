@@ -35,12 +35,23 @@ tbl_soc_obc <- soc_obc_data |>
     principal.obc = "Principal",
     cagr.obc = "CAGR (%)"
   ) |>
-
+  gt::tab_style_body(
+    style = gt::cell_text(style = "italic"),
+    targets = "row",
+    values = c("Delivery admissions", "Delivery beddays"),
+    extents = c("body", "stub")
+  ) |>
   # footnote not working
   gt::tab_footnote(
     footnote = "Not available in SOC scenario",
     locations = gt::cells_stub(
-      c("Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
+      c("Regular Day Attender admissions", "Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
+    )
+  ) |>
+  gt::tab_footnote(
+    footnote = "Deliveries are a subset of maternity.",
+    locations = gt::cells_stub(
+      c("Delivery admissions", "Delivery beddays")
     )
   ) |>
   gt::opt_footnote_marks(marks = "standard") |>
