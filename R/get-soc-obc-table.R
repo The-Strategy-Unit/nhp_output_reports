@@ -54,7 +54,13 @@ tbl_soc_obc <- soc_obc_data |>
       c("Delivery admissions", "Delivery beddays")
     )
   ) |>
-  gt::opt_footnote_marks(marks = "standard") |>
+  gt::tab_footnote(
+    footnote = "Activity assumed to be SDEC due to TPMAs. Care should be taken in interpretation as recording of activity is in flux.",
+    locations = gt::cells_stub(
+      c("SDEC attendances (type 5)")
+    )
+  ) |>
+  gt::opt_footnote_marks(marks = "numbers") |>
   gt_theme()
 
 if(soc_major_version==1){

@@ -23,15 +23,26 @@ tbl_soc_obc_p90 <- soc_obc |>
     obc_p90_var = "OBC P90 variation from SOC PP"
 
   ) |>
-
+  gt::tab_style_body(
+    style = gt::cell_text(style = "italic"),
+    targets = "row",
+    values = c("Delivery admissions", "Delivery beddays"),
+    extents = c("body", "stub")
+  ) |>
   # footnote not working
   gt::tab_footnote(
     footnote = "Not available in SOC scenario",
     locations = gt::cells_stub(
-      c("Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
+      c("Regular Day Attender admissions", "Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
     )
   ) |>
-  gt::opt_footnote_marks(marks = "standard") |>
+  gt::tab_footnote(
+    footnote = "Deliveries are a subset of maternity.",
+    locations = gt::cells_stub(
+      c("Delivery admissions", "Delivery beddays")
+    )
+  ) |>
+  gt::opt_footnote_marks(marks = "numbers") |>
   gt_theme()
 
 tbl_soc_obc_p90
