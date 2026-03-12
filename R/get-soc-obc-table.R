@@ -1,6 +1,6 @@
 
 
-get_soc_obc_table <- function(soc_obc_data)
+get_soc_obc_table <- function(soc_obc_data,soc_major_version)
 {
 #### build table comparing SOC with OBC ---
 tbl_soc_obc <- soc_obc_data |>
@@ -57,5 +57,12 @@ tbl_soc_obc <- soc_obc_data |>
   gt::opt_footnote_marks(marks = "standard") |>
   gt_theme()
 
+if(soc_major_version==1){
+  tbl_soc_obc <-
+  tbl_soc_obc |>
+  gt::tab_footnote(
+    footnote = "Note: In v1 Maternity Growth...",
+
+  )}
 tbl_soc_obc
 }
