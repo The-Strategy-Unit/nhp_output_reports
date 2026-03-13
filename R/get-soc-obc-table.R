@@ -63,12 +63,14 @@ tbl_soc_obc <- soc_obc_data |>
   gt::opt_footnote_marks(marks = "numbers") |>
   gt_theme()
 
-if(soc_major_version==1){
-  tbl_soc_obc <-
-  tbl_soc_obc |>
-  gt::tab_footnote(
-    footnote = "Note: In v1 Maternity Growth...",
+# Code awaiting detail on the footnote when received
+#if(soc_major_version==1){
+#  tbl_soc_obc <-
+#  tbl_soc_obc |>
+#  gt::tab_footnote(
+#    footnote = "Note: In v1 Maternity Growth...",
 
-  )}
+#  )}
+
 tbl_soc_obc
 }
