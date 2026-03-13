@@ -92,17 +92,29 @@ get_years <- function(scenario){
 fc_period_soc <- get_years(r_final_report_ndg2)
 fc_period_obc <- get_years(r_validation_report_ndg2)
 
+get_soc_version <- function(scenario){
+  soc_major_version <- as.numeric(
+    substr(scenario[["params"]][["app_version"]],2,2))
+  soc_major_version
+}
+
+soc_major_version <- get_soc_version(r_final_report_ndg2)
+
 # get the soc obc data
 soc_obc_data <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
 
 # get the soc obc table
-soc_obc_table <- get_soc_obc_table(soc_obc_data)
+soc_obc_table <- get_soc_obc_table(soc_obc_data,soc_major_version)
 
 # get the cagr data
 cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
 
-# get the total mitigation data
+#get the total mitigation table
 total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+
+# get the mitigation data
+
+tpma_impact_table <- get_tpma_impact_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
 
 # get the p90 table
 p90_table <-get_p90_table(soc_obc_data)
@@ -115,3 +127,7 @@ ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_nd
 
 # get the additional risk table for opening date scenario
 ecdf_vals_open <- get_bespoke_ecdf_values(r_final_report_ndg2, r_opening_date_scenario, site_codes)
+
+
+
+
