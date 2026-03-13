@@ -17,8 +17,11 @@ get_impact_data <- function(soc_scenario, obc_scenario, site_codes){
 
   impact <- dplyr::full_join(impact_soc, impact_obc) |>
     # remove entries with no mitigation
-    dplyr::filter(impact_soc != 0 | impact_obc != 0)
+    dplyr::filter(impact_soc != 0 | impact_obc != 0) |>
+    # new line added to remove admissions rows since already represented as beddays for ip
+    dplyr::filter(measure != "admissions")
 
   impact
 
 }
+
