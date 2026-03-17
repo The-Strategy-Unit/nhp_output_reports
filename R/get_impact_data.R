@@ -2,7 +2,7 @@ get_impact_data <- function(soc_scenario, obc_scenario, site_codes){
 
   # estimated impact PP
   impact_soc <- get_stepcounts(soc_scenario) |>
-    dplyr::filter(change_factor == "activity_avoidance" | change_factor == "efficiencies") |>
+    dplyr::filter(change_factor %in% c("activity_avoidance", "efficiencies")) |>
     filter_sites_conditionally(site_codes$ip) |>
     dplyr::group_by(strategy, activity_type, measure) |>
     dplyr::summarise(impact_soc = sum(value)) |>
