@@ -4,7 +4,7 @@
 ## comparison of estimated mitigated activity
 purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
-scheme_code="XYZ" # add scheme_code for the scenario here to replace XYZ
+scheme_code = "XYZ" # add scheme_code for the scenario here to replace XYZ
 # If the scheme has site codes already recorded or if all sites are required then set site_codes=NULL, otherwise set sites manually
 site_codes = NULL
 if (is.null(site_codes)) site_codes <- get_sites(scheme_code)
@@ -94,7 +94,10 @@ fc_period_obc <- get_years(r_validation_report_ndg2)
 
 get_soc_version <- function(scenario){
   soc_major_version <- as.numeric(
-    substr(scenario[["params"]][["app_version"]],2,2))
+    stringr::str_extract(
+      scenario[["params"]][["app_version"]],
+      "(?<=v)\\d(?=\\.\\d)" # '4' in e.g. v4.1
+    )
   soc_major_version
 }
 

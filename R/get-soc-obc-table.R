@@ -1,6 +1,6 @@
 
 
-get_soc_obc_table <- function(soc_obc_data)
+get_soc_obc_table <- function(soc_obc_data,soc_major_version)
 {
 #### build table comparing SOC with OBC ---
 tbl_soc_obc <- soc_obc_data |>
@@ -35,16 +35,42 @@ tbl_soc_obc <- soc_obc_data |>
     principal.obc = "Principal",
     cagr.obc = "CAGR (%)"
   ) |>
-
+  gt::tab_style_body(
+    style = gt::cell_text(style = "italic"),
+    targets = "row",
+    values = c("Delivery admissions", "Delivery beddays"),
+    extents = c("body", "stub")
+  ) |>
   # footnote not working
   gt::tab_footnote(
     footnote = "Not available in SOC scenario",
     locations = gt::cells_stub(
-      c("Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
+      c("Regular Day Attender admissions", "Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
     )
   ) |>
-  gt::opt_footnote_marks(marks = "standard") |>
+  gt::tab_footnote(
+    footnote = "Deliveries are a subset of maternity.",
+    locations = gt::cells_stub(
+      c("Delivery admissions", "Delivery beddays")
+    )
+  ) |>
+  gt::tab_footnote(
+    footnote = "Activity assumed to be SDEC due to TPMAs. Care should be taken in interpretation as recording of activity is in flux.",
+    locations = gt::cells_stub(
+      c("SDEC attendances (type 5)")
+    )
+  ) |>
+  gt::opt_footnote_marks(marks = "numbers") |>
   gt_theme()
+
+# Code awaiting detail on the footnote when received
+#if(soc_major_version==1){
+#  tbl_soc_obc <-
+#  tbl_soc_obc |>
+#  gt::tab_footnote(
+#    footnote = "Note: In v1 Maternity Growth...",
+
+#  )}
 
 tbl_soc_obc
 }
