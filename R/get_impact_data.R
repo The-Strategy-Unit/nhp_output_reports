@@ -7,14 +7,15 @@ get_impact_data <- function(soc_scenario, obc_scenario, site_codes){
     dplyr::summarise(
       impact_soc = sum(value),
       .by = c(strategy, activity_type, measure)
-    ) |>
+    )
 
   impact_obc <- get_stepcounts(obc_scenario) |>
-    dplyr::filter(change_factor == "activity_avoidance" | change_factor == "efficiencies") |>
+    dplyr::filter(change_factor %in% c("activity_avoidance", "efficiencies")) |>
     filter_sites_conditionally(site_codes$ip) |>
-    dplyr::group_by(strategy, activity_type, measure) |>
-    dplyr::summarise(impact_obc = sum(value)) |>
-    dplyr::ungroup()
+    dplyr::summarise(
+      impact_soc = sum(value),
+      .by = c(strategy, activity_type, measure)
+    )
 
   impact <- dplyr::full_join(impact_soc, impact_obc) |>
     # remove entries with no mitigation
