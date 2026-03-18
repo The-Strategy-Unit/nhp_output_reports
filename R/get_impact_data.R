@@ -13,7 +13,7 @@ get_impact_data <- function(soc_scenario, obc_scenario, site_codes){
     dplyr::filter(change_factor %in% c("activity_avoidance", "efficiencies")) |>
     filter_sites_conditionally(site_codes$ip) |>
     dplyr::summarise(
-      impact_soc = sum(value),
+      impact_obc = sum(value),
       .by = c(strategy, activity_type, measure)
     )
 
