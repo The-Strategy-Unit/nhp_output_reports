@@ -97,7 +97,7 @@ get_soc_version <- function(scenario){
     stringr::str_extract(
       scenario[["params"]][["app_version"]],
       "(?<=v)\\d(?=\\.\\d)" # '4' in e.g. v4.1
-    )
+    ))
   soc_major_version
 }
 
@@ -130,7 +130,3 @@ ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_nd
 
 # get the additional risk table for opening date scenario
 ecdf_vals_open <- get_bespoke_ecdf_values(r_final_report_ndg2, r_opening_date_scenario, site_codes)
-
-
-
-
