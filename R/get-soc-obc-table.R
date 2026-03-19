@@ -45,7 +45,6 @@ get_soc_obc_table <- function(soc_obc_data,soc_major_version,scenario_name_1,sce
       values = c("Delivery admissions", "Delivery beddays"),
       extents = c("body", "stub")
     ) |>
-    # footnote not working
     gt::tab_footnote(
       footnote = "Not available in earlier scenario",
       locations = gt::cells_stub(
