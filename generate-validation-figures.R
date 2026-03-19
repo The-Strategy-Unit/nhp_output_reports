@@ -6,6 +6,9 @@ purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
 scheme_code = "XYZ" # add scheme_code for the scenario here to replace XYZ
 # If the scheme has site codes already recorded or if all sites are required then set site_codes=NULL, otherwise set sites manually
+scenario_name_1 <- "SOC"
+scenario_name_2 <- "OBC"
+
 site_codes = NULL
 if (is.null(site_codes)) site_codes <- get_sites(scheme_code)
 # site_codes = list( # change each element (each can be NULL to mean 'all')
@@ -107,20 +110,20 @@ soc_major_version <- get_soc_version(r_final_report_ndg2)
 soc_obc_data <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
 
 # get the soc obc table
-soc_obc_table <- get_soc_obc_table(soc_obc_data,soc_major_version)
+soc_obc_table <- get_soc_obc_table(soc_obc_data,soc_major_version,scenario_name_1,scenario_name_2)
 
 # get the cagr data
-cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
 
 #get the total mitigation table
-total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
 
 # get the mitigation data
 
-tpma_impact_table <- get_tpma_impact_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+tpma_impact_table <- get_tpma_impact_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
 
 # get the p90 table
-p90_table <-get_p90_table(soc_obc_data)
+p90_table <-get_p90_table(soc_obc_data,scenario_name_1,scenario_name_2)
 
 # get the bespoke s curve charts
 save_bespoke_ecdf_plots <- get_bespoke_ecdf (r_final_report_ndg2, r_validation_report_ndg2, site_codes)

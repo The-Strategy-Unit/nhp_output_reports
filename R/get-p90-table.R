@@ -1,5 +1,5 @@
 
-get_p90_table <- function(soc_obc){
+get_p90_table <- function(soc_obc,scenario_name_1,scenario_name_2){
 # pulls 90% CI from OBC and compares with SOC Principal Projection
 
 tbl_soc_obc_p90 <- soc_obc |>
@@ -16,11 +16,11 @@ tbl_soc_obc_p90 <- soc_obc |>
   ) |>
 
   gt::cols_label(
-    principal.soc = "SOC Principal",
-    principal.obc = "OBC Principal",
-    obc_pp_var = "OBC PP variation from SOC PP",
-    p90 = "OBC P90",
-    obc_p90_var = "OBC P90 variation from SOC PP"
+    principal.soc = glue::glue("{scenario_name_1} Principal"),
+    principal.obc = glue::glue("{scenario_name_2} Principal"),
+    obc_pp_var = glue::glue("{scenario_name_2} PP variation from {scenario_name_1} PP"),
+    p90 = glue::glue("{scenario_name_2} P90"),
+    obc_p90_var = glue::glue("{scenario_name_2} P90 variation from {scenario_name_1} PP")
 
   ) |>
   gt::tab_style_body(
