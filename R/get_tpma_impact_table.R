@@ -59,10 +59,10 @@ get_tpma_impact_table <- function(soc_scenario,obc_scenario, site_codes,scenario
 
 
   #create table titles
-  range_soc_label = glue::glue(scenario_name_1, " output model assumption")
-  impact_soc_label = glue::glue(scenario_name_1, " estimated impact PP (beddays, attendances or appointments)")
-  range_obc_label = glue::glue("Current model (",scenario_name_2,")")
-  impact_obc_label = glue::glue(scenario_name_2, " estimated impact PP (beddays, attendances or appointments)")
+  range_soc_label = glue::glue("{scenario_name_1} output model assumption")
+  impact_soc_label = glue::glue("{scenario_name_1} estimated impact PP (beddays, attendances or appointments)")
+  range_obc_label = glue::glue("Current model ({scenario_name_2})")
+  impact_obc_label = glue::glue("{scenario_name_2} estimated impact PP (beddays, attendances or appointments)")
 
 
   # build table, rows by A&E, IP, OP.
