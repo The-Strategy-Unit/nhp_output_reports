@@ -24,27 +24,39 @@ tpma <- dplyr::left_join(impact, tpma, by = dplyr::join_by(activity_type, strate
 sdec_veryhigh <-tpma |>
   dplyr::filter(mitigator_name=="Same Day Emergency Care (Very High Potential)" & measure == "beddays") |>
   dplyr::pull(range_obc)
+if (length(sdec_veryhigh)!=0){
+  tpma <- tpma |>
+    dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Very High Potential)" & measure != "beddays" ~ sdec_veryhigh,
+                                               .default = range_obc))
+}
 
 sdec_high <- tpma |>
   dplyr::filter(mitigator_name=="Same Day Emergency Care (High Potential)" & measure == "beddays") |>
   dplyr::pull(range_obc)
+if (length(sdec_high)!=0){
+  tpma <- tpma |>
+    dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (High Potential)" & measure != "beddays" ~ sdec_high,
+                                               .default = range_obc))
+}
 
 sdec_moderate <- tpma |>
   dplyr::filter(mitigator_name=="Same Day Emergency Care (Moderate Potential)" & measure == "beddays") |>
   dplyr::pull(range_obc)
+if (length(sdec_moderate)!=0){
+  tpma <- tpma |>
+    dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Moderate Potential)" & measure != "beddays" ~ sdec_moderate,
+                                               .default = range_obc))
+}
 
 sdec_low <- tpma |>
   dplyr::filter(mitigator_name=="Same Day Emergency Care (Low Potential)" & measure == "beddays") |>
   dplyr::pull(range_obc)
+if (length(sdec_low)!=0){
+  tpma <- tpma |>
+    dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Low Potential)" & measure != "beddays" ~ sdec_low,
+                                               .default = range_obc))
+}
 
-
-tpma <- tpma |>
-  dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Very High Potential)" & measure != "beddays" ~ sdec_veryhigh,
-                                             mitigator_name=="Same Day Emergency Care (High Potential)" & measure != "beddays" ~ sdec_high,
-                                             mitigator_name=="Same Day Emergency Care (Moderate Potential)" & measure != "beddays" ~ sdec_moderate,
-                                             mitigator_name=="Same Day Emergency Care (Low Potential)" & measure != "beddays" ~ sdec_low,
-                                             .default = range_obc)
-  )
 
 # build table, rows by A&E, IP, OP.
 # order of sub-rows not as per the Word doc, can manually enter row-names in order if necessary
