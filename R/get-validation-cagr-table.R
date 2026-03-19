@@ -332,8 +332,8 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
 
   values_list_obc <- dplyr::bind_rows(values_list_obc, new_rows)
 
- soc_title <- glue::glue(scenario_name_1, " Principal CAGR (%)")
- obc_title <- glue::glue(scenario_name_2, " Principal CAGR (%)")
+ soc_title <- glue::glue("{scenario_name_1} Principal CAGR (%)")
+ obc_title <- glue::glue("{scenario_name_2} Principal CAGR (%)")
 
   ## combine to form table
   tbl_impact <- dplyr::full_join(values_list_soc, values_list_obc) |>
