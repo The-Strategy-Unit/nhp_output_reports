@@ -16,11 +16,11 @@ tbl_soc_obc_p90 <- soc_obc |>
   ) |>
 
   gt::cols_label(
-    principal.soc = glue::glue(scenario_name_1," Principal"),
-    principal.obc = glue::glue(scenario_name_2," Principal"),
-    obc_pp_var = glue::glue(scenario_name_2," PP variation from ",scenario_name_1," PP"),
-    p90 = glue::glue(scenario_name_2," P90"),
-    obc_p90_var = glue::glue(scenario_name_2," P90 variation from ",scenario_name_1," PP")
+    principal.soc = glue::glue("{scenario_name_1} Principal"),
+    principal.obc = glue::glue("{scenario_name_2} Principal"),
+    obc_pp_var = glue::glue("{scenario_name_2} PP variation from {scenario_name_1} PP"),
+    p90 = glue::glue("{scenario_name_2} P90"),
+    obc_p90_var = glue::glue("{scenario_name_2} P90 variation from {scenario_name_1} PP")
 
   ) |>
   gt::tab_style_body(
