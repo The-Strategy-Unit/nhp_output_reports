@@ -1,8 +1,7 @@
 
 
-get_soc_obc_table <- function(soc_obc_data,soc_major_version,scenario_name_1,scenario_name_2)
-{
-  #### build table comparing SOC with OBC ---
+get_soc_obc_table <- function(soc_obc_data,soc_numeric_version,scenario_name_1,scenario_name_2)
+{ #### build table comparing SOC with OBC ---
   tbl_soc_obc <- soc_obc_data |>
     dplyr::arrange(sort) |>
     dplyr::select(-c(measure, pod, sort, p90, obc_pp_var, obc_p90_var)) |>
@@ -46,9 +45,9 @@ get_soc_obc_table <- function(soc_obc_data,soc_major_version,scenario_name_1,sce
       extents = c("body", "stub")
     ) |>
     gt::tab_footnote(
-      footnote = "Not available in earlier scenario",
+      footnote = "Not available in SOC scenario",
       locations = gt::cells_stub(
-        c("Regular Day Attender admissions", "Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
+        c("Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
       )
     ) |>
     gt::tab_footnote(
@@ -67,13 +66,18 @@ get_soc_obc_table <- function(soc_obc_data,soc_major_version,scenario_name_1,sce
     gt_theme()
 
   # Code awaiting detail on the footnote when received
-  #if(soc_major_version==1){
-  #  tbl_soc_obc <-
-  #  tbl_soc_obc |>
   #  gt::tab_footnote(
-  #    footnote = "Note: In v1 Maternity Growth...",
+  #   footnote = "Note: In v1 Maternity Growth...",
 
-  #  )}
 
+  if(soc_numeric_version<2.2){
+    tbl_soc_obc <-
+    tbl_soc_obc |>
+      gt::tab_footnote(
+        footnote = "Not available in SOC scenario",
+        locations = gt::cells_stub(
+          c("Regular Day Attender admissions")
+        ))
+      }
   tbl_soc_obc
 }
