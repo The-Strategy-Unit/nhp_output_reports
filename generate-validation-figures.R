@@ -145,3 +145,19 @@ ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_nd
 
 # get the additional risk table for opening date scenario
 ecdf_vals_open <- get_bespoke_ecdf_values(r_final_report_ndg2, r_opening_date_scenario, site_codes)
+
+# get the details of the model runs featured in these outputs
+scenarios_used_details <-  tibble::tibble(
+  scheme = c(r_final_report_ndg2[["params"]][["dataset"]],r_validation_report_ndg2[["params"]][["dataset"]]),
+  scenario_name = c(scenario_name_1,scenario_name_2),
+  scenario = c(r_final_report_ndg2[["params"]][["scenario"]],r_validation_report_ndg2[["params"]][["scenario"]]),
+  run_stage = c(meta[[2]][[2]][["run_stage"]],meta[[3]][[2]][["run_stage"]]),
+  description = c("Final Report NDG2 Scenario", "Validation Report NDG2 Scenario"),
+  baseline = c(glue::glue(r_final_report_ndg2[["params"]][["start_year"]],"/",r_final_report_ndg2[["params"]][["start_year"]]+1),
+               glue::glue(r_validation_report_ndg2[["params"]][["start_year"]],"/",r_validation_report_ndg2[["params"]][["start_year"]]+1)),
+  horizon = c(glue::glue(r_final_report_ndg2[["params"]][["end_year"]],"/",r_final_report_ndg2[["params"]][["end_year"]]+1),
+              glue::glue(r_validation_report_ndg2[["params"]][["end_year"]],"/",r_validation_report_ndg2[["params"]][["end_year"]]+1)),
+  model_version = c(r_final_report_ndg2[["params"]][["app_version"]],r_validation_report_ndg2[["params"]][["app_version"]])
+)
+
+
