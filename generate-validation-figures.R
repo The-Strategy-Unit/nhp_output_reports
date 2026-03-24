@@ -96,21 +96,33 @@ fc_period_soc <- get_years(r_final_report_ndg2)
 fc_period_obc <- get_years(r_validation_report_ndg2)
 
 get_soc_version <- function(scenario){
+  soc_version <- scenario[["params"]][["app_version"]]
+  soc_version
+}
+
+get_soc_major_version <- function(soc_version){
   soc_major_version <- as.numeric(
     stringr::str_extract(
-      scenario[["params"]][["app_version"]],
+      soc_version,
       "(?<=v)\\d(?=\\.\\d)" # '4' in e.g. v4.1
     ))
   soc_major_version
 }
 
-soc_major_version <- get_soc_version(r_final_report_ndg2)
+get_numeric_soc_version <- function(soc_version){
+  as.numeric(sub(".", "", soc_version))
+}
+
+soc_version <- get_soc_version(r_final_report_ndg2)
+
+soc_major_version <- get_soc_major_version(soc_version)
+soc_numeric_version <- get_numeric_soc_version(soc_version)
 
 # get the soc obc data
 soc_obc_data <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
 
 # get the soc obc table
-soc_obc_table <- get_soc_obc_table(soc_obc_data,soc_major_version,scenario_name_1,scenario_name_2)
+soc_obc_table <- get_soc_obc_table(soc_obc_data,soc_numeric_version,scenario_name_1,scenario_name_2)
 
 # get the cagr data
 cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
@@ -123,7 +135,7 @@ total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation
 tpma_impact_table <- get_tpma_impact_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
 
 # get the p90 table
-p90_table <-get_p90_table(soc_obc_data,scenario_name_1,scenario_name_2)
+p90_table <-get_p90_table(soc_obc_data,soc_numeric_version,scenario_name_1,scenario_name_2)
 
 # get the bespoke s curve charts
 save_bespoke_ecdf_plots <- get_bespoke_ecdf (r_final_report_ndg2, r_validation_report_ndg2, site_codes)
