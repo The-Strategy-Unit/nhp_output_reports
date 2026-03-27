@@ -178,7 +178,7 @@ get_bespoke_ecdf <- function(soc_scenario, obc_scenario, site_codes){
     ~activity_type , ~pod                                          , ~measure                  ,
     "inpatients"   , "ip_non-elective_admission"                   , "admissions"              ,
     "inpatients"   , "ip_non-elective_admission"                   , "beddays"                 ,
-    "inpatients"   , "ip_elective_daycase"                         , "admissions"              ,
+    "inpatients"   , c("ip_elective_daycase","ip_regular_day_attender"), "admissions"          ,
     "inpatients"   , "ip_elective_admission"                       , "admissions"              ,
     "inpatients"   , "ip_elective_admission"                       , "beddays"                 ,
     "inpatients"   , "ip_maternity_admission"                      , "admissions"              ,
