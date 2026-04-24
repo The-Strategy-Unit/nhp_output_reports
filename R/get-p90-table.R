@@ -45,8 +45,8 @@ tbl_soc_obc_p90 <- soc_obc |>
   gt_theme()
 
 if(soc_numeric_version<2.2){
-  tbl_soc_obc <-
-    tbl_soc_obc |>
+  tbl_soc_obc_p90 <-
+    tbl_soc_obc_p90 |>
     gt::tab_footnote(
       footnote = "Not available in SOC scenario",
       locations = gt::cells_stub(

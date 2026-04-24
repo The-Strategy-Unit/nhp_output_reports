@@ -27,7 +27,6 @@ final_report_ndg2 <- result_sets |>
   dplyr::filter(dataset==scheme_code) |>
   dplyr::filter(run_stage=="final_report_ndg2")
 
-# we dont have any validation scenarios yet so just temporarily using addendum report scenarios so the code runs
 validation_report_ndg2 <- result_sets |>
   dplyr::filter(dataset==scheme_code) |>
   dplyr::filter(run_stage=="validation_report_ndg2")
@@ -43,11 +42,6 @@ selected_results_list <- list(final_report_ndg1,
                               validation_report_ndg2,
                               validation_report_ndg3,
                               opening_date_scenario)
-
-
-# fudge the secondary scenario as the primary scenario . Since secondary
-# scenario is neither available for the special runs, nor needed, but we want to
-# re-use code that assumes it exists then just ignore the secondary scenario
 
 
 get_final_run_metadata_special <- function(scheme_code, selected_result_set) {
@@ -83,7 +77,6 @@ r_opening_date_scenario <- meta[[5]]$metadata_primary |>
   dplyr::pull(file) |> get_nhp_results(file = _)
 
 # in CAGR calc, assumes this raises to power of forecast period? Need to account for difference if using opening scenario
-# initially use 18 as in sample data calcs.
 # time in years from baseline (23/24) to horizon (41/42 for usual)
 
 get_years <- function(scenario){
@@ -131,14 +124,16 @@ cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report
 total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
 
 # get the mitigation data
-
 tpma_impact_table <- get_tpma_impact_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
 
 # get the p90 table
 p90_table <-get_p90_table(soc_obc_data,soc_numeric_version,scenario_name_1,scenario_name_2)
 
+# get soc obc obc_opening table for export to excel
+save_soc_obc_open_data <- get_soc_obc_open(r_final_report_ndg2, r_validation_report_ndg2, r_opening_date_scenario, site_codes)
+
 # get the bespoke s curve charts
-save_bespoke_ecdf_plots <- get_bespoke_ecdf (r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+save_bespoke_ecdf_plots <- get_bespoke_ecdf(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
 
 # get the additional risk table
 ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
