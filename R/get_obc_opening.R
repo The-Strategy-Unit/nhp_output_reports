@@ -104,7 +104,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
 
 
   # Code to get A&E and SDEC from default tab
-  obc_ae <- get_baseline_and_projections(obc_scenario)|>
+  obc_ae <- get_baseline_and_projections(obc_open_scenario)|>
     dplyr::filter(measure=="ambulance" | measure == "walk-in") |>
     filter_sites_conditionally(site_codes$aae) |>
     dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
@@ -116,7 +116,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
     dplyr::ungroup()
 
   # code to get OP activity from defaults tab
-  obc_op <- get_baseline_and_projections(obc_scenario)|>
+  obc_op <- get_baseline_and_projections(obc_open_scenario)|>
     dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
     filter_sites_conditionally(site_codes$op) |>
     dplyr::mutate(pod = "op_outpatients") |>
@@ -126,7 +126,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
     dplyr::ungroup()
 
   # code to get delivery activity from delivery_episode_in_spell tab
-  obc_deliv <- obc_scenario[["results"]][["delivery_episode_in_spell"]]|>
+  obc_deliv <- obc_open_scenario[["results"]][["delivery_episode_in_spell"]]|>
     dplyr::filter(measure=="admissions" | measure == "beddays") |>
     filter_sites_conditionally(site_codes$ip) |>
     dplyr::mutate(pod = "delivery") |>
@@ -137,7 +137,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
 
 
 
-  # tidy obc
+  # tidy obc_open
   obc_open <- dplyr::bind_rows(obc_ip, obc_deliv, obc_ae, obc_op)
 
   soc_obc_open <-
