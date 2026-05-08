@@ -1,4 +1,8 @@
 get_soc_obc <- function (soc_scenario, obc_scenario, site_codes){
+
+  # get baseline year for CAGR calculation
+  soc_base_yr <- soc_scenario[["params"]][["start_year"]]
+
 #### SOC figures from final report ---
 # Sample code to get the outputs from the default tab of the download spreadsheet
 soc_ip <- get_baseline_and_projections(soc_scenario)|>
@@ -37,9 +41,15 @@ soc_op <- get_baseline_and_projections(soc_scenario)|>
 # combine all soc
 
 # need to add in Covid adjustment to CAGR calc but only if baseline is 2019/20
-soc <- dplyr::bind_rows(soc_ip, soc_ae, soc_op) |>
+soc <- dplyr::bind_rows(soc_ip, soc_ae, soc_op)
+
+if (soc_base_yr == 2019) {
+  soc <- soc |>
+    dplyr::left_join(get_covid_soc_cagr(r_final_report_ndg2, site_codes))
+} else {
   dplyr::mutate(cagr = (principal / baseline) ^ (1/fc_period_soc) - 1,
                 cagr = dplyr::na_if(cagr, Inf))
+}
 
 
 #### OBC figures from validation report ---
