@@ -47,6 +47,7 @@ if (soc_base_yr == 2019) {
   soc <- soc |>
     dplyr::left_join(get_covid_soc_cagr(r_final_report_ndg2, site_codes))
 } else {
+  soc <- soc |>
   dplyr::mutate(cagr = (principal / baseline) ^ (1/fc_period_soc) - 1,
                 cagr = dplyr::na_if(cagr, Inf))
 }
