@@ -12,10 +12,11 @@ get_tpma_data <- function(r_trust){
     dplyr::mutate(high = round(100 * (1 - high), 0),
                   low = round(100 * (1 - low), 0))  |>
     # remove entries with no mitigation
-    dplyr::filter(low != 0 & high != 0) |>
+    #dplyr::filter(low != 0 & high != 0) |>
     dplyr::mutate(range = paste0(low, "-", high,"%"),
                   type = "activity_avoidance") |>
-    dplyr::select(type, activity_type, strategy, range)
+    dplyr::select(type, activity_type, strategy, range) |>
+    dplyr::filter(range != "0-0%")
 
   df_eff <- r_trust[["params"]][["efficiencies"]] |>
     tibble::enframe(name = "activity_type", value = "int") |>
@@ -29,10 +30,14 @@ get_tpma_data <- function(r_trust){
     dplyr::mutate(high = round(100 * (1 - high), 0),
                   low = round(100 * (1 - low), 0)) |>
     # remove entries with no mitigation
-    dplyr::filter(low != 0 & high != 0) |>
+   # dplyr::filter(low != 0 & high != 0) |>
     dplyr::mutate(range = paste0(low, "-", high,"%"),
                   type = "efficiencies") |>
-    dplyr::select(type, activity_type, strategy, range)
+    dplyr::select(type, activity_type, strategy, range) |>
+    dplyr::filter(range != "0-0%")
+
 
   df <- dplyr::bind_rows(df_act, df_eff)
+
+  df
 }
