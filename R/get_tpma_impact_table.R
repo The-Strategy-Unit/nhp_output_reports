@@ -22,38 +22,38 @@ get_tpma_impact_table <- function(soc_scenario,obc_scenario, site_codes,scenario
 
   # This section is to force the range onto the arrivals impact for these mitigators
   sdec_veryhigh <-tpma |>
-    dplyr::filter(mitigator_name=="Same Day Emergency Care (Very High Potential)" & measure == "beddays") |>
+    dplyr::filter(mitigator_name=="Same Day Emergency Care (Very High Potential) (IP-EF-031)" & measure == "beddays") |>
     dplyr::pull(range_obc)
   if (length(sdec_veryhigh)!=0){
     tpma <- tpma |>
-      dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Very High Potential)" & measure != "beddays" ~ sdec_veryhigh,
+      dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Very High Potential) (IP-EF-031)" & measure != "beddays" ~ sdec_veryhigh,
                                                  .default = range_obc))
   }
 
   sdec_high <- tpma |>
-    dplyr::filter(mitigator_name=="Same Day Emergency Care (High Potential)" & measure == "beddays") |>
+    dplyr::filter(mitigator_name=="Same Day Emergency Care (High Potential) (IP-EF-030)" & measure == "beddays") |>
     dplyr::pull(range_obc)
   if (length(sdec_high)!=0){
     tpma <- tpma |>
-      dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (High Potential)" & measure != "beddays" ~ sdec_high,
+      dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (High Potential) (IP-EF-030)" & measure != "beddays" ~ sdec_high,
                                                  .default = range_obc))
   }
 
   sdec_moderate <- tpma |>
-    dplyr::filter(mitigator_name=="Same Day Emergency Care (Moderate Potential)" & measure == "beddays") |>
+    dplyr::filter(mitigator_name=="Same Day Emergency Care (Moderate Potential) (IP-EF-029)" & measure == "beddays") |>
     dplyr::pull(range_obc)
   if (length(sdec_moderate)!=0){
     tpma <- tpma |>
-      dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Moderate Potential)" & measure != "beddays" ~ sdec_moderate,
+      dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Moderate Potential) (IP-EF-029)" & measure != "beddays" ~ sdec_moderate,
                                                  .default = range_obc))
   }
 
   sdec_low <- tpma |>
-    dplyr::filter(mitigator_name=="Same Day Emergency Care (Low Potential)" & measure == "beddays") |>
+    dplyr::filter(mitigator_name=="Same Day Emergency Care (Low Potential) (IP-EF-028)" & measure == "beddays") |>
     dplyr::pull(range_obc)
   if (length(sdec_low)!=0){
     tpma <- tpma |>
-      dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Low Potential)" & measure != "beddays" ~ sdec_low,
+      dplyr::mutate(range_obc = dplyr::case_when(mitigator_name=="Same Day Emergency Care (Low Potential) (IP-EF-028)" & measure != "beddays" ~ sdec_low,
                                                  .default = range_obc))
   }
 
