@@ -273,7 +273,7 @@ prepare_all_activity_distribution_plots <- function(r, site_codes) {
 
 }
 
-read_mitigators <- function(remove_codes = TRUE) {
+read_mitigators <- function(remove_codes = FALSE) {
 
   mitigators <- "data/mitigators.json" |>
     jsonlite::read_json(simplifyVector = TRUE) |>
