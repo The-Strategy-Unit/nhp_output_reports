@@ -414,6 +414,9 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
                "Total net growth - IP admissions",
                "total net growth - IP beddays")
     ) |>
+    gt::tab_source_note(
+      source_note = "Note: CAGR calculations use baseline values adjusted for any supplied baseline and COVID adjustments; these adjustments are not displayed in the baseline column."
+    ) |>
     gt::cols_label(
        soc = soc_title,
        obc = obc_title
