@@ -44,6 +44,13 @@ generate_values_list <- function(
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
+  baseline_adjustment <- trust |>
+    dplyr::filter(measure == "admissions") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
   demographic_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
@@ -65,9 +72,9 @@ generate_values_list <- function(
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  item_1 <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adjustment) / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_1 <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
-  item_3 <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_3 <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + non_demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
   # Items 2 and 4 - bed days
@@ -78,6 +85,13 @@ generate_values_list <- function(
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
+  baseline_adjustment <- trust |>
+    dplyr::filter(measure == "beddays") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
   demographic_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
@@ -100,10 +114,10 @@ generate_values_list <- function(
     dplyr::pull()
 
 
-  item_2 <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adjustment) / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_2 <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
-  item_4 <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_4 <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + non_demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
   # items 5 and 6 come from variant 1 version of the model run - admissions and beddays
@@ -114,6 +128,13 @@ generate_values_list <- function(
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
+  baseline_adjustment_v1 <- trust_v1 |>
+    dplyr::filter(measure == "admissions") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
   non_demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
@@ -128,7 +149,7 @@ generate_values_list <- function(
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  item_5 <- janitor::round_half_up((((baseline_v1 + non_demographic_adjustment_v1 + covid_adjustment_v1) / (baseline_v1 + covid_adjustment_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_5 <- janitor::round_half_up((((baseline_v1 + baseline_adjustment_v1 + non_demographic_adjustment_v1 + covid_adjustment_v1) / (baseline_v1 + baseline_adjustment_v1 + covid_adjustment_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   baseline_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
@@ -137,6 +158,13 @@ generate_values_list <- function(
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
+  baseline_adjustment_v1 <- trust_v1 |>
+    dplyr::filter(measure == "beddays") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
   non_demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
@@ -152,7 +180,7 @@ generate_values_list <- function(
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  item_6 <- janitor::round_half_up((((baseline_v1 + non_demographic_adjustment_v1 + covid_adjustment_v1) / (baseline_v1 + covid_adjustment_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_6 <- janitor::round_half_up((((baseline_v1 + baseline_adjustment_v1 + non_demographic_adjustment_v1 + covid_adjustment_v1) / (baseline_v1 + baseline_adjustment_v1 + covid_adjustment_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
   # Figure 8.1
@@ -161,6 +189,13 @@ generate_values_list <- function(
   baseline_admissions <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment_admissions <- trust |>
+    dplyr::filter(measure == "admissions") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$ip) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -186,8 +221,8 @@ generate_values_list <- function(
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  item_7 <- janitor::round_half_up((((baseline_admissions + activity_avoidance_admissions + covid_adjustment_admissions) / (baseline_admissions + covid_adjustment_admissions))^(1 / years_to_forecast) - 1) * 100, digits = 2)
-  item_9 <- janitor::round_half_up((((baseline_admissions + efficiencies_admissions + covid_adjustment_admissions) / (baseline_admissions + covid_adjustment_admissions))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_7 <- janitor::round_half_up((((baseline_admissions + baseline_adjustment_admissions + activity_avoidance_admissions + covid_adjustment_admissions) / (baseline_admissions + baseline_adjustment_admissions +covid_adjustment_admissions))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_9 <- janitor::round_half_up((((baseline_admissions +baseline_adjustment_admissions + efficiencies_admissions + covid_adjustment_admissions) / (baseline_admissions + baseline_adjustment_admissions +covid_adjustment_admissions))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   # only display value when there is one. If it is 0 then the relevant mitigators weren't set and therefore it is N/A
 item_9 <- ifelse(item_9 == 0, "N/A", item_9)
@@ -196,6 +231,13 @@ item_9 <- ifelse(item_9 == 0, "N/A", item_9)
   baseline_beddays <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment_beddays <- trust |>
+    dplyr::filter(measure == "beddays") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$ip) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -222,18 +264,25 @@ item_9 <- ifelse(item_9 == 0, "N/A", item_9)
     dplyr::pull()
 
 
-  item_8 <- janitor::round_half_up((((baseline_beddays + activity_avoidance_beddays + covid_adjustment_beddays) / (baseline_beddays + covid_adjustment_beddays))^(1 / years_to_forecast) - 1) * 100, digits = 2)
-  item_10 <- janitor::round_half_up((((baseline_beddays + efficiencies_beddays + covid_adjustment_beddays) / (baseline_beddays + covid_adjustment_beddays))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_8 <- janitor::round_half_up((((baseline_beddays + baseline_adjustment_beddays + activity_avoidance_beddays + covid_adjustment_beddays) / (baseline_beddays + baseline_adjustment_beddays + covid_adjustment_beddays))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_10 <- janitor::round_half_up((((baseline_beddays + baseline_adjustment_beddays + efficiencies_beddays + covid_adjustment_beddays) / (baseline_beddays + baseline_adjustment_beddays + covid_adjustment_beddays))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
-  item_11 <- janitor::round_half_up((((baseline_admissions + activity_avoidance_admissions + efficiencies_admissions + covid_adjustment_admissions) / (baseline_admissions + covid_adjustment_admissions))^(1 / years_to_forecast) - 1) * 100, digits = 2)
-  item_12 <- janitor::round_half_up((((baseline_beddays + activity_avoidance_beddays + efficiencies_beddays + covid_adjustment_beddays) / (baseline_beddays + covid_adjustment_beddays))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_11 <- janitor::round_half_up((((baseline_admissions + baseline_adjustment_beddays + activity_avoidance_admissions + efficiencies_admissions + covid_adjustment_admissions) / (baseline_admissions + baseline_adjustment_beddays + covid_adjustment_admissions))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_12 <- janitor::round_half_up((((baseline_beddays + baseline_adjustment_beddays + activity_avoidance_beddays + efficiencies_beddays + covid_adjustment_beddays) / (baseline_beddays + baseline_adjustment_beddays + covid_adjustment_beddays))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
   # outpatients
   baseline_op <- trust |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$op) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment_op <- trust |>
+    dplyr::filter(activity_type == "op") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$op) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -261,17 +310,17 @@ item_9 <- ifelse(item_9 == 0, "N/A", item_9)
 
 
   # item13
-  item_13 <- janitor::round_half_up((((baseline_op + activity_avoidance_op + covid_adjustment_op) / (baseline_op + covid_adjustment_op))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_13 <- janitor::round_half_up((((baseline_op + baseline_adjustment_op + activity_avoidance_op + covid_adjustment_op) / (baseline_op + baseline_adjustment_op + covid_adjustment_op))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
   # item14
-  item_14 <- janitor::round_half_up((((baseline_op + efficiencies_op + covid_adjustment_op) / (baseline_op + covid_adjustment_op))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_14 <- janitor::round_half_up((((baseline_op + baseline_adjustment_op + efficiencies_op + covid_adjustment_op) / (baseline_op + baseline_adjustment_op + covid_adjustment_op))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   # only display value when there is one. If it is 0 then the relevant mitigators weren't set and therefore it is N/A
 item_14 <- ifelse(item_14 == 0, "N/A", item_14)
 
  # item15
-  item_15 <- janitor::round_half_up((((baseline_op + activity_avoidance_op + efficiencies_op + covid_adjustment_op) / (baseline_op + covid_adjustment_op))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_15 <- janitor::round_half_up((((baseline_op + baseline_adjustment_op + activity_avoidance_op + efficiencies_op + covid_adjustment_op) / (baseline_op + baseline_adjustment_op + covid_adjustment_op))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
 
@@ -280,6 +329,13 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline_ae <- trust |>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment_ae <- trust |>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$aae) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -306,16 +362,16 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::pull()
 
   # item16
-  item_16 <- janitor::round_half_up((((baseline_ae + activity_avoidance_ae + covid_adjustment_ae) / (baseline_ae + covid_adjustment_ae))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_16 <- janitor::round_half_up((((baseline_ae + baseline_adjustment_ae + activity_avoidance_ae + covid_adjustment_ae) / (baseline_ae + baseline_adjustment_ae + covid_adjustment_ae))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   # item17
-  item_17 <- janitor::round_half_up((((baseline_ae + efficiencies_ae + covid_adjustment_ae) / (baseline_ae + covid_adjustment_ae))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_17 <- janitor::round_half_up((((baseline_ae + baseline_adjustment_ae + efficiencies_ae + covid_adjustment_ae) / (baseline_ae + baseline_adjustment_ae + covid_adjustment_ae))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   # only display value when there is one. If it is 0 then the relevant mitigators weren't set and therefore it is N/A
   item_17 <- ifelse(item_17 == 0, "N/A", item_17)
 
   # item18
-  item_18 <- janitor::round_half_up((((baseline_ae + activity_avoidance_ae + efficiencies_ae + covid_adjustment_ae) / (baseline_ae + covid_adjustment_ae))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_18 <- janitor::round_half_up((((baseline_ae + baseline_adjustment_ae + activity_avoidance_ae + efficiencies_ae + covid_adjustment_ae) / (baseline_ae + baseline_adjustment_ae + covid_adjustment_ae))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   # items19
   # see below
@@ -534,6 +590,13 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
+  baseline_adjustment <- trust |>
+    dplyr::filter(measure == "admissions") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
   demographic_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
@@ -585,27 +648,34 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
 
 
 # item 28 is item_43 of the check values
- item_28_old <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+ item_28_old <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                         health_status_adjustment + covid_adjustment + waiting_list_adjustment + model_interaction_term)
-                                     / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+                                     / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
-  item_28 <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+  item_28 <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                       covid_adjustment)
-                                      / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+                                      / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   item_29 <- item_1
 
 # item_78 is the net growth version of item_28 which is gross growth
-  item_78 <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+  item_78 <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                          health_status_adjustment + covid_adjustment + waiting_list_adjustment + model_interaction_term +
                                          activity_avoidance_admissions + efficiencies_admissions)
-                                      / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+                                      / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   # items 30,31
 
   baseline <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment <- trust |>
+    dplyr::filter(measure == "beddays") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$ip) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -660,13 +730,13 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::pull()
 
   #item 30 is item_44 of the check values
-  item_30_old <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+  item_30_old <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                          health_status_adjustment + covid_adjustment + waiting_list_adjustment + model_interaction_term)
-                                      / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+                                      / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
-  item_30 <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+  item_30 <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                              covid_adjustment)
-                                          / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+                                          / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   item_31 <- item_2
 
@@ -674,10 +744,10 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   #                                        covid_adjustment + activity_avoidance_beddays + efficiencies_beddays)
   #                                     / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
-  item_79 <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+  item_79 <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                          health_status_adjustment + covid_adjustment + waiting_list_adjustment + model_interaction_term +
                                          activity_avoidance_beddays + efficiencies_beddays)
-                                      / (baseline + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+                                      / (baseline + baseline_adjustment + covid_adjustment))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   waiting_list_adjustment_ad <- trust |>
     dplyr::filter(measure == "admissions") |>
@@ -708,6 +778,13 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
+  baseline_adjustment_v1 <- trust_v1 |>
+    dplyr::filter(measure == "admissions") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
   demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
@@ -757,9 +834,9 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  item_32 <- janitor::round_half_up((((baseline_v1 + demographic_adjustment_v1 + non_demographic_adjustment_v1 + birth_adjustment_v1 +
+  item_32 <- janitor::round_half_up((((baseline_v1 + baseline_adjustment_v1 + demographic_adjustment_v1 + non_demographic_adjustment_v1 + birth_adjustment_v1 +
                                          health_status_adjustment_v1 + covid_adjustment_v1 + waiting_list_adjustment_v1 + model_interaction_term_v1)
-                                      / (baseline_v1 + covid_adjustment_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+                                      / (baseline_v1 + baseline_adjustment_v1 + covid_adjustment_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   baseline_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
@@ -768,6 +845,13 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
+  baseline_adjustment_v1 <- trust_v1 |>
+    dplyr::filter(measure == "beddays") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
   demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
@@ -817,9 +901,9 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  item_33 <- janitor::round_half_up((((baseline_v1 + demographic_adjustment_v1 + non_demographic_adjustment_v1 + birth_adjustment_v1 +
+  item_33 <- janitor::round_half_up((((baseline_v1 + baseline_adjustment_v1 + demographic_adjustment_v1 + non_demographic_adjustment_v1 + birth_adjustment_v1 +
                                          health_status_adjustment_v1 + covid_adjustment_v1 + waiting_list_adjustment_v1 + model_interaction_term_v1)
-                                      / (baseline_v1 + covid_adjustment_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+                                      / (baseline_v1 + baseline_adjustment_v1 + covid_adjustment_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
   # var2
@@ -832,6 +916,13 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline_admissions_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment_admissions_v1 <- trust_v1 |>
+    dplyr::filter(measure == "admissions") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$ip) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -857,11 +948,18 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  item_36 <- janitor::round_half_up((((baseline_admissions_v1 + activity_avoidance_admissions_v1 + covid_adjustment_admissions_v1) / (baseline_admissions_v1 + covid_adjustment_admissions_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_36 <- janitor::round_half_up((((baseline_admissions_v1 + baseline_adjustment_admissions_v1 + activity_avoidance_admissions_v1 + covid_adjustment_admissions_v1) / (baseline_admissions_v1 + baseline_adjustment_admissions_v1 + covid_adjustment_admissions_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   baseline_beddays_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$ip) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment_beddays_v1 <- trust_v1 |>
+    dplyr::filter(measure == "beddays") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$ip) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -887,7 +985,7 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  item_37 <- janitor::round_half_up((((baseline_beddays_v1 + activity_avoidance_beddays_v1 + covid_adjustment_beddays_v1) / (baseline_beddays_v1 + covid_adjustment_beddays_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_37 <- janitor::round_half_up((((baseline_beddays_v1 + baseline_adjustment_beddays_v1 + activity_avoidance_beddays_v1 + covid_adjustment_beddays_v1) / (baseline_beddays_v1 + baseline_adjustment_beddays_v1 + covid_adjustment_beddays_v1))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   # total los, avg los, cagr section
   # items 38,39,40,41,42, 43, 44, 45,46,47
@@ -904,17 +1002,17 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  item_38 <- (baseline + covid_adjustment) - (baseline_admissions + covid_adjustment_admissions)
-  item_39 <- janitor::round_half_up(item_38 / (baseline_admissions + covid_adjustment_admissions), digits = 2)
+  item_38 <- (baseline + baseline_adjustment + covid_adjustment) - (baseline_admissions + baseline_adjustment_admissions + covid_adjustment_admissions)
+  item_39 <- janitor::round_half_up(item_38 / (baseline_admissions + baseline_adjustment_admissions + covid_adjustment_admissions), digits = 2)
 
   item_40 <- janitor::round_half_up(((((beddays - admissions) / admissions) / item_39)^(1 / years_to_forecast) - 1) * 100, digits = 1)
   item_41 <- janitor::round_half_up((beddays - admissions), digits=2)
   item_42 <- janitor::round_half_up((beddays - admissions) / admissions, digits = 3)
   item_43 <- item_39
-  item_44 <- janitor::round_half_up((item_38 / (baseline_admissions + covid_adjustment_admissions)) * ((-0.50 / 100) + 1)^years_to_forecast, digits = 2)
-  item_45 <- janitor::round_half_up(((item_38 / (baseline_admissions + covid_adjustment_admissions)) * ((-0.50 / 100) + 1)^years_to_forecast) * 0.92, digits = 2)
+  item_44 <- janitor::round_half_up((item_38 / (baseline_admissions + baseline_adjustment_admissions + covid_adjustment_admissions)) * ((-0.50 / 100) + 1)^years_to_forecast, digits = 2)
+  item_45 <- janitor::round_half_up(((item_38 / (baseline_admissions + baseline_adjustment_admissions + covid_adjustment_admissions)) * ((-0.50 / 100) + 1)^years_to_forecast) * 0.92, digits = 2)
   item_46 <- item_45
-  item_47 <- janitor::round_half_up((((((item_38 / (baseline_admissions + covid_adjustment_admissions)) * ((-0.50 / 100) + 1)^years_to_forecast) * 0.92) / (item_38 / (baseline_admissions + covid_adjustment_admissions)))^(1 / years_to_forecast) - 1) * 100, digits = 1)
+  item_47 <- janitor::round_half_up((((((item_38 / (baseline_admissions + baseline_adjustment_admissions + covid_adjustment_admissions)) * ((-0.50 / 100) + 1)^years_to_forecast) * 0.92) / (item_38 / (baseline_admissions + covid_adjustment_admissions)))^(1 / years_to_forecast) - 1) * 100, digits = 1)
 
   repat <- trust |>
     dplyr::filter(change_factor == "repat") |>

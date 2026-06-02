@@ -4,7 +4,7 @@
 ## comparison of estimated mitigated activity
 purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
-scheme_code = "XYZ" # add scheme_code for the scenario here to replace XYZ
+scheme_code = "RAS" # add scheme_code for the scenario here to replace XYZ
 # If the scheme has site codes already recorded or if all sites are required then set site_codes=NULL, otherwise set sites manually
 scenario_name_1 <- "SOC"
 scenario_name_2 <- "OBC"
@@ -30,9 +30,11 @@ final_report_ndg2 <- result_sets |>
 validation_report_ndg2 <- result_sets |>
   dplyr::filter(dataset==scheme_code) |>
   dplyr::filter(run_stage=="validation_report_ndg2")
+
 validation_report_ndg3 <- result_sets |>
   dplyr::filter(dataset==scheme_code) |>
   dplyr::filter(run_stage=="validation_report_ndg3")
+
 opening_date_scenario <- result_sets |>
   dplyr::filter(dataset==scheme_code) |>
   dplyr::filter(run_stage=="validation_report_ndg2_opening")
@@ -52,7 +54,6 @@ get_final_run_metadata_special <- function(scheme_code, selected_result_set) {
   metadata_primary <- dplyr::filter(scheme_results)
 
   dplyr::lst(metadata_secondary, metadata_primary)
-
 }
 
 meta <- purrr::map(

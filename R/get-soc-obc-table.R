@@ -55,12 +55,15 @@ get_soc_obc_table <- function(soc_obc_data,soc_numeric_version,scenario_name_1,s
       locations = gt::cells_stub(
         c("Delivery admissions", "Delivery beddays")
       )
-    ) |>
+    )  |>
     gt::tab_footnote(
       footnote = "Activity assumed to be SDEC due to TPMAs. Care should be taken in interpretation as recording of activity is in flux.",
       locations = gt::cells_stub(
         c("SDEC attendances (type 5)")
       )
+    )|>
+    gt::tab_source_note(
+      source_note = "Note: CAGR calculations use baseline values adjusted for any supplied baseline and COVID adjustments; these adjustments are not displayed in the baseline column."
     ) |>
     gt::opt_footnote_marks(marks = "numbers") |>
     gt_theme()

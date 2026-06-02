@@ -53,6 +53,13 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
+  baseline_adjustment <- get_stepcounts(soc_scenario) |>
+    dplyr::filter(activity_type == "op") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
+    filter_sites_conditionally(site_codes$op) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
   demographic_adjustment <- get_stepcounts(soc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
@@ -74,8 +81,8 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  dg_op <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
-  ndg_op <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
+  dg_op <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
+  ndg_op <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + non_demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
 
   # net growth for OP
   birth_adjustment <- get_stepcounts(soc_scenario)|>
@@ -120,10 +127,10 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  net_gr_op <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+  net_gr_op <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                            health_status_adjustment + covid_adjustment + waiting_list_adjustment + model_interaction_term +
                                            activity_avoidance_op + efficiencies_op)
-                                        / (baseline + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
+                                        / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
 
 
 
@@ -131,6 +138,13 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
   baseline <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment <- get_stepcounts(soc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$aae) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -156,8 +170,8 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  dg_ae <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
-  ndg_ae <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
+  dg_ae <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
+  ndg_ae <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + non_demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
 
   # net growth A&E
   activity_avoidance_ae <- get_stepcounts(soc_scenario)|>
@@ -175,10 +189,10 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
     dplyr::pull()
 
 
-  net_gr_ae <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+  net_gr_ae <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                            health_status_adjustment + covid_adjustment + waiting_list_adjustment + model_interaction_term +
                                            activity_avoidance_ae + efficiencies_ae)
-                                        / (baseline + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
+                                        / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
 
 
   new_rows <- data.frame(name = c("dg_ae", "ndg_ae", "net_gr_ae", "dg_op", "ndg_op", "net_gr_op"),
@@ -195,6 +209,13 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
   baseline <- get_stepcounts(obc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$op) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment <- get_stepcounts(obc_scenario) |>
+    dplyr::filter(activity_type == "op") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$op) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -220,8 +241,8 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  dg_op <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
-  ndg_op <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
+  dg_op <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
+  ndg_op <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + non_demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
 
   # net growth for OP
   birth_adjustment <- get_stepcounts(obc_scenario)|>
@@ -267,16 +288,23 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
     dplyr::pull()
 
 
-  net_gr_op <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+  net_gr_op <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                            health_status_adjustment + covid_adjustment + waiting_list_adjustment + model_interaction_term +
                                            activity_avoidance_op + efficiencies_op)
-                                        / (baseline + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
+                                        / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
 
 
   # DG & NDG for A&E
   baseline <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment <- get_stepcounts(obc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$aae) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -302,8 +330,8 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  dg_ae <- janitor::round_half_up((((baseline + covid_adjustment + demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
-  ndg_ae <- janitor::round_half_up((((baseline + covid_adjustment + non_demographic_adjustment) / (baseline + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
+  dg_ae <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
+  ndg_ae <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + non_demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
 
   # net growth A&E
   activity_avoidance_ae <- get_stepcounts(obc_scenario)|>
@@ -321,10 +349,10 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
     dplyr::pull()
 
 
-  net_gr_ae <- janitor::round_half_up((((baseline + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
+  net_gr_ae <- janitor::round_half_up((((baseline + baseline_adjustment + demographic_adjustment + non_demographic_adjustment + birth_adjustment +
                                            health_status_adjustment + covid_adjustment + waiting_list_adjustment + model_interaction_term +
                                            activity_avoidance_ae + efficiencies_ae)
-                                        / (baseline + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
+                                        / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
 
   new_rows <- data.frame(name = c("dg_ae", "ndg_ae", "net_gr_ae", "dg_op", "ndg_op", "net_gr_op"),
                          obc = c(dg_ae, ndg_ae, net_gr_ae, dg_op, ndg_op, net_gr_op))
@@ -385,6 +413,9 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, site_codes,sce
                "Efficiency impact - IP beddays",
                "Total net growth - IP admissions",
                "total net growth - IP beddays")
+    ) |>
+    gt::tab_source_note(
+      source_note = "Note: CAGR calculations use baseline values adjusted for any supplied baseline and COVID adjustments."
     ) |>
     gt::cols_label(
        soc = soc_title,
