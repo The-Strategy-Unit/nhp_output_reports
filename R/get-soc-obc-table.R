@@ -63,7 +63,7 @@ get_soc_obc_table <- function(soc_obc_data,soc_numeric_version,scenario_name_1,s
       )
     )|>
     gt::tab_source_note(
-      source_note = "Note: CAGR calculations use baseline values adjusted for any supplied baseline and COVID adjustments; these adjustments are not displayed in the baseline column."
+      source_note = "Note: CAGR calculations use baseline values adjusted for any applied baseline and COVID adjustments; these adjustments are not displayed in the baseline column."
     ) |>
     gt::opt_footnote_marks(marks = "numbers") |>
     gt_theme()
