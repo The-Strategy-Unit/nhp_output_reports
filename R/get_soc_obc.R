@@ -38,17 +38,26 @@ soc_op <- get_baseline_and_projections(soc_scenario)|>
   dplyr::ungroup()
 
 
+# need baseline_adjustment from step_counts
+baseline_adjustment <- get_stepcounts(soc_scenario) |>
+  # dplyr::filter(measure=="admissions" | measure == "beddays") |>
+  dplyr::filter(change_factor == "baseline_adjustment") |>
+  dplyr::group_by(pod, measure) |>
+  dplyr::summarise(baseline_adjustment = sum(value)) |>
+  dplyr::ungroup()
+
 # combine all soc
+soc <- dplyr::bind_rows(soc_ip, soc_ae, soc_op) |>
+  dplyr::left_join(baseline_adjustment) |>
+  dplyr::mutate_if(is.numeric, dplyr::coalesce,0)
 
 # need to add in Covid adjustment to CAGR calc but only if baseline is 2019/20
-soc <- dplyr::bind_rows(soc_ip, soc_ae, soc_op)
-
 if (soc_base_yr == 2019) {
   soc <- soc |>
     dplyr::left_join(get_covid_soc_cagr(r_final_report_ndg2, site_codes))
 } else {
   soc <- soc |>
-  dplyr::mutate(cagr = (principal / baseline) ^ (1/fc_period_soc) - 1,
+  dplyr::mutate(cagr = (principal / (baseline + baseline_adjustment)) ^ (1/fc_period_soc) - 1,
                 cagr = dplyr::na_if(cagr, Inf))
 }
 
@@ -102,12 +111,20 @@ obc_deliv <- obc_scenario[["results"]][["delivery_episode_in_spell"]]|>
                    p90 = sum(upr_ci)) |>
   dplyr::ungroup()
 
-
+# need baseline_adjustment from step_counts
+baseline_adjustment <- get_stepcounts(obc_scenario) |>
+  # dplyr::filter(measure=="admissions" | measure == "beddays") |>
+  dplyr::filter(change_factor == "baseline_adjustment") |>
+  dplyr::group_by(pod, measure) |>
+  dplyr::summarise(baseline_adjustment = sum(value)) |>
+  dplyr::ungroup()
 
 
 # combine obc
 obc <- dplyr::bind_rows(obc_ip, obc_deliv, obc_ae, obc_op) |>
-  dplyr::mutate(cagr =(principal / baseline) ^ (1/fc_period_obc) - 1,
+  dplyr::left_join(baseline_adjustment) |>
+  dplyr::mutate_if(is.numeric, dplyr::coalesce,0) |>
+  dplyr::mutate(cagr =(principal / (baseline + baseline_adjustment)) ^ (1/fc_period_obc) - 1,
                 cagr = dplyr::na_if(cagr, Inf))
 
 soc_obc_data <- dplyr::full_join(soc, obc,

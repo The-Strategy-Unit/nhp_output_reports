@@ -15,6 +15,15 @@ baseline <- get_stepcounts(soc_scenario) |>
   dplyr::ungroup() |>
   dplyr::mutate(factor = "baseline")
 
+baseline_adjustment <- get_stepcounts(soc_scenario) |>
+  dplyr::filter(measure=="admissions" | measure == "beddays") |>
+  dplyr::filter(change_factor == "baseline_adjustment") |>
+  filter_sites_conditionally(site_codes$ip) |>
+  dplyr::group_by(pod, measure) |>
+  dplyr::summarise(value = sum(value)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(factor = "baseline_adjustment")
+
 covid_adjustment <- get_stepcounts(soc_scenario) |>
   dplyr::filter(measure=="admissions" | measure == "beddays") |>
   dplyr::filter(change_factor == "covid_adjustment") |>
@@ -32,9 +41,12 @@ all <- get_stepcounts(soc_scenario)   |>
   dplyr::ungroup() |>
   dplyr::mutate(factor = "all")
 
-cov_cagr_ip <- dplyr::bind_rows(baseline, covid_adjustment, all) |>
+cov_cagr_ip <- dplyr::bind_rows(baseline, baseline_adjustment, covid_adjustment, all) |>
   dplyr::group_by(pod, measure) |>
-  dplyr::summarise(cagr = ((value[3] / (value[1] + value[2]))^(1 / fc_period_soc) - 1)
+  dplyr::summarise(cagr = ((sum(value[factor == "all"]) /
+                              (sum(value[factor == "baseline"]) +
+                                 sum(value[factor == "baseline_adjustment"]) +
+                                 sum(value[factor == "covid_adjustment"])))^(1 / fc_period_soc) - 1)
   ) |>
   dplyr::ungroup()
 
@@ -43,6 +55,13 @@ cov_cagr_ip <- dplyr::bind_rows(baseline, covid_adjustment, all) |>
   baseline <- get_stepcounts(soc_scenario) |>
     dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
     dplyr::filter(change_factor == "baseline") |>
+    filter_sites_conditionally(site_codes$op) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  baseline_adjustment <- get_stepcounts(soc_scenario) |>
+    dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
     filter_sites_conditionally(site_codes$op) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
@@ -60,7 +79,7 @@ cov_cagr_ip <- dplyr::bind_rows(baseline, covid_adjustment, all) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
-  net_gr <- ((all / (baseline + covid_adjustment))^(1 / fc_period_soc) - 1)
+  net_gr <- ((all / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_soc) - 1)
 
   cov_cagr_op <- data.frame(pod = "op_outpatients", measure = "attendances", cagr = net_gr)
 
@@ -78,6 +97,19 @@ cov_cagr_ip <- dplyr::bind_rows(baseline, covid_adjustment, all) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::ungroup() |>
     dplyr::mutate(factor = "baseline")
+
+  baseline_adjustment <- get_stepcounts(soc_scenario) |>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "baseline_adjustment") |>
+    filter_sites_conditionally(site_codes$aae) |>
+    dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
+                                         pod == "aae_type-05" ~ "sdec"),
+                  measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
+                                             pod == "sdec" ~ "attendances (type 5)")) |>
+    dplyr::group_by(pod, measure) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(factor = "baseline_adjustment")
 
   covid_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
@@ -104,9 +136,12 @@ cov_cagr_ip <- dplyr::bind_rows(baseline, covid_adjustment, all) |>
     dplyr::ungroup()|>
     dplyr::mutate(factor = "all")
 
-  cov_cagr_ae <- dplyr::bind_rows(baseline, covid_adjustment, all) |>
+  cov_cagr_ae <- dplyr::bind_rows(baseline, baseline_adjustment, covid_adjustment, all) |>
     dplyr::group_by(pod, measure) |>
-    dplyr::summarise(cagr = ((value[3] / (value[1] + value[2]))^(1 / fc_period_soc) - 1)
+    dplyr::summarise(cagr = ((sum(value[factor == "all"]) /
+                                (sum(value[factor == "baseline"]) +
+                                   sum(value[factor == "baseline_adjustment"]) +
+                                   sum(value[factor == "covid_adjustment"])))^(1 / fc_period_soc) - 1)
     ) |>
     dplyr::ungroup()
 

@@ -4,7 +4,7 @@ get_soc_obc_table <- function(soc_obc_data,soc_numeric_version,scenario_name_1,s
 { #### build table comparing SOC with OBC ---
   tbl_soc_obc <- soc_obc_data |>
     dplyr::arrange(sort) |>
-    dplyr::select(-c(measure, pod, sort, p90, obc_pp_var, obc_p90_var)) |>
+    dplyr::select(-c(measure, pod, sort, p90, obc_pp_var, obc_p90_var, baseline_adjustment.soc, baseline_adjustment.obc)) |>
     dplyr::relocate(heading) |>
     gt::gt(rowname_col = "heading") |>
     gt::fmt_number(
