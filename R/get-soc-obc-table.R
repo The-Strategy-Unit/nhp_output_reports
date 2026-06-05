@@ -4,11 +4,14 @@ get_soc_obc_table <- function(soc_obc_data,soc_numeric_version,scenario_name_1,s
 { #### build table comparing SOC with OBC ---
   tbl_soc_obc <- soc_obc_data |>
     dplyr::arrange(sort) |>
-    dplyr::select(-c(measure, pod, sort, p90, obc_pp_var, obc_p90_var, baseline_adjustment.soc, baseline_adjustment.obc)) |>
+    dplyr::mutate(baseline_adj.soc = baseline.soc + baseline_adjustment.soc,
+                  baseline_adj.obc = baseline.obc + baseline_adjustment.obc) |>
+    dplyr::select(-c(measure, pod, sort, p90, obc_pp_var, obc_p90_var, baseline.soc,
+                     baseline.obc, baseline_adjustment.soc, baseline_adjustment.obc)) |>
     dplyr::relocate(heading) |>
     gt::gt(rowname_col = "heading") |>
     gt::fmt_number(
-      columns = c(baseline.soc, principal.soc, baseline.obc, principal.obc),
+      columns = c(baseline_adj.soc, principal.soc, baseline_adj.obc, principal.obc),
       decimals = 0
     ) |>
     gt::fmt_percent(
@@ -22,19 +25,19 @@ get_soc_obc_table <- function(soc_obc_data,soc_numeric_version,scenario_name_1,s
       label = scenario_name_1,
     # Code for further change upon confirmation from schemes
     #  label = glue::glue("Scenario ",scenario_name_1),
-      columns = c(baseline.soc, principal.soc, cagr.soc)
+      columns = c(baseline_adj.soc, principal.soc, cagr.soc)
     ) |>
     gt::tab_spanner(
       label = scenario_name_2,
    # Code for further change upon confirmation from schemes
     #  label = glue::glue("Scenario ",scenario_name_2),
-      columns = c(baseline.obc, principal.obc, cagr.obc)
+      columns = c(baseline_adj.obc, principal.obc, cagr.obc)
     ) |>
     gt::cols_label(
-      baseline.soc = "Baseline",
+      baseline_adj.soc = "Adjusted Baseline",
       principal.soc = "Principal",
       cagr.soc = "CAGR (%)",
-      baseline.obc = "Baseline",
+      baseline_adj.obc = "Adjusted Baseline",
       principal.obc = "Principal",
       cagr.obc = "CAGR (%)"
     ) |>
@@ -63,7 +66,8 @@ get_soc_obc_table <- function(soc_obc_data,soc_numeric_version,scenario_name_1,s
       )
     )|>
     gt::tab_source_note(
-      source_note = "Note: CAGR calculations use baseline values adjusted for any applied baseline and COVID adjustments; these adjustments are not displayed in the baseline column."
+      source_note = "Note: CAGR is calculated using adjusted baseline values (applied baseline and COVID adjustments),
+      so these figures may differ from baseline values shown in other tables."
     ) |>
     gt::opt_footnote_marks(marks = "numbers") |>
     gt_theme()
