@@ -44,7 +44,6 @@ get_nhp_result_sets <- function(
     )
 }
 
-
 #' Connect to an Azure Container
 #'
 #' @param tenant Character. The tenant ID.
