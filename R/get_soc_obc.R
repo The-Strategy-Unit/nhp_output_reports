@@ -41,14 +41,15 @@ soc_op <- get_baseline_and_projections(soc_scenario)|>
 # need baseline_adjustment from step_counts
 baseline_adjustment <- get_stepcounts(soc_scenario) |>
   dplyr::filter(change_factor == "baseline_adjustment") |>
-  dplyr::mutate(measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
-                                           pod == "sdec" ~ "attendances (type 5)",
-                                            TRUE ~ measure),
-                pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
+  dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                        pod == "aae_type-05" ~ "sdec",
                                        stringr::str_starts(pod, "op_") ~ "op_outpatients",
-                                       TRUE ~ pod)
-                ) |>
+                                       TRUE ~ pod),
+                measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
+                                           pod == "sdec" ~ "attendances (type 5)",
+                                           pod == "op_outpatients" ~ "attendances",
+                                           TRUE ~ measure)
+  ) |>
   dplyr::group_by(pod, measure) |>
   dplyr::summarise(baseline_adjustment = sum(value)) |>
   dplyr::ungroup()
@@ -56,13 +57,14 @@ baseline_adjustment <- get_stepcounts(soc_scenario) |>
 # need covid_adjustment from step_counts
 covid_adjustment <- get_stepcounts(soc_scenario) |>
   dplyr::filter(change_factor == "covid_adjustment") |>
-  dplyr::mutate(measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
-                                           pod == "sdec" ~ "attendances (type 5)",
-                                           TRUE ~ measure),
-                pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
+  dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                        pod == "aae_type-05" ~ "sdec",
                                        stringr::str_starts(pod, "op_") ~ "op_outpatients",
-                                       TRUE ~ pod)
+                                       TRUE ~ pod),
+                measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
+                                           pod == "sdec" ~ "attendances (type 5)",
+                                           pod == "op_outpatients" ~ "attendances",
+                                           TRUE ~ measure)
                 ) |>
   dplyr::group_by(pod, measure) |>
   dplyr::summarise(covid_adjustment = sum(value)) |>
