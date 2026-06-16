@@ -4,14 +4,15 @@ get_soc_obc_table <- function(soc_obc_data,soc_numeric_version,scenario_name_1,s
 { #### build table comparing SOC with OBC ---
   tbl_soc_obc <- soc_obc_data |>
     dplyr::arrange(sort) |>
-    dplyr::mutate(baseline_adj.soc = baseline.soc + baseline_adjustment.soc,
-                  baseline_adj.obc = baseline.obc + baseline_adjustment.obc) |>
+    # dplyr::mutate(baseline_adj.soc = baseline.soc + baseline_adjustment.soc,
+    #               baseline_adj.obc = baseline.obc + baseline_adjustment.obc) |>
     dplyr::select(-c(measure, pod, sort, p90, obc_pp_var, obc_p90_var, baseline.soc,
-                     baseline.obc, baseline_adjustment.soc, baseline_adjustment.obc)) |>
+                     baseline.obc, baseline_adjustment.soc, baseline_adjustment.obc,
+                     covid_adjustment.soc, covid_adjustment.obc)) |>
     dplyr::relocate(heading) |>
     gt::gt(rowname_col = "heading") |>
     gt::fmt_number(
-      columns = c(baseline_adj.soc, principal.soc, baseline_adj.obc, principal.obc),
+      columns = c(adj_baseline.soc, principal.soc, adj_baseline.obc, principal.obc),
       decimals = 0
     ) |>
     gt::fmt_percent(
@@ -25,19 +26,19 @@ get_soc_obc_table <- function(soc_obc_data,soc_numeric_version,scenario_name_1,s
       label = scenario_name_1,
     # Code for further change upon confirmation from schemes
     #  label = glue::glue("Scenario ",scenario_name_1),
-      columns = c(baseline_adj.soc, principal.soc, cagr.soc)
+      columns = c(adj_baseline.soc, principal.soc, cagr.soc)
     ) |>
     gt::tab_spanner(
       label = scenario_name_2,
    # Code for further change upon confirmation from schemes
     #  label = glue::glue("Scenario ",scenario_name_2),
-      columns = c(baseline_adj.obc, principal.obc, cagr.obc)
+      columns = c(adj_baseline.obc, principal.obc, cagr.obc)
     ) |>
     gt::cols_label(
-      baseline_adj.soc = "Adjusted Baseline",
+      adj_baseline.soc = "Adjusted Baseline",
       principal.soc = "Principal",
       cagr.soc = "CAGR (%)",
-      baseline_adj.obc = "Adjusted Baseline",
+      adj_baseline.obc = "Adjusted Baseline",
       principal.obc = "Principal",
       cagr.obc = "CAGR (%)"
     ) |>

@@ -40,26 +40,48 @@ soc_op <- get_baseline_and_projections(soc_scenario)|>
 
 # need baseline_adjustment from step_counts
 baseline_adjustment <- get_stepcounts(soc_scenario) |>
-  # dplyr::filter(measure=="admissions" | measure == "beddays") |>
   dplyr::filter(change_factor == "baseline_adjustment") |>
+  dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
+                                       pod == "aae_type-05" ~ "sdec",
+                                       stringr::str_starts(pod, "op_") ~ "op_outpatients",
+                                       TRUE ~ pod),
+                measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
+                                           pod == "sdec" ~ "attendances (type 5)",
+                                           pod == "op_outpatients" ~ "attendances",
+                                           TRUE ~ measure)
+  ) |>
   dplyr::group_by(pod, measure) |>
   dplyr::summarise(baseline_adjustment = sum(value)) |>
+  dplyr::ungroup()
+
+# need covid_adjustment from step_counts
+covid_adjustment <- get_stepcounts(soc_scenario) |>
+  dplyr::filter(change_factor == "covid_adjustment") |>
+  dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
+                                       pod == "aae_type-05" ~ "sdec",
+                                       stringr::str_starts(pod, "op_") ~ "op_outpatients",
+                                       TRUE ~ pod),
+                measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
+                                           pod == "sdec" ~ "attendances (type 5)",
+                                           pod == "op_outpatients" ~ "attendances",
+                                           TRUE ~ measure)
+                ) |>
+  dplyr::group_by(pod, measure) |>
+  dplyr::summarise(covid_adjustment = sum(value)) |>
   dplyr::ungroup()
 
 # combine all soc
 soc <- dplyr::bind_rows(soc_ip, soc_ae, soc_op) |>
   dplyr::left_join(baseline_adjustment) |>
+  dplyr::left_join(covid_adjustment) |>
+  dplyr::mutate(adj_baseline = rowSums(pick(baseline, baseline_adjustment,covid_adjustment), na.rm = TRUE)) |>
   dplyr::mutate_if(is.numeric, dplyr::coalesce,0)
 
-# need to add in Covid adjustment to CAGR calc but only if baseline is 2019/20
-if (soc_base_yr == 2019) {
+# CAGR calculation
   soc <- soc |>
-    dplyr::left_join(get_covid_soc_cagr(r_final_report_ndg2, site_codes))
-} else {
-  soc <- soc |>
-  dplyr::mutate(cagr = (principal / (baseline + baseline_adjustment)) ^ (1/fc_period_soc) - 1,
+  dplyr::mutate(cagr = (principal / (adj_baseline)) ^ (1/fc_period_soc) - 1,
                 cagr = dplyr::na_if(cagr, Inf))
-}
+# }
 
 
 #### OBC figures from validation report ---
@@ -113,18 +135,35 @@ obc_deliv <- obc_scenario[["results"]][["delivery_episode_in_spell"]]|>
 
 # need baseline_adjustment from step_counts
 baseline_adjustment <- get_stepcounts(obc_scenario) |>
-  # dplyr::filter(measure=="admissions" | measure == "beddays") |>
+  dplyr::filter(measure=="admissions" | measure == "beddays") |>
   dplyr::filter(change_factor == "baseline_adjustment") |>
   dplyr::group_by(pod, measure) |>
   dplyr::summarise(baseline_adjustment = sum(value)) |>
+  dplyr::ungroup()
+
+# need covid_adjustment from step_counts
+covid_adjustment <- get_stepcounts(obc_scenario) |>
+  dplyr::filter(change_factor == "covid_adjustment") |>
+  dplyr::mutate(measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
+                                           pod == "sdec" ~ "attendances (type 5)",
+                                           TRUE ~ measure),
+                pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
+                                       pod == "aae_type-05" ~ "sdec",
+                                       stringr::str_starts(pod, "op_") ~ "op_outpatients",
+                                       TRUE ~ pod)
+  ) |>
+  dplyr::group_by(pod, measure) |>
+  dplyr::summarise(covid_adjustment = sum(value)) |>
   dplyr::ungroup()
 
 
 # combine obc
 obc <- dplyr::bind_rows(obc_ip, obc_deliv, obc_ae, obc_op) |>
   dplyr::left_join(baseline_adjustment) |>
+  dplyr::left_join(covid_adjustment) |>
+  dplyr::mutate(adj_baseline = rowSums(pick(baseline, baseline_adjustment,covid_adjustment), na.rm = TRUE)) |>
   dplyr::mutate_if(is.numeric, dplyr::coalesce,0) |>
-  dplyr::mutate(cagr =(principal / (baseline + baseline_adjustment)) ^ (1/fc_period_obc) - 1,
+  dplyr::mutate(cagr =(principal / (adj_baseline)) ^ (1/fc_period_obc) - 1,
                 cagr = dplyr::na_if(cagr, Inf))
 
 soc_obc_data <- dplyr::full_join(soc, obc,
