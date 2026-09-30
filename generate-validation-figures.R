@@ -4,79 +4,58 @@
 ## comparison of estimated mitigated activity
 purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
-scheme_code = "RAS" # add scheme_code for the scenario here to replace XYZ
+container <- azkit::get_container("results")
+
+scheme_code = "RBT" # add scheme_code for the scenario here to replace XYZ
 # If the scheme has site codes already recorded or if all sites are required then set site_codes=NULL, otherwise set sites manually
 scenario_name_1 <- "SOC"
 scenario_name_2 <- "OBC"
 
-site_codes = NULL
-if (is.null(site_codes)) site_codes <- get_sites(meta)
+
+result_sets = get_nhp_result_sets()
+
+# paths to data
+path_final_report_ndg1 <- get_run_stage_path("final_report_ndg1")
+# alternatively, use get_scenario_path() if scenario name is known
+
+path_final_report_ndg2 <- get_run_stage_path("final_report_ndg2")
+
+path_validation_report_ndg2 <- get_run_stage_path("validation_report_ndg2")
+
+path_validation_report_ndg3 <- get_run_stage_path("validation_report_ndg3")
+
+path_opening_date_scenario <- get_run_stage_path("validation_report_ndg2_opening")
+
+
+# pull data
+r_final_report_ndg1 <- get_nhp_results(results_path = path_final_report_ndg1)
+
+r_final_report_ndg2  <- get_nhp_results(results_path = path_final_report_ndg2) #SOC
+
+r_validation_report_ndg2  <- get_nhp_results(results_path = path_validation_report_ndg2) #OBC
+
+r_validation_report_ndg3 <- get_nhp_results(results_path = path_validation_report_ndg3)
+
+r_opening_date_scenario <- get_nhp_results(results_path = path_opening_date_scenario)
+
+
+### workaround for parquet files that won't load with get_nhp_results()
+# still generates error, being looked into
+r_validation_report_ndg2 <- reskit::read_results_parquet_files(container, path_validation_report_ndg2) |>
+  purrr::imap(calculate_wide_principal_stats)
+
+
+
+# get sites (need a results path for specific scenario)
+site_codes <- get_sites(path_validation_report_ndg2)
+
 # site_codes = list( # change each element (each can be NULL to mean 'all')
 #   ip  = "R0A66",
 #   op  = "R0A66",
 #   aae = "R0A66"
 # )
 
-result_sets = get_nhp_result_sets()
 
-final_report_ndg1 <- result_sets |>
-  dplyr::filter(dataset==scheme_code) |>
-  dplyr::filter(run_stage=="final_report_ndg1")
-
-final_report_ndg2 <- result_sets |>
-  dplyr::filter(dataset==scheme_code) |>
-  dplyr::filter(run_stage=="final_report_ndg2")
-
-validation_report_ndg2 <- result_sets |>
-  dplyr::filter(dataset==scheme_code) |>
-  dplyr::filter(run_stage=="validation_report_ndg2")
-
-validation_report_ndg3 <- result_sets |>
-  dplyr::filter(dataset==scheme_code) |>
-  dplyr::filter(run_stage=="validation_report_ndg3")
-
-opening_date_scenario <- result_sets |>
-  dplyr::filter(dataset==scheme_code) |>
-  dplyr::filter(run_stage=="validation_report_ndg2_opening")
-
-selected_results_list <- list(final_report_ndg1,
-                              final_report_ndg2,
-                              validation_report_ndg2,
-                              validation_report_ndg3,
-                              opening_date_scenario)
-
-
-get_final_run_metadata_special <- function(scheme_code, selected_result_set) {
-
-  scheme_results <- selected_result_set |> dplyr::filter(dataset == scheme_code)
-
-  metadata_secondary <- dplyr::filter(scheme_results)
-  metadata_primary <- dplyr::filter(scheme_results)
-
-  dplyr::lst(metadata_secondary, metadata_primary)
-}
-
-meta <- purrr::map(
-  selected_results_list,
-  \(result) get_final_run_metadata_special(scheme_code, result)
-)
-
-r_final_report_ndg1 <- meta[[1]]$metadata_primary |>
-  dplyr::pull(file) |>
-  get_nhp_results(results_path = _)
-
-r_final_report_ndg2 <- meta[[2]]$metadata_primary |>
-  dplyr::pull(file) |>
-  get_nhp_results(results_path = _) #SOC
-
-r_validation_report_ndg2 <- meta[[3]]$metadata_primary |>
-  dplyr::pull(file) |> get_nhp_results(results_path = _) #OBC
-
-r_validation_report_ndg3 <- meta[[4]]$metadata_primary |>
-  dplyr::pull(file) |> get_nhp_results(results_path = _)
-
-r_opening_date_scenario <- meta[[5]]$metadata_primary |>
-  dplyr::pull(file) |> get_nhp_results(results_path = _)
 
 # in CAGR calc, assumes this raises to power of forecast period? Need to account for difference if using opening scenario
 # time in years from baseline (23/24) to horizon (41/42 for usual)
