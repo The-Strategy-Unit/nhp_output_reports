@@ -62,11 +62,12 @@ meta <- purrr::map(
 )
 
 r_final_report_ndg1 <- meta[[1]]$metadata_primary |>
-  dplyr::pull(file) |> get_nhp_results(results_path = _)
+  dplyr::pull(file) |>
+  get_nhp_results(results_path = _)
 
 r_final_report_ndg2 <- meta[[2]]$metadata_primary |>
   dplyr::pull(file) |>
-  get_nhp_results(file = _) #SOC
+  get_nhp_results(results_path = _) #SOC
 
 r_validation_report_ndg2 <- meta[[3]]$metadata_primary |>
   dplyr::pull(file) |> get_nhp_results(results_path = _) #OBC
