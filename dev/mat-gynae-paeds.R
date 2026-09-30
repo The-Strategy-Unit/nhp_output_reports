@@ -23,7 +23,7 @@ run_stages <- list(
   secondary = "final_report_ndg3"
 )
 meta <- get_run_metadata(scheme_code, result_sets, run_stages)
-site_codes <- get_sites(scheme_code)
+site_codes <- get_sites(meta)
 primary_file <- dplyr::pull(meta$metadata_primary, file)
 secondary_file <- dplyr::pull(meta$metadata_secondary, file)
 r_primary <- get_nhp_results(results_path = primary_file)

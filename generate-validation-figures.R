@@ -10,7 +10,7 @@ scenario_name_1 <- "SOC"
 scenario_name_2 <- "OBC"
 
 site_codes = NULL
-if (is.null(site_codes)) site_codes <- get_sites(scheme_code)
+if (is.null(site_codes)) site_codes <- get_sites(meta)
 # site_codes = list( # change each element (each can be NULL to mean 'all')
 #   ip  = "R0A66",
 #   op  = "R0A66",

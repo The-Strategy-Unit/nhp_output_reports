@@ -143,7 +143,7 @@ get_comparison_data <- function(
   scheme_name <- dplyr::filter(schemes, scheme == scheme_code) |> dplyr::pull(hosp_site)
   cat("* Scheme name: ",scheme_name,"(",scheme_code,")","\n")
 
-  if (is.null(site_codes)) site_codes <- get_sites(scheme_code)
+  if (is.null(site_codes)) site_codes <- get_sites(meta)
   cat("* Sites:\n")
   cat("- IP: ", if(is.null(site_codes$ip))  "all" else site_codes$ip,  "\n")
   cat("- OP: ", if(is.null(site_codes$op))  "all" else site_codes$op,  "\n")
