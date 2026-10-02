@@ -16,6 +16,7 @@ result_sets = get_nhp_result_sets()
 
 # paths to data
 path_final_report_ndg1 <- get_run_stage_path("final_report_ndg1")
+
 # or use get_scenario_path for scenario names
 
 path_final_report_ndg2 <- get_run_stage_path("final_report_ndg2")
@@ -37,7 +38,6 @@ r_validation_report_ndg2  <- get_nhp_results(results_path = path_validation_repo
 r_validation_report_ndg3 <- get_nhp_results(results_path = path_validation_report_ndg3)
 
 r_opening_date_scenario <- get_nhp_results(results_path = path_opening_date_scenario)
-
 
 
 # get sites (need a results path for specific scenario)
