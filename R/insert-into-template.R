@@ -419,7 +419,7 @@ read_template_docx <- function(
     template_path <- Sys.getenv("SP_TEMPLATE_PATH_ADD")
   }
 
-  site <- Microsoft365R::get_sharepoint_site(sharepoint_site)
+  site <- Microsoft365R::get_team(sharepoint_site)
   drv <- site$get_drive()
   tmp_docx <- tempfile(fileext = ".docx")
   drv$download_file(template_path, dest = tmp_docx)
