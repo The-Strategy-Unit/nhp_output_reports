@@ -70,8 +70,8 @@ get_nhp_result_sets <- function(
 #' r <- container |> get_nhp_results(file)
 #' }
 get_nhp_results <- function(
-  container_results = Sys.getenv("AZ_STORAGE_CONTAINER_RESULTS"),
-  results_path
+    container_results = Sys.getenv("AZ_STORAGE_CONTAINER_RESULTS"),
+    results_path
 ) {
   container <- azkit::get_container(container_results)
 
@@ -94,7 +94,8 @@ get_nhp_results <- function(
       file.path(results_path, "params.json")
     )
 
-    results <- reskit::read_results_parquet_files(container, results_path)
+    results <- reskit::read_results_parquet_files(container, results_path)|>
+      purrr::imap(parse_az_results)
 
     nhp_results <- dplyr::lst(params, results)
 
