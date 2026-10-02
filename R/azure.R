@@ -65,8 +65,8 @@ get_nhp_result_sets <- function(
 #' r <- container |> get_nhp_results(file)
 #' }
 get_nhp_results <- function(
-  container_results = Sys.getenv("AZ_STORAGE_CONTAINER_RESULTS"),
-  results_path
+    container_results = Sys.getenv("AZ_STORAGE_CONTAINER_RESULTS"),
+    results_path
 ) {
   container <- azkit::get_container(container_results)
 
@@ -89,14 +89,23 @@ get_nhp_results <- function(
       file.path(results_path, "params.json")
     )
 
-    population_variants <- azkit::read_azure_json(
-      container,
-      file.path(results_path, "variants.json")
-    )
+    results <- reskit::read_results_parquet_files(container, results_path)|>
+      purrr::imap(parse_az_results)
 
-    results <- reskit::read_results_parquet_files(container, results_path)
+    nhp_results <- dplyr::lst(params, results)
 
-    nhp_results <- dplyr::lst(params, population_variants, results)
+    # read variants.json only if available (not all model versions)
+    json_available <- azkit::list_files(container, results_path, ".json")
+    has_variants <- "variants.json" %in% basename(json_available)
+
+    if (has_variants) {
+      population_variants <- azkit::read_azure_json(
+        container,
+        file.path(results_path, "variants.json")
+      )
+
+      nhp_results["population_variants"] <- list(population_variants)
+    }
   }
 
   nhp_results
