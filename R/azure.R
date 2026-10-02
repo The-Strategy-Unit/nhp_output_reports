@@ -46,12 +46,17 @@ get_nhp_result_sets <- function(
 
 #' Read and Parse NHP Results Files
 #'
+#' Detects whether the input path is a zipped json or a folder of parquet/json
+#' files and reads them in accordingly.
+#'
 #' @param container_results Name of a blob_container/storage_container object
 #'     that stores results files.
 #' @param results_path Character. The path to a results file (zipped json) or a
 #'     results directory (containing parquets) in the named `container`.
 #'
 #' @details Assumes you've connected to the container that holds NHP results.
+#' Note that some model versions did not produce a `variants.json` file, so this
+#' is not read if it doesn't exist.
 #'
 #' @return A nested list.
 #'
@@ -89,14 +94,22 @@ get_nhp_results <- function(
       file.path(results_path, "params.json")
     )
 
-    population_variants <- azkit::read_azure_json(
-      container,
-      file.path(results_path, "variants.json")
-    )
-
     results <- reskit::read_results_parquet_files(container, results_path)
 
-    nhp_results <- dplyr::lst(params, population_variants, results)
+    nhp_results <- dplyr::lst(params, results)
+
+    # read variants.json only if available (not all model versions)
+    json_available <- azkit::list_files(container, results_path, ".json")
+    has_variants <- "variants.json" %in% basename(json_available)
+
+    if (has_variants) {
+      population_variants <- azkit::read_azure_json(
+        container,
+        file.path(results_path, "variants.json")
+      )
+
+      nhp_results["population_variants"] <- list(population_variants)
+    }
   }
 
   nhp_results
