@@ -46,12 +46,17 @@ get_nhp_result_sets <- function(
 
 #' Read and Parse NHP Results Files
 #'
+#' Detects whether the input path is a zipped json or a folder of parquet/json
+#' files and reads them in accordingly.
+#'
 #' @param container_results Name of a blob_container/storage_container object
 #'     that stores results files.
 #' @param results_path Character. The path to a results file (zipped json) or a
 #'     results directory (containing parquets) in the named `container`.
 #'
 #' @details Assumes you've connected to the container that holds NHP results.
+#' Note that some model versions did not produce a `variants.json` file, so this
+#' is not read if it doesn't exist.
 #'
 #' @return A nested list.
 #'
