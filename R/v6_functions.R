@@ -43,7 +43,7 @@ get_scenario_path <- function(scenario_name){
 get_sites <- function(agg_results_path) {
 
   run_row <- result_sets |>
-    dplyr::filter(aggregated_results_path == agg_results_path)
+    dplyr::filter(aggregated_results_path == agg_results_path|file==agg_results_path) # added this to allow for parquet and json scenario data
 
   sites_list <- run_row |>
     dplyr::select("sites_aae", "sites_ip", "sites_op") |>
