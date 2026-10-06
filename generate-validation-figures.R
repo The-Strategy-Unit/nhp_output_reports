@@ -6,7 +6,7 @@ purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
 container <- azkit::get_container("results")
 
-scheme_code = "RBT" # add scheme_code for the scenario here to replace XYZ
+scheme_code = "XYZ" # add scheme_code for the scenario here to replace XYZ
 # If the scheme has site codes already recorded or if all sites are required then set site_codes=NULL, otherwise set sites manually
 scenario_name_1 <- "SOC"
 scenario_name_2 <- "OBC"
@@ -17,8 +17,6 @@ result_sets = get_nhp_result_sets()
 # paths to data
 path_final_report_ndg1 <- get_run_stage_path("final_report_ndg1")
 
-path_sally_scenario <- get_scenario_path("20260916-ndg2-nomit-ST")
-
 path_final_report_ndg2 <- get_run_stage_path("final_report_ndg2")
 
 path_validation_report_ndg2 <- get_run_stage_path("validation_report_ndg2")
@@ -27,6 +25,10 @@ path_validation_report_ndg3 <- get_run_stage_path("validation_report_ndg3")
 
 path_opening_date_scenario <- get_run_stage_path("validation_report_ndg2_opening")
 
+
+# get SOC site codes
+soc_site_codes <- get_sites(path_final_report_ndg2)
+obc_site_codes <- get_sites(path_validation_report_ndg2)
 
 # pull data
 r_final_report_ndg1 <- get_nhp_results(results_path = path_final_report_ndg1)
@@ -39,18 +41,15 @@ r_validation_report_ndg3 <- get_nhp_results(results_path = path_validation_repor
 
 r_opening_date_scenario <- get_nhp_results(results_path = path_opening_date_scenario)
 
-r_sally <- get_nhp_results(results_path = path_sally_scenario)
 
-
-# get sites (need a results path for specific scenario)
-site_codes <- get_sites(path_validation_report_ndg2)
+# get sites for a scenario (need a results path for specific scenario)
+#site_codes <- get_sites(path_validation_report_ndg2) # DONT NEED TO PULL SITES HERE
 
 # site_codes = list( # change each element (each can be NULL to mean 'all')
 #   ip  = "R0A66",
 #   op  = "R0A66",
 #   aae = "R0A66"
 # )
-
 
 
 # in CAGR calc, assumes this raises to power of forecast period? Need to account for difference if using opening scenario
@@ -89,13 +88,15 @@ soc_major_version <- get_soc_major_version(soc_version)
 soc_numeric_version <- get_numeric_soc_version(soc_version)
 
 # get the soc obc data
-soc_obc_data <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+soc_obc_data <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes)
 
 # get the soc obc table
 soc_obc_table <- get_soc_obc_table(soc_obc_data,soc_numeric_version,scenario_name_1,scenario_name_2)
 
 # get the cagr data
-cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
+cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2)
+# something wrong with generate-values.R - NEEDS FIXING
+
 
 #get the total mitigation table
 total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
