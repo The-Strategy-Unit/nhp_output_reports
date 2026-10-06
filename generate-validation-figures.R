@@ -99,25 +99,25 @@ cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report
 
 
 #get the total mitigation table
-total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
+total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2)
 
 # get the mitigation data
-tpma_impact_table <- get_tpma_impact_table(r_final_report_ndg2, r_validation_report_ndg2, site_codes,scenario_name_1,scenario_name_2)
+tpma_impact_table <- get_tpma_impact_table(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2)
 
 # get the p90 table
 p90_table <-get_p90_table(soc_obc_data,soc_numeric_version,scenario_name_1,scenario_name_2)
 
 # get soc obc obc_opening table for export to excel
-save_soc_obc_open_data <- get_soc_obc_open(r_final_report_ndg2, r_validation_report_ndg2, r_opening_date_scenario, site_codes)
+save_soc_obc_open_data <- get_soc_obc_open(r_final_report_ndg2, r_validation_report_ndg2, r_opening_date_scenario, soc_site_codes, obc_site_codes)
 
 # get the bespoke s curve charts
-save_bespoke_ecdf_plots <- get_bespoke_ecdf(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+save_bespoke_ecdf_plots <- get_bespoke_ecdf(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes)
 
 # get the additional risk table
-ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_ndg2, site_codes)
+ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes)
 
 # get the additional risk table for opening date scenario
-ecdf_vals_open <- get_bespoke_ecdf_values(r_final_report_ndg2, r_opening_date_scenario, site_codes)
+ecdf_vals_open <- get_bespoke_ecdf_values(r_final_report_ndg2, r_opening_date_scenario, soc_site_codes, obc_site_codes)
 
 # get the details of the model runs featured in these outputs
 scenarios_used_details <-  tibble::tibble(
