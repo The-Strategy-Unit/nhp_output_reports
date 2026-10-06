@@ -1,46 +1,46 @@
 
-get_total_mitigation_table <- function(soc_scenario, obc_scenario, site_codes,scenario_name_1,scenario_name_2){
+get_total_mitigation_table <- function(soc_scenario, obc_scenario, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2){
   # SOC & OBC mitigated activity
 
   mit_soc_ip <- get_stepcounts(soc_scenario)|>
     dplyr::filter(measure == "beddays",
                   change_factor == "activity_avoidance" | change_factor == "efficiencies") |>
-    filter_sites_conditionally(site_codes$ip) |>
+    filter_sites_conditionally(soc_site_codes$ip) |>
     dplyr::summarise(mit_activity_soc = sum(value)) |>
     dplyr::mutate(pod = "Inpatient beddays")
 
   mit_soc_op <- get_stepcounts(soc_scenario) |>
     dplyr::filter(measure == "attendances" | measure == "tele_attendances",
                   change_factor == "activity_avoidance" | change_factor == "efficiencies") |>
-    filter_sites_conditionally(site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes$op) |>
     dplyr::summarise(mit_activity_soc = sum(value))  |>
     dplyr::mutate(pod = "Outpatient Attendances")
 
   mit_soc_ae <- get_stepcounts(soc_scenario) |>
     dplyr::filter(measure == "arrivals",
                   change_factor == "activity_avoidance" | change_factor == "efficiencies") |>
-    filter_sites_conditionally(site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes$aae) |>
     dplyr::summarise(mit_activity_soc = sum(value))  |>
     dplyr::mutate(pod = "A&E attendances (types 1, 3, 5)")
 
   mit_obc_ip <- get_stepcounts(obc_scenario) |>
     dplyr::filter(measure == "beddays",
                   change_factor == "activity_avoidance" | change_factor == "efficiencies") |>
-    filter_sites_conditionally(site_codes$ip) |>
+    filter_sites_conditionally(obc_site_codes$ip) |>
     dplyr::summarise(mit_activity_obc = sum(value))  |>
     dplyr::mutate(pod = "Inpatient beddays")
 
   mit_obc_op <- get_stepcounts(obc_scenario) |>
     dplyr::filter(measure == "attendances" | measure == "tele_attendances",
                   change_factor == "activity_avoidance" | change_factor == "efficiencies") |>
-    filter_sites_conditionally(site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes$op) |>
     dplyr::summarise(mit_activity_obc = sum(value))  |>
     dplyr::mutate(pod = "Outpatient Attendances")
 
   mit_obc_ae <- get_stepcounts(obc_scenario) |>
     dplyr::filter(measure == "arrivals",
                   change_factor == "activity_avoidance" | change_factor == "efficiencies") |>
-    filter_sites_conditionally(site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes$aae) |>
     dplyr::summarise(mit_activity_obc = sum(value))  |>
     dplyr::mutate(pod = "A&E attendances (types 1, 3, 5)")
 
