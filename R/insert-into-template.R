@@ -29,7 +29,7 @@
 #' @noRd
 populate_template <- function(
   scheme_code,
-  site_codes = NULL,
+#  site_codes = NULL,
   result_sets = get_nhp_result_sets(),
   run_stages = NULL,
   scenario_files = NULL,
@@ -151,30 +151,30 @@ populate_template <- function(
   }
 
   # Get sites
-  if (is.null(site_codes)) {
-    site_codes <- get_sites(meta)
-  }
-  ip_sites <- if (is.null(site_codes$ip)) {
-    "all"
-  } else {
-    paste(site_codes$ip, collapse = ", ")
-  }
-  op_sites <- if (is.null(site_codes$op)) {
-    "all"
-  } else {
-    paste(site_codes$op, collapse = ", ")
-  }
-  aae_sites <- if (is.null(site_codes$aae)) {
-    "all"
-  } else {
-    paste(site_codes$aae, collapse = ", ")
-  }
-  logr::log_print(glue::glue(
-    "* Sites:\n",
-    "- Inpatients:  {ip_sites}\n",
-    "- Outpatients: {op_sites}\n",
-    "- A&E:         {aae_sites}"
-  ))
+  # if (is.null(site_codes)) {
+  #   site_codes <- get_sites(meta)
+  # }
+  # ip_sites <- if (is.null(site_codes$ip)) {
+  #   "all"
+  # } else {
+  #   paste(site_codes$ip, collapse = ", ")
+  # }
+  # op_sites <- if (is.null(site_codes$op)) {
+  #   "all"
+  # } else {
+  #   paste(site_codes$op, collapse = ", ")
+  # }
+  # aae_sites <- if (is.null(site_codes$aae)) {
+  #   "all"
+  # } else {
+  #   paste(site_codes$aae, collapse = ", ")
+  # }
+  # logr::log_print(glue::glue(
+  #   "* Sites:\n",
+  #   "- Inpatients:  {ip_sites}\n",
+  #   "- Outpatients: {op_sites}\n",
+  #   "- A&E:         {aae_sites}"
+  # ))
 
   # Read results data
   logr::log_print(glue::glue("* Fetching results..."))
@@ -383,18 +383,18 @@ split_version_string <- function(version_string) {
     setNames(c("major", "minor"))
 }
 
-get_sites <- function(meta) {
-  primary_meta <- meta[["metadata_primary"]] # take sites from primary run
-  primary_cols <- names(primary_meta)
-  sites_cols <- c("sites_aae", "sites_ip", "sites_op")
-
-  if (!all(sites_cols %in% primary_cols)) {
-    stop(
-      "At least one of sites_aae, sites_ip or sites_op is missing from the ",
-      "primary run's metadata.",
-      call. = FALSE
-    )
-  }
+# get_sites <- function(meta) {
+#   primary_meta <- meta[["metadata_primary"]] # take sites from primary run
+#   primary_cols <- names(primary_meta)
+#   sites_cols <- c("sites_aae", "sites_ip", "sites_op")
+#
+#   if (!all(sites_cols %in% primary_cols)) {
+#     stop(
+#       "At least one of sites_aae, sites_ip or sites_op is missing from the ",
+#       "primary run's metadata.",
+#       call. = FALSE
+#     )
+#   }
 
   sites_list <- primary_meta |>
     dplyr::select("sites_aae", "sites_ip", "sites_op") |>

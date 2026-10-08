@@ -7,7 +7,7 @@ library(logr, quietly = TRUE)
 # Generate a report folder and populate it with content
 populate_template(
   scheme_code = "XYZ",  # change to scheme of interest
-  site_codes = NULL,  # NULL will fetch site codes from Azure
+#  site_codes = NULL,  # NULL will fetch site codes from Azure
   result_sets = get_nhp_result_sets(),  # fetch results metadata from Azure
   run_stages = list(  # provide run stage labels from Azure metadata...
     secondary = "final_report_ndg1",  # used as a comparator to the primary
