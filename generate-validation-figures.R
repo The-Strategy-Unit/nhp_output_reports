@@ -113,6 +113,7 @@ save_soc_obc_open_data <- get_soc_obc_open(r_final_report_ndg2, r_validation_rep
 
 # get the bespoke s curve charts
 save_bespoke_ecdf_plots <- get_bespoke_ecdf(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes)
+# - NEEDS FIXING
 
 # get the additional risk table
 ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes)
