@@ -6,7 +6,7 @@ purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
 container <- azkit::get_container("results")
 
-scheme_code = "XYZ" # add scheme_code for the scenario here to replace XYZ
+scheme_code = "RBT" # add scheme_code for the scenario here to replace XYZ
 # If the scheme has site codes already recorded or if all sites are required then set site_codes=NULL, otherwise set sites manually
 scenario_name_1 <- "SOC"
 scenario_name_2 <- "OBC"
@@ -17,9 +17,9 @@ result_sets = get_nhp_result_sets()
 # paths to data
 path_final_report_ndg1 <- get_run_stage_path("final_report_ndg1")
 
-path_final_report_ndg2 <- get_run_stage_path("final_report_ndg2")
+path_final_report_ndg2 <- get_run_stage_path("final_report_ndg2") #SOC
 
-path_validation_report_ndg2 <- get_run_stage_path("validation_report_ndg2")
+path_validation_report_ndg2 <- get_run_stage_path("validation_report_ndg2") #OBC
 
 path_validation_report_ndg3 <- get_run_stage_path("validation_report_ndg3")
 
@@ -41,15 +41,6 @@ r_validation_report_ndg3 <- get_nhp_results(results_path = path_validation_repor
 
 r_opening_date_scenario <- get_nhp_results(results_path = path_opening_date_scenario)
 
-
-# get sites for a scenario (need a results path for specific scenario)
-#site_codes <- get_sites(path_validation_report_ndg2) # DONT NEED TO PULL SITES HERE
-
-# site_codes = list( # change each element (each can be NULL to mean 'all')
-#   ip  = "R0A66",
-#   op  = "R0A66",
-#   aae = "R0A66"
-# )
 
 
 # in CAGR calc, assumes this raises to power of forecast period? Need to account for difference if using opening scenario

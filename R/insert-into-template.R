@@ -396,17 +396,17 @@ split_version_string <- function(version_string) {
 #     )
 #   }
 
-  sites_list <- primary_meta |>
-    dplyr::select("sites_aae", "sites_ip", "sites_op") |>
-    unlist() |>
-    as.list()
+  # sites_list <- primary_meta |>
+  #   dplyr::select("sites_aae", "sites_ip", "sites_op") |>
+  #   unlist() |>
+  #   as.list()
+  #
+  # # Convert returned values into what's expected by this codebase
+  # sites_list |>
+  #   purrr::set_names(\(x) stringr::str_remove(x, "sites_")) |> # 'ip' not 'sites_ip'
+  #   purrr::map(\(x) stringr::str_split_1(x, ",")) |> # "X,Y" to c("X", "Y")
+  #   purrr::map(\(x) if (identical(x, "ALL")) NULL else x) # NULL means all sites
 
-  # Convert returned values into what's expected by this codebase
-  sites_list |>
-    purrr::set_names(\(x) stringr::str_remove(x, "sites_")) |> # 'ip' not 'sites_ip'
-    purrr::map(\(x) stringr::str_split_1(x, ",")) |> # "X,Y" to c("X", "Y")
-    purrr::map(\(x) if (identical(x, "ALL")) NULL else x) # NULL means all sites
-}
 
 read_template_docx <- function(
   sharepoint_site = Sys.getenv("SP_SU_SITE"),

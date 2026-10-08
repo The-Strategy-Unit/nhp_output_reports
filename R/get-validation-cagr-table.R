@@ -1,11 +1,11 @@
-get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes,obc_site_codes, scenario_name_1,scenario_name_2){
+get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes, obc_site_codes, scenario_name_1, scenario_name_2){
 
-
+browser()
   #### Issue 35 from nhp_output_reports ----
 
   # where they already exist, use figures from generate_values_list function
-  values_list_soc <- data.frame(name = names(generate_values_list(soc_scenario, soc_scenario, soc_site_codes)),
-                                soc = unlist(generate_values_list(soc_scenario, soc_scenario, soc_site_codes))) |>
+  values_list_soc <- data.frame(name = names(generate_values_list(soc_scenario, soc_scenario, soc_site_codes, soc_site_codes)),
+                                soc = unlist(generate_values_list(soc_scenario, soc_scenario, soc_site_codes, soc_site_codes))) |>
     dplyr::filter(name %in% c("item_01", "item_02", "item_03", "item_04", "item_08", "item_10", "item_13", "item_14","item_16", "item_17", "item_78", "item_79")) |>
     dplyr::mutate(name = dplyr::case_match(
       name,
@@ -24,8 +24,8 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
     ),
     soc = as.numeric(soc))
 
-  values_list_obc <- data.frame(name = names(generate_values_list(obc_scenario, obc_scenario, obc_site_codes)),
-                                obc = unlist(generate_values_list(obc_scenario, obc_scenario, obc_site_codes))) |>
+  values_list_obc <- data.frame(name = names(generate_values_list(obc_scenario, obc_scenario, obc_site_codes, obc_site_codes)),
+                                obc = unlist(generate_values_list(obc_scenario, obc_scenario, obc_site_codes, obc_site_codes))) |>
     dplyr::filter(name %in% c("item_01", "item_02", "item_03", "item_04", "item_08", "item_10", "item_13", "item_14","item_16", "item_17", "item_78", "item_79")) |>
     dplyr::mutate(name = dplyr::case_match(
       name,

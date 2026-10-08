@@ -43,7 +43,7 @@ get_scenario_path <- function(scenario_name){
 get_sites <- function(agg_results_path) {
 
   run_row <- result_sets |>
-    dplyr::filter(aggregated_results_path == agg_results_path|file==agg_results_path) # added this to allow for parquet and json scenario data
+    dplyr::filter(aggregated_results_path == agg_results_path | file == agg_results_path) # added this to allow for parquet and json scenario data
 
   sites_list <- run_row |>
     dplyr::select("sites_aae", "sites_ip", "sites_op") |>
@@ -95,6 +95,14 @@ calculate_wide_principal_stats <- function(results, cols) {
 
   stat_cols <- c("mean", "median", "p10", "p90")
 
+  #raw principal runs
+  raw_runs <- results |>
+    dplyr::filter(model_run != 0) |>dplyr::arrange(model_run) |>
+    dplyr::summarise(
+      model_runs = list(value),
+      .by = tidyselect::all_of(id_cols)
+    )
+
   results |>
     reskit:::check_single_row_groups(cols) |>
     dplyr::mutate(
@@ -119,6 +127,10 @@ calculate_wide_principal_stats <- function(results, cols) {
       median    = median_principal,
       lwr_ci    = p10_principal,
       upr_ci    = p90_principal
+    ) |>
+    dplyr::left_join(raw_runs, by = id_cols) |>
+    dplyr::mutate(
+      activity_type = stringr::str_extract(pod, "^[^_]+")
     )
 
 }
@@ -127,6 +139,15 @@ calculate_step_counts <- function(results) {
 
   cols = c("pod", "sitetret", "change_factor", "strategy", "measure", "model_run")
   id_cols <- setdiff(cols, "model_run")
+
+  #raw principal runs
+  raw_runs <- results |>
+    dplyr::filter(model_run != 0) |>
+    dplyr::arrange(model_run) |>
+    dplyr::summarise(
+      model_runs = list(value),
+      .by = tidyselect::all_of(id_cols)
+    )
 
   results |>
     dplyr::filter_out(model_run == 0) |>
@@ -137,11 +158,11 @@ calculate_step_counts <- function(results) {
     dplyr::summarise(
       value = mean(.data[["value"]]),
       .by = tidyselect::all_of(reskit:::swap_modelrun_for_stage(cols))
-    )   |>
-
-    dplyr::select(
-      dplyr::all_of(id_cols),
-      value
+    ) |>
+    dplyr::select(dplyr::all_of(id_cols), value)  |>
+    dplyr::left_join(raw_runs, by = id_cols) |>
+    dplyr::mutate(
+      activity_type = stringr::str_extract(pod, "^[^_]+")
     )
 
 }

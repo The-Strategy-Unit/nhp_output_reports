@@ -4,7 +4,6 @@ get_soc_obc <- function (soc_scenario, obc_scenario, soc_site_codes, obc_site_co
 # get baseline year for CAGR calculation
 soc_base_yr <- soc_scenario[["params"]][["start_year"]]
 
-
 #### SOC figures from final report ---
 
 # Sample code to get the outputs from the default tab of the download spreadsheet
@@ -89,8 +88,6 @@ soc <- dplyr::bind_rows(soc_ip, soc_ae, soc_op) |>
 
 #### OBC figures from validation report ---
 
-  # get SOC site codes
-  obc_site_codes <- get_sites(obc_scenario_path)
 
 # Sample code to get the outputs from the default tab of the download spreadsheet
 obc_ip <- get_baseline_and_projections(obc_scenario)|>

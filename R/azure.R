@@ -94,7 +94,7 @@ get_nhp_results <- function(
       file.path(results_path, "params.json")
     )
 
-    results <- reskit::read_results_parquet_files(container, results_path)|>
+    results <- reskit::read_results_parquet_files(container, results_path) |>
       purrr::imap(parse_az_results)
 
     nhp_results <- dplyr::lst(params, results)
