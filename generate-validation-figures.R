@@ -103,6 +103,7 @@ total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation
 
 # get the mitigation data
 tpma_impact_table <- get_tpma_impact_table(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2)
+# - NEEDS FIXING
 
 # get the p90 table
 p90_table <-get_p90_table(soc_obc_data,soc_numeric_version,scenario_name_1,scenario_name_2)
@@ -115,9 +116,11 @@ save_bespoke_ecdf_plots <- get_bespoke_ecdf(r_final_report_ndg2, r_validation_re
 
 # get the additional risk table
 ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes)
+# - NEEDS FIXING
 
 # get the additional risk table for opening date scenario
 ecdf_vals_open <- get_bespoke_ecdf_values(r_final_report_ndg2, r_opening_date_scenario, soc_site_codes, obc_site_codes)
+# - NEEDS FIXING
 
 # get the details of the model runs featured in these outputs
 scenarios_used_details <-  tibble::tibble(
