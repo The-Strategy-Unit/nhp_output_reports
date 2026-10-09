@@ -1,6 +1,6 @@
 get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes, obc_site_codes, scenario_name_1, scenario_name_2){
 
-browser()
+
   #### Issue 35 from nhp_output_reports ----
 
   # where they already exist, use figures from generate_values_list function

@@ -26,9 +26,13 @@ path_validation_report_ndg3 <- get_run_stage_path("validation_report_ndg3")
 path_opening_date_scenario <- get_run_stage_path("validation_report_ndg2_opening")
 
 
-# get SOC site codes
+# get site codes
 soc_site_codes <- get_sites(path_final_report_ndg2)
 obc_site_codes <- get_sites(path_validation_report_ndg2)
+
+# get run stages
+soc_run_stage <- "final_report_ndg2"
+obc_run_stage <- "validation_report_ndg2"
 
 # pull data
 r_final_report_ndg1 <- get_nhp_results(results_path = path_final_report_ndg1)
@@ -87,14 +91,13 @@ soc_obc_table <- get_soc_obc_table(soc_obc_data,soc_numeric_version,scenario_nam
 # get the cagr data
 cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2)
 # something wrong with generate-values.R - NEEDS FIXING
-
+# issue in get_ecdf_quintiles(): mod_model_results_distribution_get_data() returns empty df for parquet results
 
 #get the total mitigation table
 total_miti_table <- get_total_mitigation_table(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2)
 
 # get the mitigation data
 tpma_impact_table <- get_tpma_impact_table(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2)
-# - NEEDS FIXING
 
 # get the p90 table
 p90_table <-get_p90_table(soc_obc_data,soc_numeric_version,scenario_name_1,scenario_name_2)
@@ -105,6 +108,7 @@ save_soc_obc_open_data <- get_soc_obc_open(r_final_report_ndg2, r_validation_rep
 # get the bespoke s curve charts
 save_bespoke_ecdf_plots <- get_bespoke_ecdf(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes)
 # - NEEDS FIXING
+# same issue as in CAGR table
 
 # get the additional risk table
 ecdf_vals <- get_bespoke_ecdf_values(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes)
@@ -117,9 +121,9 @@ ecdf_vals_open <- get_bespoke_ecdf_values(r_final_report_ndg2, r_opening_date_sc
 # get the details of the model runs featured in these outputs
 scenarios_used_details <-  tibble::tibble(
   scheme = c(r_final_report_ndg2[["params"]][["dataset"]],r_validation_report_ndg2[["params"]][["dataset"]]),
-  scenario_name = c(scenario_name_1,scenario_name_2),
+  scenario_name = c(scenario_name_1, scenario_name_2),
   scenario = c(r_final_report_ndg2[["params"]][["scenario"]],r_validation_report_ndg2[["params"]][["scenario"]]),
-  run_stage = c(meta[[2]][[2]][["run_stage"]],meta[[3]][[2]][["run_stage"]]),
+  run_stage = c(soc_run_stage, obc_run_stage),
   description = c("Final Report NDG2 Scenario", "Validation Report NDG2 Scenario"),
   baseline = c(glue::glue(r_final_report_ndg2[["params"]][["start_year"]],"/",r_final_report_ndg2[["params"]][["start_year"]]+1),
                glue::glue(r_validation_report_ndg2[["params"]][["start_year"]],"/",r_validation_report_ndg2[["params"]][["start_year"]]+1)),

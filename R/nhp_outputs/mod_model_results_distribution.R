@@ -1,4 +1,5 @@
 mod_model_results_distribution_get_data <- function(r, selected_measure, site_codes) {
+
   activity_type <- pod <- measure <- NULL
   zeallot::`%<-%`(c(activity_type, pod, measure), selected_measure)
   get_model_run_distribution(r, pod, measure, site_codes)
@@ -44,6 +45,7 @@ mod_model_results_distribution_beeswarm_plot <- function(data, show_origin) {
 }
 
 get_ecdf_quantiles_data <- function(data) {
+
   ecdf_fn <- stats::ecdf(data[["value"]])
 
   # Calculate x values for y-axis quantiles

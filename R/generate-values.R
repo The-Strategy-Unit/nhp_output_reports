@@ -409,7 +409,7 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
 
   # item 19 see below = item 24
 
-  quants <- get_ecdf_quantiles(data= r_primary, primary_site_codes, activity_type="inpatients",
+  quants <- get_ecdf_quantiles(data = r_primary, primary_site_codes, activity_type="inpatients",
                                pods = c("ip_non-elective_admission",
                                          "ip_elective_admission",
                                          "ip_elective_daycase",
