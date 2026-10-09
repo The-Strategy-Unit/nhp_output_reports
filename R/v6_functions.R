@@ -110,9 +110,9 @@ calculate_wide_principal_stats <- function(results, cols) {
     ) |>
     dplyr::summarise(
       mean = mean(.data[["value"]]),
-      median = stats::quantile(.data[["value"]], 0.5),
-      p10 = stats::quantile(.data[["value"]], 0.1),
-      p90 = stats::quantile(.data[["value"]], 0.9),
+      median = stats::quantile(.data[["value"]], 0.5, names = FALSE),
+      p10 = stats::quantile(.data[["value"]], 0.1, names = FALSE),
+      p90 = stats::quantile(.data[["value"]], 0.9, names = FALSE),
       .by = tidyselect::all_of(reskit:::swap_modelrun_for_stage(cols))
     )   |>
 
@@ -129,8 +129,8 @@ calculate_wide_principal_stats <- function(results, cols) {
       upr_ci    = p90_principal
     ) |>
     dplyr::left_join(raw_runs, by = id_cols) |>
-    dplyr::mutate(
-      activity_type = stringr::str_extract(pod, "^[^_]+")
+    dplyr::relocate(
+      model_runs, .after = baseline
     )
 
 }
@@ -163,6 +163,15 @@ calculate_step_counts <- function(results) {
     dplyr::left_join(raw_runs, by = id_cols) |>
     dplyr::mutate(
       activity_type = stringr::str_extract(pod, "^[^_]+")
+    ) |>
+    dplyr::relocate(c(sitetret,
+                    strategy,
+                    activity_type,
+                    measure,
+                    change_factor,
+                    pod,
+                    model_runs,
+                    value)
     )
 
 }

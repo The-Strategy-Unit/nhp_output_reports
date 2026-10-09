@@ -12,7 +12,7 @@ mod_model_results_distribution_beeswarm_plot <- function(data, show_origin) {
   x_placeholder <- "100%" # dummy label to help line up beeswarm and ECDF plots
 
   data |>
-    require_rows() |>
+ #   require_rows() |>
     ggplot2::ggplot() +
     suppressWarnings(
       ggbeeswarm::geom_quasirandom(
@@ -88,7 +88,7 @@ mod_model_results_distribution_ecdf_plot <- function(data, show_origin) {
   line_guides[c(lines_n, lines_n / 2), "colour"] <- "red"
 
   data |>
-    require_rows() |>
+#    require_rows() |>
     ggplot2::ggplot() +
     suppressWarnings(
       ggplot2::geom_point(
