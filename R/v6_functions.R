@@ -50,6 +50,13 @@ get_sites <- function(agg_results_path) {
     unlist() |>
     as.list()
 
+  # checks if there are entries for sites
+  sites_list <- purrr::keep(sites_list, \(x) !is.na(x) && nzchar(x))
+
+  if (length(sites_list) == 0) {
+    stop("No sites selected", call. = FALSE)
+  }
+
   # Convert returned values into what's expected by this codebase
   sites_list |>
     purrr::set_names(\(x) stringr::str_remove(x, "sites_")) |> # 'ip' not 'sites_ip'
