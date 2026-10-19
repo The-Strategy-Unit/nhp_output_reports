@@ -1,17 +1,10 @@
 generate_values_list <- function(
-    obc_scenario,
-    soc_scenario,
-    obc_site_codes,
-    soc_site_codes,
+    r_primary,
+    r_secondary,
+    primary_site_codes,
+    secondary_site_codes,
     char_out = TRUE  # convert all output values to strings?
 ) {
-
-
-  r_primary <- obc_scenario
-  r_secondary <- soc_scenario
-
-  primary_site_codes <- obc_site_codes
-  secondary_site_codes <- soc_site_codes
 
 
   # Get different cuts of the model output data
@@ -280,7 +273,7 @@ item_9 <- ifelse(item_9 == 0, "N/A", item_9)
   item_10 <- janitor::round_half_up((((baseline_beddays + baseline_adjustment_beddays + efficiencies_beddays + covid_adjustment_beddays) / (baseline_beddays + baseline_adjustment_beddays + covid_adjustment_beddays))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
 
-  item_11 <- janitor::round_half_up((((baseline_admissions + baseline_adjustment_beddays + activity_avoidance_admissions + efficiencies_admissions + covid_adjustment_admissions) / (baseline_admissions + baseline_adjustment_beddays + covid_adjustment_admissions))^(1 / years_to_forecast) - 1) * 100, digits = 2)
+  item_11 <- janitor::round_half_up((((baseline_admissions + baseline_adjustment_admissions + activity_avoidance_admissions + efficiencies_admissions + covid_adjustment_admissions) / (baseline_admissions + baseline_adjustment_admissions + covid_adjustment_admissions))^(1 / years_to_forecast) - 1) * 100, digits = 2)
   item_12 <- janitor::round_half_up((((baseline_beddays + baseline_adjustment_beddays + activity_avoidance_beddays + efficiencies_beddays + covid_adjustment_beddays) / (baseline_beddays + baseline_adjustment_beddays + covid_adjustment_beddays))^(1 / years_to_forecast) - 1) * 100, digits = 2)
 
   # outpatients
