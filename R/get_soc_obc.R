@@ -1,8 +1,8 @@
-get_soc_obc <- function (soc_scenario, obc_scenario, soc_site_codes, obc_site_codes){
+get_soc_obc <- function (soc_scenario, obc_scenario, soc_site_codes, obc_site_codes,fc_period_soc,fc_period_obc){
 
 
 # get baseline year for CAGR calculation
-soc_base_yr <- soc_scenario[["params"]][["start_year"]]
+#soc_base_yr <- soc_scenario[["params"]][["start_year"]]
 
 #### SOC figures from final report ---
 
@@ -139,8 +139,17 @@ obc_deliv <- obc_scenario[["results"]][["delivery_episode_in_spell"]]|>
 
 # need baseline_adjustment from step_counts
 baseline_adjustment <- get_stepcounts(obc_scenario) |>
-  dplyr::filter(measure=="admissions" | measure == "beddays") |>
+ # dplyr::filter(measure=="admissions" | measure == "beddays") |>
   dplyr::filter(change_factor == "baseline_adjustment") |>
+  dplyr::mutate(measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
+                                           pod == "sdec" ~ "attendances (type 5)",
+                                           measure == "tele_attendances" ~ "attendances",
+                                           TRUE ~ measure),
+                pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
+                                       pod == "aae_type-05" ~ "sdec",
+                                       stringr::str_starts(pod, "op_") ~ "op_outpatients",
+                                       TRUE ~ pod)
+  ) |>
   dplyr::group_by(pod, measure) |>
   dplyr::summarise(baseline_adjustment = sum(value)) |>
   dplyr::ungroup()
@@ -150,6 +159,7 @@ covid_adjustment <- get_stepcounts(obc_scenario) |>
   dplyr::filter(change_factor == "covid_adjustment") |>
   dplyr::mutate(measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
                                            pod == "sdec" ~ "attendances (type 5)",
+                                           measure == "tele_attendances" ~ "attendances",
                                            TRUE ~ measure),
                 pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                        pod == "aae_type-05" ~ "sdec",
