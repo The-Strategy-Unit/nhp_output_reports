@@ -1,4 +1,4 @@
-get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes, obc_site_codes, scenario_name_1, scenario_name_2){
+get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes, obc_site_codes, scenario_name_1, scenario_name_2,fc_period_soc,fc_period_obc){
 
 
   #### Issue 35 from nhp_output_reports ----
@@ -175,6 +175,35 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   ndg_ae <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + non_demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_soc) - 1) * 100, digits = 2)
 
   # net growth A&E
+  birth_adjustment <- get_stepcounts(soc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "birth_adjustment") |>
+    filter_sites_conditionally(soc_site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  health_status_adjustment <- get_stepcounts(soc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "health_status_adjustment") |>
+    filter_sites_conditionally(soc_site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  waiting_list_adjustment <- get_stepcounts(soc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "waiting_list_adjustment") |>
+    filter_sites_conditionally(soc_site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  model_interaction_term <- get_stepcounts(soc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "model_interaction_term") |>
+    filter_sites_conditionally(soc_site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+
   activity_avoidance_ae <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
@@ -335,6 +364,34 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   ndg_ae <- janitor::round_half_up((((baseline + baseline_adjustment + covid_adjustment + non_demographic_adjustment) / (baseline + baseline_adjustment + covid_adjustment))^(1 / fc_period_obc) - 1) * 100, digits = 2)
 
   # net growth A&E
+  birth_adjustment <- get_stepcounts(obc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "birth_adjustment") |>
+    filter_sites_conditionally(obc_site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  health_status_adjustment <- get_stepcounts(obc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "health_status_adjustment") |>
+    filter_sites_conditionally(obc_site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  waiting_list_adjustment <- get_stepcounts(obc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "waiting_list_adjustment") |>
+    filter_sites_conditionally(obc_site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
+  model_interaction_term <- get_stepcounts(obc_scenario)|>
+    dplyr::filter(activity_type == "aae") |>
+    dplyr::filter(change_factor == "model_interaction_term") |>
+    filter_sites_conditionally(obc_site_codes$aae) |>
+    dplyr::summarise(value = sum(value)) |>
+    dplyr::pull()
+
   activity_avoidance_ae <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
