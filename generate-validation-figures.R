@@ -6,7 +6,7 @@ purrr::walk(list.files("R", ".R$", , TRUE, TRUE), source)
 
 container <- azkit::get_container("results")
 
-scheme_code = "RBT" # add scheme_code for the scenario here to replace XYZ
+scheme_code = "RCF" # add scheme_code for the scenario here to replace XYZ
 # If the scheme has site codes already recorded or if all sites are required then set site_codes=NULL, otherwise set sites manually
 scenario_name_1 <- "SOC"
 scenario_name_2 <- "OBC"
@@ -83,13 +83,13 @@ soc_major_version <- get_soc_major_version(soc_version)
 soc_numeric_version <- get_numeric_soc_version(soc_version)
 
 # get the soc obc data
-soc_obc_data <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes)
+soc_obc_data <- get_soc_obc(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes,fc_period_soc,fc_period_obc)
 
 # get the soc obc table
 soc_obc_table <- get_soc_obc_table(soc_obc_data,soc_numeric_version,scenario_name_1,scenario_name_2)
 
 # get the cagr data
-cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2)
+cagr_table <- get_validation_cagr_table(r_final_report_ndg2, r_validation_report_ndg2, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2,fc_period_soc,fc_period_obc)
 # something wrong with generate-values.R - NEEDS FIXING
 # issue in get_ecdf_quintiles(): mod_model_results_distribution_get_data() returns empty df for parquet results
 
