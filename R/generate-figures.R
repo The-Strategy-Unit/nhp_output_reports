@@ -1,4 +1,4 @@
-write_all_figures <- function(r_secondary, r_primary, site_codes, fig_dir) {
+write_all_figures <- function(r_primary, r_secondary, primary_site_codes, secondary_site_codes, fig_dir) {
 
   # Chromote setting needed in this function to webshot the figures
   op <- options(chromote.headless = "new")
@@ -35,7 +35,7 @@ write_all_figures <- function(r_secondary, r_primary, site_codes, fig_dir) {
 
   # Figures 8.2, 8.3, 8.4, 8.5, 8.6
 
-  plots_pcf <- prepare_all_principal_change_factors_plots(r_primary, site_codes)
+  plots_pcf <- prepare_all_principal_change_factors_plots(r_primary, primary_site_codes)
 
   purrr::walk2(
     paste0(fig_dir, "/figure_8.", 2:6, ".png"),
@@ -49,7 +49,7 @@ write_all_figures <- function(r_secondary, r_primary, site_codes, fig_dir) {
   # Figures 9.1, 9.2, 9.6, 9.7, 9.8, 9.9
 
   plots_activity_distribution <-
-    prepare_all_activity_distribution_plots(r_primary, site_codes)
+    prepare_all_activity_distribution_plots(r_primary, primary_site_codes)
 
   purrr::walk2(
     paste0(fig_dir, "/figure_9.", c(1:2, 6:9), ".png"),
@@ -74,7 +74,7 @@ write_all_figures <- function(r_secondary, r_primary, site_codes, fig_dir) {
 
   # Figure 9.4
   path_9.4 <- paste0(fig_dir, "/figure_9.4.png")
-  prepare_all_principal_change_factors(r_primary, site_codes) |>
+  prepare_all_principal_change_factors(r_primary, primary_site_codes) |>
     _$ip |>  # only need inpatients
     mod_principal_change_factor_effects_summarised("beddays", TRUE) |>
     mod_principal_change_factor_effects_cf_plot() |>
@@ -87,7 +87,7 @@ write_all_figures <- function(r_secondary, r_primary, site_codes, fig_dir) {
 
   # Figure 9.5
   path_9.5 <- paste0(fig_dir, "/figure_9.5.png")
-  mod_principal_summary_los_data(r_primary, site_codes[["ip"]], "beddays") |>
+  mod_principal_summary_los_data(r_primary, primary_site_codes[["ip"]], "beddays") |>
     dplyr::mutate(pod_name = stringr::str_replace(pod_name, "Admission", "Bed Days")) |>
     dplyr::arrange(pod_name, los_group) |>
     mod_principal_summary_los_table() |>
@@ -98,7 +98,7 @@ write_all_figures <- function(r_secondary, r_primary, site_codes, fig_dir) {
   # Figures 9.10, 9.11 (NDG variant 1)
 
   plots_activity_distribution <-
-    prepare_all_activity_distribution_plots(r_secondary, site_codes)  # Note NDG variant 1
+    prepare_all_activity_distribution_plots(r_secondary, secondary_site_codes)  # Note NDG variant 1
 
   purrr::walk2(
     paste0(fig_dir, "/figure_9.", 10:11, ".png"),

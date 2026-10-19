@@ -1,7 +1,8 @@
 generate_check_values <- function(
-    r_secondary,
     r_primary,
-    site_codes,
+    r_secondary,
+    primary_site_codes,
+    secondary_site_codes,
     char_out = TRUE,  # convert all output values to strings?,
     values_list
 ) {
@@ -28,7 +29,7 @@ generate_check_values <- function(
   #top 10 inpatient activity avoidance admissions mitigators (fig8.2) 10-19
   data <- trust |>
     dplyr::filter(activity_type=="ip", measure=="admissions", change_factor=="activity_avoidance")|>
-    filter_if_any_sites(site_codes) |>
+    filter_if_any_sites(primary_site_codes) |>
     dplyr::select(-dplyr::any_of(c("model_runs", "time_profiles"))) |>
     dplyr::group_by(activity_type,measure,change_factor,strategy)|>
     dplyr::summarise (value=sum(value))
@@ -37,7 +38,7 @@ generate_check_values <- function(
   #top 10 inpatient activity avoidance beddays mitigators (fig8.3) 20-29
   data <- trust |>
     dplyr::filter(activity_type=="ip", measure=="beddays", change_factor=="activity_avoidance")|>
-    filter_if_any_sites(site_codes) |>
+    filter_if_any_sites(primary_site_codes) |>
     dplyr::select(-dplyr::any_of(c("model_runs", "time_profiles"))) |>
     dplyr::group_by(activity_type,measure,change_factor,strategy)|>
     dplyr::summarise (value=sum(value))
@@ -46,7 +47,7 @@ generate_check_values <- function(
   #top 10 inpatient efficiencies beddays mitigators (fig8.4) 30-39
   data <- trust |>
     dplyr::filter(activity_type=="ip", measure=="beddays", change_factor=="efficiencies")|>
-    filter_if_any_sites(site_codes) |>
+    filter_if_any_sites(primary_site_codes) |>
     dplyr::select(-dplyr::any_of(c("model_runs", "time_profiles"))) |>
     dplyr::group_by(activity_type,measure,change_factor,strategy)|>
     dplyr::summarise (value=sum(value))
