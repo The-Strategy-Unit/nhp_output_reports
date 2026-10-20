@@ -96,32 +96,20 @@ populate_template <- function(
 
   # Get results files
   if (!is.null(run_stages)) {
-    meta <- get_run_metadata(scheme_code, result_sets, run_stages)
+    meta <- result_sets |>
+      dplyr::filter(dataset==scheme_code) |>
+      dplyr::filter(run_stage==run_stages$primary | run_stage==run_stages$secondary) |>
+      dplyr::mutate(selected_file_path = dplyr::case_when(is.na(aggregated_results_path) ~ file,
+                                                          .default = aggregated_results_path))
 
-    primary_version <- meta[["metadata_primary"]] |>
-      dplyr::pull("app_version") |>
-      split_version_string()
+    primary_file <- meta |> dplyr::filter(run_stage==run_stages$primary) |>
+      dplyr::pull(selected_file_path)
 
-    secondary_version <- meta[["metadata_secondary"]] |>
-      dplyr::pull("app_version") |>
-      split_version_string()
+    secondary_file <- meta |> dplyr::filter(run_stage==run_stages$secondary) |>
+      dplyr::pull(selected_file_path)
 
-# I think this should be flipped around to choose parquet by default and json if not??? ###########################################
-
-    # Choose zipped-json paths by default
-    primary_file <- meta[["metadata_primary"]] |> dplyr::pull(file)
-    secondary_file <- meta[["metadata_secondary"]] |> dplyr::pull(file)
-
-    # Choose the results directory path (parquets) if >=v5.2
-    if (primary_version["major"] >= 5 && primary_version["minor"] >= 2) {
-      primary_file <- meta[["metadata_primary"]] |>
-        dplyr::pull(aggregated_results_path)
-    }
-    if (secondary_version["major"] >= 5 && secondary_version["minor"] >= 2) {
-      secondary_file <- meta[["metadata_secondary"]] |>
-        dplyr::pull(aggregated_results_path)
-    }
   }
+
 
   if (!is.null(scenario_files)) {
     primary_file <- scenario_files[["primary"]]
@@ -390,20 +378,20 @@ populate_template <- function(
 }
 
 
-get_run_metadata <- function(scheme_code, result_sets, run_stages) {
-  scheme_results <- result_sets |> dplyr::filter(dataset == scheme_code)
-
-  metadata_primary <- dplyr::filter(
-    scheme_results,
-    run_stage == run_stages[["primary"]]
-  )
-  metadata_secondary <- dplyr::filter(
-    scheme_results,
-    run_stage == run_stages[["secondary"]]
-  )
-
-  dplyr::lst(metadata_secondary, metadata_primary)
-}
+# get_run_metadata <- function(scheme_code, result_sets, run_stages) {
+#   scheme_results <- result_sets |> dplyr::filter(dataset == scheme_code)
+#
+#   metadata_primary <- dplyr::filter(
+#     scheme_results,
+#     run_stage == run_stages[["primary"]]
+#   )
+#   metadata_secondary <- dplyr::filter(
+#     scheme_results,
+#     run_stage == run_stages[["secondary"]]
+#   )
+#
+#   dplyr::lst(metadata_secondary, metadata_primary)
+# }
 
 split_version_string <- function(version_string) {
   # Check format is in the form v1.2 (model version stored as major-minor only)
