@@ -106,6 +106,8 @@ populate_template <- function(
       dplyr::pull("app_version") |>
       split_version_string()
 
+# I think this should be flipped around to choose parquet by default and json if not??? ###########################################
+
     # Choose zipped-json paths by default
     primary_file <- meta[["metadata_primary"]] |> dplyr::pull(file)
     secondary_file <- meta[["metadata_secondary"]] |> dplyr::pull(file)

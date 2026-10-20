@@ -11,8 +11,8 @@ populate_template(
   secondary_site_codes = NULL,  # NULL will fetch site codes from Azure
   result_sets = get_nhp_result_sets(),  # fetch results metadata from Azure
   run_stages = list(  # provide run stage labels from Azure metadata...
-    secondary = "final_report_ndg1",  # used as a comparator to the primary
-    primary = "final_report_ndg2"  # the main data source for the report
+    primary = "final_report_ndg2",  # the main data source for the report
+    secondary = "final_report_ndg1"  # used as a comparator to the primary
   ),
   scenario_files = NULL,  # ...or provide arbitrary results filepaths
   template_path = NULL,  # NULL to read from SharePoint
