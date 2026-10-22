@@ -1,4 +1,4 @@
-get_tpma_impact_table <- function(soc_scenario,obc_scenario, site_codes,scenario_name_1,scenario_name_2){
+get_tpma_impact_table <- function(soc_scenario,obc_scenario, soc_site_codes, obc_site_codes, scenario_name_1,scenario_name_2){
 
   tpma_soc <- get_tpma_data(soc_scenario) |>
     dplyr::rename(range_soc = range)
@@ -9,7 +9,7 @@ get_tpma_impact_table <- function(soc_scenario,obc_scenario, site_codes,scenario
 
   mits <- read_mitigators()
 
-  impact <- get_impact_data(soc_scenario,obc_scenario, site_codes)
+  impact <- get_impact_data(soc_scenario,obc_scenario, soc_site_codes, obc_site_codes)
 
   tpma <- dplyr::left_join(impact, tpma, by = dplyr::join_by(activity_type, strategy)) |>
     dplyr::select(c(strategy, measure, range_soc, impact_soc, range_obc, impact_obc)) |>

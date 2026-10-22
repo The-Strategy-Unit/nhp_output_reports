@@ -1,10 +1,10 @@
-get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, site_codes){
+get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, soc_site_codes, obc_site_codes){
 
       #### SOC figures from final report ---
 
     soc_ip <- get_baseline_and_projections(soc_scenario)|>
       dplyr::filter(measure=="admissions" | measure == "beddays") |>
-      filter_sites_conditionally(site_codes$ip) |>
+      filter_sites_conditionally(soc_site_codes$ip) |>
       dplyr::group_by(pod,measure) |>
       dplyr::summarise(principal = sum(principal)) |>
       dplyr::ungroup()
@@ -13,7 +13,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
     # Code to get A&E and SDEC from default tab
     soc_ae <- get_baseline_and_projections(soc_scenario)|>
       dplyr::filter(measure=="ambulance" | measure == "walk-in") |>
-      filter_sites_conditionally(site_codes$aae) |>
+      filter_sites_conditionally(soc_site_codes$aae) |>
       dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                            pod == "aae_type-05" ~ "sdec"),
                     measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
@@ -25,7 +25,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
     # code to get OP activity from defaults tab
     soc_op <- get_baseline_and_projections(soc_scenario)|>
       dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
-      filter_sites_conditionally(site_codes$op) |>
+      filter_sites_conditionally(soc_site_codes$op) |>
       dplyr::mutate(pod = "op_outpatients") |>
       dplyr::group_by(pod, measure) |>
       dplyr::summarise(principal = sum(principal)) |>
@@ -42,7 +42,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
     # Sample code to get the outputs from the default tab of the download spreadsheet
     obc_ip <- get_baseline_and_projections(obc_scenario)|>
       dplyr::filter(measure=="admissions" | measure == "beddays") |>
-      filter_sites_conditionally(site_codes$ip) |>
+      filter_sites_conditionally(obc_site_codes$ip) |>
       dplyr::group_by(pod,measure) |>
       dplyr::summarise(principal = sum(principal),
                        p90.obc = sum(upr_ci)) |>
@@ -52,7 +52,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
     # Code to get A&E and SDEC from default tab
     obc_ae <- get_baseline_and_projections(obc_scenario)|>
       dplyr::filter(measure=="ambulance" | measure == "walk-in") |>
-      filter_sites_conditionally(site_codes$aae) |>
+      filter_sites_conditionally(obc_site_codes$aae) |>
       dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                            pod == "aae_type-05" ~ "sdec"),
                     measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
@@ -65,7 +65,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
     # code to get OP activity from defaults tab
     obc_op <- get_baseline_and_projections(obc_scenario)|>
       dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
-      filter_sites_conditionally(site_codes$op) |>
+      filter_sites_conditionally(obc_site_codes$op) |>
       dplyr::mutate(pod = "op_outpatients") |>
       dplyr::group_by(pod, measure) |>
       dplyr::summarise(principal = sum(principal),
@@ -76,7 +76,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
     # code to get delivery activity from delivery_episode_in_spell tab
     obc_deliv <- obc_scenario[["results"]][["delivery_episode_in_spell"]]|>
       dplyr::filter(measure=="admissions" | measure == "beddays") |>
-      filter_sites_conditionally(site_codes$ip) |>
+      filter_sites_conditionally(obc_site_codes$ip) |>
       dplyr::mutate(pod = "delivery") |>
       dplyr::group_by(pod, measure) |>
       dplyr::summarise(principal = sum(principal),
@@ -96,7 +96,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
 
   obc_ip <- get_baseline_and_projections(obc_open_scenario)|>
     dplyr::filter(measure=="admissions" | measure == "beddays") |>
-    filter_sites_conditionally(site_codes$ip) |>
+    filter_sites_conditionally(obc_site_codes$ip) |>
     dplyr::group_by(pod,measure) |>
     dplyr::summarise(principal.open = sum(principal),
                      p90.open = sum(upr_ci)) |>
@@ -106,7 +106,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
   # Code to get A&E and SDEC from default tab
   obc_ae <- get_baseline_and_projections(obc_open_scenario)|>
     dplyr::filter(measure=="ambulance" | measure == "walk-in") |>
-    filter_sites_conditionally(site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes$aae) |>
     dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                          pod == "aae_type-05" ~ "sdec"),
                   measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
@@ -118,7 +118,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
   # code to get OP activity from defaults tab
   obc_op <- get_baseline_and_projections(obc_open_scenario)|>
     dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
-    filter_sites_conditionally(site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes$op) |>
     dplyr::mutate(pod = "op_outpatients") |>
     dplyr::group_by(pod, measure) |>
     dplyr::summarise(principal.open = sum(principal),
@@ -128,7 +128,7 @@ get_soc_obc_open <- function (soc_scenario, obc_scenario, obc_open_scenario, sit
   # code to get delivery activity from delivery_episode_in_spell tab
   obc_deliv <- obc_open_scenario[["results"]][["delivery_episode_in_spell"]]|>
     dplyr::filter(measure=="admissions" | measure == "beddays") |>
-    filter_sites_conditionally(site_codes$ip) |>
+    filter_sites_conditionally(obc_site_codes$ip) |>
     dplyr::mutate(pod = "delivery") |>
     dplyr::group_by(pod, measure) |>
     dplyr::summarise(principal.open = sum(principal),

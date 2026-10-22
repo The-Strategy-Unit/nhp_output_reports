@@ -29,7 +29,8 @@
 #' @noRd
 populate_template <- function(
   scheme_code,
-  site_codes = NULL,
+  primary_site_codes = NULL,
+  secondary_site_codes = NULL,
   result_sets = get_nhp_result_sets(),
   run_stages = NULL,
   scenario_files = NULL,
@@ -95,30 +96,20 @@ populate_template <- function(
 
   # Get results files
   if (!is.null(run_stages)) {
-    meta <- get_run_metadata(scheme_code, result_sets, run_stages)
+    meta <- result_sets |>
+      dplyr::filter(dataset==scheme_code) |>
+      dplyr::filter(run_stage==run_stages$primary | run_stage==run_stages$secondary) |>
+      dplyr::mutate(selected_file_path = dplyr::case_when(is.na(aggregated_results_path) ~ file,
+                                                          .default = aggregated_results_path))
 
-    primary_version <- meta[["metadata_primary"]] |>
-      dplyr::pull("app_version") |>
-      split_version_string()
+    primary_file <- meta |> dplyr::filter(run_stage==run_stages$primary) |>
+      dplyr::pull(selected_file_path)
 
-    secondary_version <- meta[["metadata_secondary"]] |>
-      dplyr::pull("app_version") |>
-      split_version_string()
+    secondary_file <- meta |> dplyr::filter(run_stage==run_stages$secondary) |>
+      dplyr::pull(selected_file_path)
 
-    # Choose zipped-json paths by default
-    primary_file <- meta[["metadata_primary"]] |> dplyr::pull(file)
-    secondary_file <- meta[["metadata_secondary"]] |> dplyr::pull(file)
-
-    # Choose the results directory path (parquets) if >=v5.2
-    if (primary_version["major"] >= 5 && primary_version["minor"] >= 2) {
-      primary_file <- meta[["metadata_primary"]] |>
-        dplyr::pull(aggregated_results_path)
-    }
-    if (secondary_version["major"] >= 5 && secondary_version["minor"] >= 2) {
-      secondary_file <- meta[["metadata_secondary"]] |>
-        dplyr::pull(aggregated_results_path)
-    }
   }
+
 
   if (!is.null(scenario_files)) {
     primary_file <- scenario_files[["primary"]]
@@ -151,35 +142,59 @@ populate_template <- function(
   }
 
   # Get sites
-  if (is.null(site_codes)) {
-    site_codes <- get_sites(meta)
-  }
-  ip_sites <- if (is.null(site_codes$ip)) {
+  # primary site codes
+   if (is.null(primary_site_codes)) {
+     primary_site_codes <- get_sites(result_sets,primary_file)
+   }
+  primary_ip_sites <- if (is.null(primary_site_codes$ip)) {
     "all"
   } else {
-    paste(site_codes$ip, collapse = ", ")
+    paste(primary_site_codes$ip, collapse = ", ")
   }
-  op_sites <- if (is.null(site_codes$op)) {
+  primary_op_sites <- if (is.null(primary_site_codes$op)) {
     "all"
   } else {
-    paste(site_codes$op, collapse = ", ")
+    paste(primary_site_codes$op, collapse = ", ")
   }
-  aae_sites <- if (is.null(site_codes$aae)) {
+  primary_aae_sites <- if (is.null(primary_site_codes$aae)) {
     "all"
   } else {
-    paste(site_codes$aae, collapse = ", ")
+    paste(primary_site_codes$aae, collapse = ", ")
+  }
+# secondary site codes
+  if (is.null(secondary_site_codes)) {
+    secondary_site_codes <- get_sites(result_sets,primary_file)
+  }
+  secondary_ip_sites <- if (is.null(secondary_site_codes$ip)) {
+    "all"
+  } else {
+    paste(secondary_site_codes$ip, collapse = ", ")
+  }
+  secondary_op_sites <- if (is.null(secondary_site_codes$op)) {
+    "all"
+  } else {
+    paste(secondary_site_codes$op, collapse = ", ")
+  }
+  secondary_aae_sites <- if (is.null(secondary_site_codes$aae)) {
+    "all"
+  } else {
+    paste(secondary_site_codes$aae, collapse = ", ")
   }
   logr::log_print(glue::glue(
     "* Sites:\n",
-    "- Inpatients:  {ip_sites}\n",
-    "- Outpatients: {op_sites}\n",
-    "- A&E:         {aae_sites}"
+    "- Primary Inpatients:  {primary_ip_sites}\n",
+    "- Primary Outpatients: {primary_op_sites}\n",
+    "- Primary A&E:         {primary_aae_sites}\n",
+    "- Secondary Inpatients:  {secondary_ip_sites}\n",
+    "- Secondary Outpatients: {secondary_op_sites}\n",
+    "- Secondary A&E:         {secondary_aae_sites}"
   ))
 
   # Read results data
   logr::log_print(glue::glue("* Fetching results..."))
   r_primary <- get_nhp_results(results_path = primary_file)
   r_secondary <- get_nhp_results(results_path = secondary_file)
+
   if (report_type == "addendum") {
     r_finalreportndg2_file <- get_nhp_results(results_path = finalreportndg2_file)
     r_finalreportndg1_file <- get_nhp_results(results_path = finalreportndg1_file)
@@ -198,16 +213,20 @@ populate_template <- function(
   logr::log_print(glue::glue(
     "* Calculating values for insertion to the template..."
   ))
-  values_list <- generate_values_list(r_secondary, r_primary, site_codes)
+  values_list <- generate_values_list(r_primary, r_secondary, primary_site_codes, secondary_site_codes)
   values_df <- values_list |>
     tibble::enframe(name = "item") |>
     tidyr::unnest(value)
   val_dir <- file.path(output_dir, "values")
   if (report_type == "addendum") {
+    # get the final report sites
+    finalreportndg2_site_codes <- get_sites(result_sets,finalreportndg2_file)
+    finalreportndg1_site_codes <- get_sites(result_sets,finalreportndg1_file)
     values_list_final <- generate_values_list(
-      r_finalreportndg1_file,
       r_finalreportndg2_file,
-      site_codes
+      r_finalreportndg1_file,
+      finalreportndg2_site_codes,
+      finalreportndg1_site_codes
     )
     values_df_final <- values_list_final |>
       tibble::enframe(name = "item") |>
@@ -240,9 +259,10 @@ populate_template <- function(
     "* Calculating check values for writing to csv..."
   ))
   check_list <- generate_check_values(
-    r_secondary,
     r_primary,
-    site_codes,
+    r_secondary,
+    primary_site_codes,
+    secondary_site_codes,
     char_out = TRUE,
     values_list
   )
@@ -263,9 +283,10 @@ populate_template <- function(
 
   if (report_type == "addendum") {
     check_list_final <- generate_check_values(
-      r_finalreportndg1_file,
       r_finalreportndg2_file,
-      site_codes,
+      r_finalreportndg1_file,
+      finalreportndg2_site_codes,
+      finalreportndg1_site_codes,
       char_out = TRUE,
       values_list_final
     )
@@ -331,13 +352,14 @@ populate_template <- function(
     ))
   }
 
-  write_all_figures(r_secondary, r_primary, site_codes, fig_dir)
+  write_all_figures(r_primary, r_secondary, primary_site_codes, secondary_site_codes, fig_dir)
 
   if (report_type == "addendum") {
     write_all_figures(
-      r_finalreportndg1_file,
       r_finalreportndg2_file,
-      site_codes,
+      r_finalreportndg1_file,
+      finalreportndg2_site_codes,
+      finalreportndg1_site_codes,
       fig_dir_final
     )
   }
@@ -357,20 +379,20 @@ populate_template <- function(
 }
 
 
-get_run_metadata <- function(scheme_code, result_sets, run_stages) {
-  scheme_results <- result_sets |> dplyr::filter(dataset == scheme_code)
-
-  metadata_primary <- dplyr::filter(
-    scheme_results,
-    run_stage == run_stages[["primary"]]
-  )
-  metadata_secondary <- dplyr::filter(
-    scheme_results,
-    run_stage == run_stages[["secondary"]]
-  )
-
-  dplyr::lst(metadata_secondary, metadata_primary)
-}
+# get_run_metadata <- function(scheme_code, result_sets, run_stages) {
+#   scheme_results <- result_sets |> dplyr::filter(dataset == scheme_code)
+#
+#   metadata_primary <- dplyr::filter(
+#     scheme_results,
+#     run_stage == run_stages[["primary"]]
+#   )
+#   metadata_secondary <- dplyr::filter(
+#     scheme_results,
+#     run_stage == run_stages[["secondary"]]
+#   )
+#
+#   dplyr::lst(metadata_secondary, metadata_primary)
+# }
 
 split_version_string <- function(version_string) {
   # Check format is in the form v1.2 (model version stored as major-minor only)
@@ -383,30 +405,30 @@ split_version_string <- function(version_string) {
     setNames(c("major", "minor"))
 }
 
-get_sites <- function(meta) {
-  primary_meta <- meta[["metadata_primary"]] # take sites from primary run
-  primary_cols <- names(primary_meta)
-  sites_cols <- c("sites_aae", "sites_ip", "sites_op")
+# get_sites <- function(meta) {
+#   primary_meta <- meta[["metadata_primary"]] # take sites from primary run
+#   primary_cols <- names(primary_meta)
+#   sites_cols <- c("sites_aae", "sites_ip", "sites_op")
+#
+#   if (!all(sites_cols %in% primary_cols)) {
+#     stop(
+#       "At least one of sites_aae, sites_ip or sites_op is missing from the ",
+#       "primary run's metadata.",
+#       call. = FALSE
+#     )
+#   }
 
-  if (!all(sites_cols %in% primary_cols)) {
-    stop(
-      "At least one of sites_aae, sites_ip or sites_op is missing from the ",
-      "primary run's metadata.",
-      call. = FALSE
-    )
-  }
+  # sites_list <- primary_meta |>
+  #   dplyr::select("sites_aae", "sites_ip", "sites_op") |>
+  #   unlist() |>
+  #   as.list()
+  #
+  # # Convert returned values into what's expected by this codebase
+  # sites_list |>
+  #   purrr::set_names(\(x) stringr::str_remove(x, "sites_")) |> # 'ip' not 'sites_ip'
+  #   purrr::map(\(x) stringr::str_split_1(x, ",")) |> # "X,Y" to c("X", "Y")
+  #   purrr::map(\(x) if (identical(x, "ALL")) NULL else x) # NULL means all sites
 
-  sites_list <- primary_meta |>
-    dplyr::select("sites_aae", "sites_ip", "sites_op") |>
-    unlist() |>
-    as.list()
-
-  # Convert returned values into what's expected by this codebase
-  sites_list |>
-    purrr::set_names(\(x) stringr::str_remove(x, "sites_")) |> # 'ip' not 'sites_ip'
-    purrr::map(\(x) stringr::str_split_1(x, ",")) |> # "X,Y" to c("X", "Y")
-    purrr::map(\(x) if (identical(x, "ALL")) NULL else x) # NULL means all sites
-}
 
 read_template_docx <- function(
   sharepoint_site = Sys.getenv("SP_SU_SITE"),
@@ -419,7 +441,7 @@ read_template_docx <- function(
     template_path <- Sys.getenv("SP_TEMPLATE_PATH_ADD")
   }
 
-  site <- Microsoft365R::get_sharepoint_site(sharepoint_site)
+  site <- Microsoft365R::get_team(sharepoint_site)
   drv <- site$get_drive()
   tmp_docx <- tempfile(fileext = ".docx")
   drv$download_file(template_path, dest = tmp_docx)
@@ -483,6 +505,10 @@ insert_figure_on_cursor <- function(
 get_final_report_result <- function(scheme_code, results, ndg) {
   final_results <- results |>
     dplyr::filter(dataset == scheme_code) |>
-    dplyr::filter(run_stage == paste0("final_report_ndg", ndg))
-  file_name <- final_results$file
+    dplyr::filter(run_stage == paste0("final_report_ndg", ndg)) |>
+    dplyr::mutate(path = dplyr::case_when(
+      is.na(aggregated_results_path) ~ file,
+      TRUE ~ aggregated_results_path
+    ))
+  file_name <- final_results$path
 }

@@ -28,11 +28,10 @@ tbl_soc_obc_p90 <- soc_obc |>
     values = c("Delivery admissions", "Delivery beddays"),
     extents = c("body", "stub")
   ) |>
-  # footnote not working
   gt::tab_footnote(
     footnote = "Not available in SOC scenario",
     locations = gt::cells_stub(
-      c("Delivery admissions", "Delivery beddays", "SDEC attendances (type 5)")
+      c("Delivery admissions", "Delivery beddays")
     )
   ) |>
   gt::tab_footnote(
@@ -44,13 +43,31 @@ tbl_soc_obc_p90 <- soc_obc |>
   gt::opt_footnote_marks(marks = "numbers") |>
   gt_theme()
 
-if(soc_numeric_version<2.2){
+
+if("SDEC attendances (type 5)" %in% soc_obc$heading ){
   tbl_soc_obc_p90 <-
     tbl_soc_obc_p90 |>
     gt::tab_footnote(
       footnote = "Not available in SOC scenario",
       locations = gt::cells_stub(
-        c("Regular Day Attender admissions")
+        "SDEC attendances (type 5)"
+      )
+    )
+  gt::tab_footnote(
+    footnote = "Activity assumed to be SDEC due to TPMAs. Care should be taken in interpretation as recording of activity is in flux.",
+    locations = gt::cells_stub(
+      "SDEC attendances (type 5)"
+    )
+  )
+}
+
+if("Regular Day Attender admissions" %in% soc_obc$heading & soc_numeric_version<2.2){
+  tbl_soc_obc_p90 <-
+    tbl_soc_obc_p90 |>
+    gt::tab_footnote(
+      footnote = "Not available in SOC scenario",
+      locations = gt::cells_stub(
+        "Regular Day Attender admissions"
       ))
 }
 

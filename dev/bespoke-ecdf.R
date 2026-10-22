@@ -1,5 +1,5 @@
 
-get_bespoke_ecdf <- function(soc_scenario, obc_scenario, site_codes){
+get_bespoke_ecdf <- function(soc_scenario, obc_scenario, soc_site_codes, obc_site_codes){
   # Generate bespoke ECDF curves that show 'validation' results with a point to
   # indicate the principal from the 'final' data.
   #
@@ -10,6 +10,9 @@ get_bespoke_ecdf <- function(soc_scenario, obc_scenario, site_codes){
 
   r_primary <- obc_scenario
   r_secondary <- soc_scenario
+
+  primary_site_codes <- obc_site_codes
+  secondary_site_codes <- soc_site_codes
 
   # Bespoke functions ----
 
@@ -121,7 +124,8 @@ get_bespoke_ecdf <- function(soc_scenario, obc_scenario, site_codes){
   plot_ecdf <- function(
     data_primary,
     data_secondary, # NEW: pass in secondary to add NDG2 principal point to plot
-    site_codes,
+    primary_site_codes,
+    secondary_site_codes,
     activity_type,
     pod,
     measure
@@ -135,18 +139,19 @@ get_bespoke_ecdf <- function(soc_scenario, obc_scenario, site_codes){
         "outpatients" = "op",
         "aae" = "aae"
       )
-    site_codes <- site_codes[[activity_type_short]]
+    primary_site_codes <- primary_site_codes[[activity_type_short]]
+    secondary_site_codes <- secondary_site_codes[[activity_type_short]]
 
     # selected_measure <- c(activity_type, pod, measure)
 
     aggregated_data_primary <- data_primary |>
       # mod_model_results_distribution_get_data(selected_measure, site_codes) |>
-      get_model_run_distribution(pod, measure, site_codes) |>
+      get_model_run_distribution(pod, measure, primary_site_codes) |>
       require_rows()
 
     principal_secondary <- data_secondary |>
       # mod_model_results_distribution_get_data(selected_measure, site_codes) |>
-      get_model_run_distribution(pod, measure, site_codes) |>
+      get_model_run_distribution(pod, measure, secondary_site_codes) |>
       dplyr::distinct(principal) |>
       dplyr::pull()
 
@@ -163,7 +168,8 @@ get_bespoke_ecdf <- function(soc_scenario, obc_scenario, site_codes){
   plot_ecdf(
     data_primary = r_primary,
     data_secondary = r_secondary,
-    site_codes,
+    primary_site_codes,
+    secondary_site_codes,
     activity_type = "inpatients",
     pod = "ip_non-elective_admission",
     measure = "admissions"
@@ -206,7 +212,8 @@ get_bespoke_ecdf <- function(soc_scenario, obc_scenario, site_codes){
       plot_ecdf(
         data_primary = r_primary,
         data_secondary = r_secondary,
-        site_codes,
+        primary_site_codes,
+        secondary_site_codes,
         activity_type = at,
         pod = p,
         measure = m
