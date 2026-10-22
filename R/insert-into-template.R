@@ -356,9 +356,10 @@ populate_template <- function(
 
   if (report_type == "addendum") {
     write_all_figures(
-      r_finalreportndg1_file,
       r_finalreportndg2_file,
-      site_codes,
+      r_finalreportndg1_file,
+      finalreportndg2_site_codes,
+      finalreportndg1_site_codes,
       fig_dir_final
     )
   }
@@ -440,7 +441,7 @@ read_template_docx <- function(
     template_path <- Sys.getenv("SP_TEMPLATE_PATH_ADD")
   }
 
-  site <- Microsoft365R::get_sharepoint_site(sharepoint_site)
+  site <- Microsoft365R::get_team(sharepoint_site)
   drv <- site$get_drive()
   tmp_docx <- tempfile(fileext = ".docx")
   drv$download_file(template_path, dest = tmp_docx)
