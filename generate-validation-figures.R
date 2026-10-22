@@ -27,8 +27,8 @@ path_opening_date_scenario <- get_run_stage_path("validation_report_ndg2_opening
 
 
 # get site codes
-soc_site_codes <- get_sites(path_final_report_ndg2)
-obc_site_codes <- get_sites(path_validation_report_ndg2)
+soc_site_codes <- get_sites(result_sets,path_final_report_ndg2)
+obc_site_codes <- get_sites(result_sets,path_validation_report_ndg2)
 
 # get run stages
 soc_run_stage <- "final_report_ndg2"

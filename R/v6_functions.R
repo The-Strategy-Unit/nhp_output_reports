@@ -40,7 +40,7 @@ get_scenario_path <- function(scenario_name){
 
 # assumes the aggregated file path has already been identified (e.g. get_run_stage_path())
 
-get_sites <- function(agg_results_path) {
+get_sites <- function(result_sets,agg_results_path) {
 
   run_row <- result_sets |>
     dplyr::filter(aggregated_results_path == agg_results_path | file == agg_results_path) # added this to allow for parquet and json scenario data

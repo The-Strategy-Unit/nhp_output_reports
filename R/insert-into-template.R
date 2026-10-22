@@ -144,7 +144,7 @@ populate_template <- function(
   # Get sites
   # primary site codes
    if (is.null(primary_site_codes)) {
-     primary_site_codes <- get_sites(primary_file)
+     primary_site_codes <- get_sites(result_sets,primary_file)
    }
   primary_ip_sites <- if (is.null(primary_site_codes$ip)) {
     "all"
@@ -163,7 +163,7 @@ populate_template <- function(
   }
 # secondary site codes
   if (is.null(secondary_site_codes)) {
-    secondary_site_codes <- get_sites(primary_file)
+    secondary_site_codes <- get_sites(result_sets,primary_file)
   }
   secondary_ip_sites <- if (is.null(secondary_site_codes$ip)) {
     "all"
@@ -220,8 +220,8 @@ populate_template <- function(
   val_dir <- file.path(output_dir, "values")
   if (report_type == "addendum") {
     # get the final report sites
-    finalreportndg2_site_codes <- get_sites(finalreportndg2_file)
-    finalreportndg1_site_codes <- get_sites(finalreportndg1_file)
+    finalreportndg2_site_codes <- get_sites(result_sets,finalreportndg2_file)
+    finalreportndg1_site_codes <- get_sites(result_sets,finalreportndg1_file)
     values_list_final <- generate_values_list(
       r_finalreportndg2_file,
       r_finalreportndg1_file,
