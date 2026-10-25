@@ -380,20 +380,6 @@ populate_template <- function(
 }
 
 
-# get_run_metadata <- function(scheme_code, result_sets, run_stages) {
-#   scheme_results <- result_sets |> dplyr::filter(dataset == scheme_code)
-#
-#   metadata_primary <- dplyr::filter(
-#     scheme_results,
-#     run_stage == run_stages[["primary"]]
-#   )
-#   metadata_secondary <- dplyr::filter(
-#     scheme_results,
-#     run_stage == run_stages[["secondary"]]
-#   )
-#
-#   dplyr::lst(metadata_secondary, metadata_primary)
-# }
 
 split_version_string <- function(version_string) {
   # Check format is in the form v1.2 (model version stored as major-minor only)
@@ -406,29 +392,6 @@ split_version_string <- function(version_string) {
     setNames(c("major", "minor"))
 }
 
-# get_sites <- function(meta) {
-#   primary_meta <- meta[["metadata_primary"]] # take sites from primary run
-#   primary_cols <- names(primary_meta)
-#   sites_cols <- c("sites_aae", "sites_ip", "sites_op")
-#
-#   if (!all(sites_cols %in% primary_cols)) {
-#     stop(
-#       "At least one of sites_aae, sites_ip or sites_op is missing from the ",
-#       "primary run's metadata.",
-#       call. = FALSE
-#     )
-#   }
-
-  # sites_list <- primary_meta |>
-  #   dplyr::select("sites_aae", "sites_ip", "sites_op") |>
-  #   unlist() |>
-  #   as.list()
-  #
-  # # Convert returned values into what's expected by this codebase
-  # sites_list |>
-  #   purrr::set_names(\(x) stringr::str_remove(x, "sites_")) |> # 'ip' not 'sites_ip'
-  #   purrr::map(\(x) stringr::str_split_1(x, ",")) |> # "X,Y" to c("X", "Y")
-  #   purrr::map(\(x) if (identical(x, "ALL")) NULL else x) # NULL means all sites
 
 
 read_template_docx <- function(
