@@ -12,7 +12,6 @@ mod_model_results_distribution_beeswarm_plot <- function(data, show_origin) {
   x_placeholder <- "100%" # dummy label to help line up beeswarm and ECDF plots
 
   data |>
- #   require_rows() |>
     ggplot2::ggplot() +
     suppressWarnings(
       ggbeeswarm::geom_quasirandom(
