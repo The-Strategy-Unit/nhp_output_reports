@@ -64,7 +64,7 @@ write_all_figures <- function(r_primary, r_secondary, primary_site_codes, second
   path_9.3 <- paste0(fig_dir, "/figure_9.3.png")
   mod_principal_summary_data(
     r_primary,
-    primary_site_codes$ip  # fig is IP only; we can ignore other site-code groupings
+    primary_site_codes[["ip"]]  # fig is IP only; we can ignore other site-code groupings
   ) |>
     dplyr::filter(activity_type == "Inpatient") |>
     mod_principal_summary_table() |>

@@ -146,39 +146,39 @@ populate_template <- function(
    if (is.null(primary_site_codes)) {
      primary_site_codes <- get_sites(result_sets,primary_file)
    }
-  primary_ip_sites <- if (is.null(primary_site_codes$ip)) {
+  primary_ip_sites <- if (is.null(primary_site_codes[["ip"]])) {
     "all"
   } else {
-    paste(primary_site_codes$ip, collapse = ", ")
+    paste(primary_site_codes[["ip"]], collapse = ", ")
   }
-  primary_op_sites <- if (is.null(primary_site_codes$op)) {
+  primary_op_sites <- if (is.null(primary_site_codes[["op"]])) {
     "all"
   } else {
-    paste(primary_site_codes$op, collapse = ", ")
+    paste(primary_site_codes[["op"]], collapse = ", ")
   }
-  primary_aae_sites <- if (is.null(primary_site_codes$aae)) {
+  primary_aae_sites <- if (is.null(primary_site_codes[["aae"]])) {
     "all"
   } else {
-    paste(primary_site_codes$aae, collapse = ", ")
+    paste(primary_site_codes[["aae"]], collapse = ", ")
   }
 # secondary site codes
   if (is.null(secondary_site_codes)) {
     secondary_site_codes <- get_sites(result_sets,primary_file)
   }
-  secondary_ip_sites <- if (is.null(secondary_site_codes$ip)) {
+  secondary_ip_sites <- if (is.null(secondary_site_codes[["ip"]])) {
     "all"
   } else {
-    paste(secondary_site_codes$ip, collapse = ", ")
+    paste(secondary_site_codes[["ip"]], collapse = ", ")
   }
-  secondary_op_sites <- if (is.null(secondary_site_codes$op)) {
+  secondary_op_sites <- if (is.null(secondary_site_codes[["op"]])) {
     "all"
   } else {
-    paste(secondary_site_codes$op, collapse = ", ")
+    paste(secondary_site_codes[["op"]], collapse = ", ")
   }
-  secondary_aae_sites <- if (is.null(secondary_site_codes$aae)) {
+  secondary_aae_sites <- if (is.null(secondary_site_codes[["aae"]])) {
     "all"
   } else {
-    paste(secondary_site_codes$aae, collapse = ", ")
+    paste(secondary_site_codes[["aae"]], collapse = ", ")
   }
   logr::log_print(glue::glue(
     "* Sites:\n",
@@ -189,6 +189,7 @@ populate_template <- function(
     "- Secondary Outpatients: {secondary_op_sites}\n",
     "- Secondary A&E:         {secondary_aae_sites}"
   ))
+
 
   # Read results data
   logr::log_print(glue::glue("* Fetching results..."))

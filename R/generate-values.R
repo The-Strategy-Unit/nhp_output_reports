@@ -29,12 +29,12 @@ generate_values_list <- function(
  scheme_code <- r_primary[["params"]][["dataset"]]
  scenario_primary <- r_primary[["params"]][["scenario"]]
  scenario_secondary <- r_secondary[["params"]][["scenario"]]
- primary_site_codes_ip <- if (is.null(primary_site_codes$ip)) "all" else primary_site_codes$ip
- primary_site_codes_op <- if (is.null(primary_site_codes$op)) "all" else primary_site_codes$op
- primary_site_codes_aae <- if (is.null(primary_site_codes$aae)) "all" else primary_site_codes$aae
- secondary_site_codes_ip <- if (is.null(secondary_site_codes$ip)) "all" else secondary_site_codes$ip
- secondary_site_codes_op <- if (is.null(secondary_site_codes$op)) "all" else secondary_site_codes$op
- secondary_site_codes_aae <- if (is.null(secondary_site_codes$aae)) "all" else secondary_site_codes$aae
+ primary_site_codes_ip <- if (is.null(primary_site_codes[["ip"]])) "all" else primary_site_codes[["ip"]]
+ primary_site_codes_op <- if (is.null(primary_site_codes[["op"]])) "all" else primary_site_codes[["op"]]
+ primary_site_codes_aae <- if (is.null(primary_site_codes[["aae"]])) "all" else primary_site_codes[["aae"]]
+ secondary_site_codes_ip <- if (is.null(secondary_site_codes[["ip"]])) "all" else secondary_site_codes[["ip"]]
+ secondary_site_codes_op <- if (is.null(secondary_site_codes[["op"]])) "all" else secondary_site_codes[["op"]]
+ secondary_site_codes_aae <- if (is.null(secondary_site_codes[["aae"]])) "all" else secondary_site_codes[["aae"]]
  create_datetime_primary <- r_primary[["params"]][["create_datetime"]]
  create_datetime_secondary <- r_secondary[["params"]][["create_datetime"]]
  start_year <- r_primary[["params"]][["start_year"]]
@@ -45,35 +45,35 @@ generate_values_list <- function(
   baseline <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -86,35 +86,35 @@ generate_values_list <- function(
   baseline <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -129,28 +129,28 @@ generate_values_list <- function(
   baseline_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -159,21 +159,21 @@ generate_values_list <- function(
   baseline_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -181,7 +181,7 @@ generate_values_list <- function(
   covid_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -194,35 +194,35 @@ generate_values_list <- function(
   baseline_admissions <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_admissions <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   activity_avoidance_admissions <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_admissions <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment_admissions <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -236,35 +236,35 @@ item_9 <- ifelse(item_9 == 0, "N/A", item_9)
   baseline_beddays <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_beddays <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   activity_avoidance_beddays <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_beddays <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment_beddays <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -280,35 +280,35 @@ item_9 <- ifelse(item_9 == 0, "N/A", item_9)
   baseline_op <- trust |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(primary_site_codes$op) |>
+    filter_sites_conditionally(primary_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_op <- trust |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$op) |>
+    filter_sites_conditionally(primary_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   activity_avoidance_op <- trust |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(primary_site_codes$op) |>
+    filter_sites_conditionally(primary_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_op <- trust |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(primary_site_codes$op) |>
+    filter_sites_conditionally(primary_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment_op <- trust |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$op) |>
+    filter_sites_conditionally(primary_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -333,35 +333,35 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline_ae <- trust |>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(primary_site_codes$aae) |>
+    filter_sites_conditionally(primary_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_ae <- trust |>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$aae) |>
+    filter_sites_conditionally(primary_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   activity_avoidance_ae <- trust |>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(primary_site_codes$aae) |>
+    filter_sites_conditionally(primary_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_ae <- trust |>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(primary_site_codes$aae) |>
+    filter_sites_conditionally(primary_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment_ae <- trust |>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$aae) |>
+    filter_sites_conditionally(primary_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -381,21 +381,21 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   # see below
   baseline_default <- trust_default |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::ungroup() |>
     dplyr::summarise(baseline = sum(baseline)) |>
     dplyr::pull()
 
   lwrci <- trust_default |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::ungroup() |>
     dplyr::summarise(lwr_ci = sum(lwr_ci)) |>
     dplyr::pull()
 
   uprci <- trust_default |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::ungroup() |>
     dplyr::summarise(upr_ci = sum(upr_ci)) |>
     dplyr::pull()
@@ -419,74 +419,74 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline_los_0 <- trust_los |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(baseline = sum(baseline)) |>
     dplyr::pull()
 
   principal_los <- trust_los |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(principal = sum(principal)) |>
     dplyr::pull()
 
   lowerci_los <- trust_los |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(lwr_ci = sum(lwr_ci)) |>
     dplyr::pull()
 
   upperci_los <- trust_los |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(upr_ci = sum(upr_ci)) |>
     dplyr::pull()
 
   principal_los_0 <- trust_los |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(principal = sum(principal)) |>
     dplyr::pull()
 
   lowerci_los_0 <- trust_los |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(lwr_ci = sum(lwr_ci)) |>
     dplyr::pull()
 
   upperci_los_0 <- trust_los |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(upr_ci = sum(upr_ci)) |>
     dplyr::pull()
 
   baseline_los_1 <- trust_los |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(!startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(baseline = sum(baseline)) |>
     dplyr::pull()
 
   principal_los_1 <- trust_los |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(!startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(principal = sum(principal)) |>
     dplyr::pull()
 
   lowerci_los_1 <- trust_los |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(!startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(lwr_ci = sum(lwr_ci)) |>
     dplyr::pull()
 
   upperci_los_1 <- trust_los |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(!startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(upr_ci = sum(upr_ci)) |>
     dplyr::pull()
 
@@ -517,7 +517,7 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   # items25,26,27, 50, 51 from variant 1
   baseline_default_v1 <- trust_default_v1 |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::ungroup() |>
     dplyr::summarise(baseline = sum(baseline)) |>
     dplyr::pull()
@@ -525,47 +525,47 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline_los_0_v1 <- trust_los_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(baseline = sum(baseline)) |>
     dplyr::pull()
 
   principal_los_v1 <- trust_los_v1 |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(principal = sum(principal)) |>
     dplyr::pull()
 
   principal_los_0_v1 <- trust_los_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(principal = sum(principal)) |>
     dplyr::pull()
 
   baseline_los_1_v1 <- trust_los_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(!startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(baseline = sum(baseline)) |>
     dplyr::pull()
 
   principal_los_1_v1 <- trust_los_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(!startsWith(as.character(los_group), "0")) |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(principal = sum(principal)) |>
     dplyr::pull()
 
   lwrci_v1 <- trust_default_v1 |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::ungroup() |>
     dplyr::summarise(lwr_ci = sum(lwr_ci)) |>
     dplyr::pull()
 
   uprci_v1 <- trust_default_v1 |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::ungroup() |>
     dplyr::summarise(upr_ci = sum(upr_ci)) |>
     dplyr::pull()
@@ -589,63 +589,63 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   birth_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "birth_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   health_status_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "health_status_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   waiting_list_adjustment <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "waiting_list_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   model_interaction_term <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "model_interaction_term") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -672,63 +672,63 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   birth_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "birth_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   health_status_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "health_status_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   waiting_list_adjustment <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "waiting_list_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   model_interaction_term <- trust |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "model_interaction_term") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -755,7 +755,7 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   waiting_list_adjustment_ad <- trust |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "waiting_list_adjustment") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -777,63 +777,63 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   birth_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "birth_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   health_status_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "health_status_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   waiting_list_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "waiting_list_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   model_interaction_term_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "model_interaction_term") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -844,63 +844,63 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   birth_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "birth_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   health_status_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "health_status_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   waiting_list_adjustment_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "waiting_list_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   model_interaction_term_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "model_interaction_term") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -919,35 +919,35 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline_admissions_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_admissions_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   activity_avoidance_admissions_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_admissions_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment_admissions_v1 <- trust_v1 |>
     dplyr::filter(measure == "admissions") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -956,35 +956,35 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   baseline_beddays_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment_beddays_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   activity_avoidance_beddays_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_beddays_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment_beddays_v1 <- trust_v1 |>
     dplyr::filter(measure == "beddays") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(secondary_site_codes$ip) |>
+    filter_sites_conditionally(secondary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -995,13 +995,13 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
 
   admissions <- trust |>
     dplyr::filter(measure == "admissions") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   beddays <- trust |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -1020,14 +1020,14 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   repat <- trust |>
     dplyr::filter(change_factor == "repat") |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   repat_ad <- trust |>
     dplyr::filter(change_factor == "repat") |>
     dplyr::filter(measure == "admissions") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -1049,14 +1049,14 @@ item_14 <- ifelse(item_14 == 0, "N/A", item_14)
   expat <- trust |>
     dplyr::filter(change_factor == "expat") |>
     dplyr::filter(measure == "beddays") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   expat_ad <- trust |>
     dplyr::filter(change_factor == "expat") |>
     dplyr::filter(measure == "admissions") |>
-    filter_sites_conditionally(primary_site_codes$ip) |>
+    filter_sites_conditionally(primary_site_codes[["ip"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
