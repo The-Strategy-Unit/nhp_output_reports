@@ -1,5 +1,5 @@
 
-get_bespoke_ecdf_values <- function(soc_scenario, obc_scenario, site_codes){
+get_bespoke_ecdf_values <- function(soc_scenario, obc_scenario, soc_site_codes, obc_site_codes){
 
   # Generate bespoke table of values derived from ECDF curves that show
   # 'validation' results with a point to
@@ -12,6 +12,9 @@ get_bespoke_ecdf_values <- function(soc_scenario, obc_scenario, site_codes){
 
   r_primary <- obc_scenario
   r_secondary <- soc_scenario
+
+  primary_site_codes <- obc_site_codes
+  secondary_site_codes <- soc_site_codes
 
   # Bespoke functions ----
 
@@ -58,7 +61,7 @@ get_bespoke_ecdf_values <- function(soc_scenario, obc_scenario, site_codes){
   # pod = "ip_non-elective_admission"
   # measure = "admissions"
 
-  get_perc_diffs <- function(data_primary, data_secondary, site_codes, activity_type, pod, measure)
+  get_perc_diffs <- function(data_primary, data_secondary, primary_site_codes, secondary_site_codes, activity_type, pod, measure)
   {
     activity_type_short <-
       switch(
@@ -67,14 +70,15 @@ get_bespoke_ecdf_values <- function(soc_scenario, obc_scenario, site_codes){
         "outpatients" = "op",
         "aae" = "aae"
       )
-    site_codes <- site_codes[[activity_type_short]]
+    primary_site_codes <- primary_site_codes[[activity_type_short]]
+    secondary_site_codes <- secondary_site_codes[[activity_type_short]]
 
     aggregated_data_primary <- data_primary |>
-      get_model_run_distribution(pod, measure, site_codes) |>
+      get_model_run_distribution(pod, measure, primary_site_codes) |>
       require_rows()
 
     aggregated_data_secondary <- data_secondary |>
-      get_model_run_distribution(pod, measure, site_codes) |>
+      get_model_run_distribution(pod, measure, secondary_site_codes) |>
       require_rows()
 
     principal_secondary <- aggregated_data_secondary |>
@@ -129,7 +133,8 @@ get_bespoke_ecdf_values <- function(soc_scenario, obc_scenario, site_codes){
       get_perc_diffs(
         data_primary = r_primary,
         data_secondary = r_secondary,
-        site_codes,
+        primary_site_codes = primary_site_codes,
+        secondary_site_codes = secondary_site_codes,
         activity_type = at,
         pod = p,
         measure = m

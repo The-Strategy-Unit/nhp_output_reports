@@ -1,4 +1,5 @@
 mod_model_results_distribution_get_data <- function(r, selected_measure, site_codes) {
+
   activity_type <- pod <- measure <- NULL
   zeallot::`%<-%`(c(activity_type, pod, measure), selected_measure)
   get_model_run_distribution(r, pod, measure, site_codes)
@@ -11,7 +12,6 @@ mod_model_results_distribution_beeswarm_plot <- function(data, show_origin) {
   x_placeholder <- "100%" # dummy label to help line up beeswarm and ECDF plots
 
   data |>
-    require_rows() |>
     ggplot2::ggplot() +
     suppressWarnings(
       ggbeeswarm::geom_quasirandom(
@@ -44,6 +44,7 @@ mod_model_results_distribution_beeswarm_plot <- function(data, show_origin) {
 }
 
 get_ecdf_quantiles_data <- function(data) {
+
   ecdf_fn <- stats::ecdf(data[["value"]])
 
   # Calculate x values for y-axis quantiles
@@ -86,7 +87,7 @@ mod_model_results_distribution_ecdf_plot <- function(data, show_origin) {
   line_guides[c(lines_n, lines_n / 2), "colour"] <- "red"
 
   data |>
-    require_rows() |>
+#    require_rows() |>
     ggplot2::ggplot() +
     suppressWarnings(
       ggplot2::geom_point(
