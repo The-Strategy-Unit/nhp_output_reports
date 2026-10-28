@@ -13,18 +13,18 @@ generate_check_values <- function(
   horizon_year <- as.character(r_primary[["params"]][["end_year"]])
 
   # Demographic Growth 2&3
-  admissions_growth <- values_list$item_01
-  beddays_growth <- values_list$item_02
+  admissions_growth <- values_list[["item_01"]]
+  beddays_growth <- values_list[["item_02"]]
 
   #Non-demographic growth 4&5
-  admissions_nd_growth <- values_list$item_03
-  beddays_nd_growth <- values_list$item_04
+  admissions_nd_growth <- values_list[["item_03"]]
+  beddays_nd_growth <- values_list[["item_04"]]
 
   #impact of mitigation figure 8.1 Inpatient/outpatients and A&E? 6-9
-  ip_all_ad <- values_list$item_11
-  ip_all_bd <- values_list$item_12
-  op_all_at <- values_list$item_15
-  ae_all_at <- values_list$item_18
+  ip_all_ad <- values_list[["item_11"]]
+  ip_all_bd <- values_list[["item_12"]]
+  op_all_at <- values_list[["item_15"]]
+  ae_all_at <- values_list[["item_18"]]
 
   #top 10 inpatient activity avoidance admissions mitigators (fig8.2) 10-19
   data <- trust |>
@@ -54,36 +54,36 @@ generate_check_values <- function(
   top_ip_bd_ef <- utils::head(data[order(data$value, decreasing= FALSE),], n = 10)
 
   #total beddays increase by horizon % ----section 9 40
-  total_beddays_increase <- values_list$item_19
+  total_beddays_increase <- values_list[["item_19"]]
 
   #Split of above between 0 and overnight …….section 9 41-42
   # 0 LOS Beddays
-  zero_los_beddays <- values_list$item_22
+  zero_los_beddays <- values_list[["item_22"]]
 
   # >0 LOS Beddays
-  non_zero_los_beddays <- values_list$item_23
+  non_zero_los_beddays <- values_list[["item_23"]]
 
   #Gross activity growth for admissions and beddays as CAGR …..section 11 43-44
-  gag_cagr_ad <- values_list$item_28
-  gag_cagr_bd <- values_list$item_30
+  gag_cagr_ad <- values_list[["item_28"]]
+  gag_cagr_bd <- values_list[["item_30"]]
 
   #Net activity growth for admissions and beddays as CAGR
-  nag_cagr_ad <- values_list$item_78
-  nag_cagr_bd <- values_list$item_79
+  nag_cagr_ad <- values_list[["item_78"]]
+  nag_cagr_bd <- values_list[["item_79"]]
 
   #Impact of Activity avoidance mitigators - all IP admissions & beddays - as CAGR (Assumed
   #BAU admissions avoided as CAGR (and beddays resultant) …..section 11 45-46)
-  bau_cagr_ad <- values_list$item_34
-  bau_cagr_bd <- values_list$item_35
+  bau_cagr_ad <- values_list[["item_34"]]
+  bau_cagr_bd <- values_list[["item_35"]]
 
   #Overall impact on average LOS as CAGR (Assumed BAU  productivity …..as CAGR
   #for overall los impact ….section 11 40)
-  bau_cagr_prod <- values_list$item_40
+  bau_cagr_prod <- values_list[["item_40"]]
 
   #Impact of  efficiency mitigators - all IP admissions & beddays - as CAGR (Assumed BAU
   #admissions avoided as CAGR (and beddays resultant) …..section ??)
-  impact_ef_ad_cagr <- values_list$item_09
-  impact_ef_bd_cagr <- values_list$item_10
+  impact_ef_ad_cagr <- values_list[["item_09"]]
+  impact_ef_bd_cagr <- values_list[["item_10"]]
 
   #app version
   app_version <- as.character(r_primary[["params"]][["app_version"]])
@@ -125,9 +125,9 @@ generate_check_values <- function(
 }
 
 filter_if_any_sites <- function(df, site_codes) {
-  has_all_sites <- is.null(site_codes$ip)
+  has_all_sites <- is.null(site_codes[["ip"]])
   if (has_all_sites) return(df)
-  df |> dplyr::filter(sitetret %in% site_codes$ip)
+  df |> dplyr::filter(sitetret %in% site_codes[["ip"]])
 }
 
 
@@ -146,9 +146,9 @@ get_comparison_data <- function(
 
   if (is.null(site_codes)) site_codes <- get_sites(meta)
   cat("* Sites:\n")
-  cat("- IP: ", if(is.null(site_codes$ip))  "all" else site_codes$ip,  "\n")
-  cat("- OP: ", if(is.null(site_codes$op))  "all" else site_codes$op,  "\n")
-  cat("- A&E:", if(is.null(site_codes$aae)) "all" else site_codes$aae, "\n")
+  cat("- IP: ", if(is.null(site_codes[["ip"]]))  "all" else site_codes[["ip"]],  "\n")
+  cat("- OP: ", if(is.null(site_codes[["op"]]))  "all" else site_codes[["op"]],  "\n")
+  cat("- A&E:", if(is.null(site_codes[["aae"]])) "all" else site_codes[["aae"]], "\n")
 
   cat("* Fetching results...\n")
   r_primary <- meta$metadata_primary |> dplyr::pull(file) |> get_nhp_results(results_path = _)

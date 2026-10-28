@@ -9,7 +9,7 @@
 #' @param result_sets A data.frame. Metadata of results files stored on Azure.
 #' @param run_stages List of two character elements. The Azure run-stage tags
 #'   for the scenarios that you want to fetch results for. Elements should be
-#'   named `primary` and `secondary`. Values in thef orm of run-stage values
+#'   named `primary` and `secondary`. Values in the form of run-stage values
 #'   like `"final_report_ndg2"`. You must supply this argument or
 #'   `scenario_files`.
 #' @param scenario_files List of two character elements.The path to arbitrary
@@ -98,14 +98,14 @@ populate_template <- function(
   if (!is.null(run_stages)) {
     meta <- result_sets |>
       dplyr::filter(dataset==scheme_code) |>
-      dplyr::filter(run_stage==run_stages$primary | run_stage==run_stages$secondary) |>
+      dplyr::filter(run_stage==run_stages[["primary"]] | run_stage==run_stages[["secondary"]]) |>
       dplyr::mutate(selected_file_path = dplyr::case_when(is.na(aggregated_results_path) ~ file,
                                                           .default = aggregated_results_path))
 
-    primary_file <- meta |> dplyr::filter(run_stage==run_stages$primary) |>
+    primary_file <- meta |> dplyr::filter(run_stage==run_stages[["primary"]]) |>
       dplyr::pull(selected_file_path)
 
-    secondary_file <- meta |> dplyr::filter(run_stage==run_stages$secondary) |>
+    secondary_file <- meta |> dplyr::filter(run_stage==run_stages[["secondary"]]) |>
       dplyr::pull(selected_file_path)
 
   }

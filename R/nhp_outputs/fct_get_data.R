@@ -1,9 +1,9 @@
 parse_results <- function(r) {
 
-  r$population_variants <- as.character(r$population_variants)
+  r[["population_variants"]] <- as.character(r[["population_variants"]])
 
-  r$results <- purrr::map(
-    r$results,
+  r[["results"]] <- purrr::map(
+    r[["results"]],
     purrr::map_dfr,
     purrr::modify_at,
     c("model_runs", "time_profiles"),  # ignores time_profiles if non-existent
@@ -14,7 +14,7 @@ parse_results <- function(r) {
   # required in the nhp_final_reports repo because we need to handle results
   # from all possible model versions, whereas the main branch of nhp_outputs
   # needs only to handle the latest model version).
-  model_version <- r$params$app_version
+  model_version <- r[["params"]][["app_version"]]
   major_version <- extract_major_version(model_version)
 
   # The tretspef elements of the results object were renamed in v4.0, along with
@@ -28,7 +28,7 @@ parse_results <- function(r) {
 
   # If model version is v1.2, then we only need to patch the tretspef and
   # tretspef+los_group.
-  if (model_version == "v1.2") r$results <- patch_tretspef(r$results, "v1.2")
+  if (model_version == "v1.2") r[["results"]] <- patch_tretspef(r[["results"]], "v1.2")
 
   r
 }
@@ -66,9 +66,9 @@ rename_tretspef <- function(r) {
 }
 
 patch_results <- function(r) {
-  r$results <- purrr::imap(r$results, patch_principal)
-  r$results <- patch_step_counts(r$results)
-  r$results <- patch_tretspef(r$results, r$params$app_version)
+  r[["results"]] <- purrr::imap(r[["results"]], patch_principal)
+  r[["results"]] <- patch_step_counts(r[["results"]])
+  r[["results"]] <- patch_tretspef(r[["results"]], r[["params"]][["app_version"]])
   r
 }
 
@@ -145,9 +145,9 @@ patch_principal_step_counts <- function(results) {
 }
 
 patch_step_counts <- function(results) {
-  if (!"strategy" %in% colnames(results$step_counts)) {
-    results$step_counts <- dplyr::mutate(
-      results$step_counts,
+  if (!"strategy" %in% colnames(results[["step_counts"]])) {
+    results[["step_counts"]] <- dplyr::mutate(
+      results[["step_counts"]],
       strategy = NA_character_,
       .after = "change_factor"
     )
@@ -178,7 +178,7 @@ extract_major_version <- function(version_string) {
 }
 
 get_principal_high_level <- function(r, measures, sites) {
-  r$results$default |>
+  r[["results"]][["default"]] |>
     dplyr::filter(.data$measure %in% measures) |>
     dplyr::select("pod", "sitetret", "baseline", "principal") |>
     dplyr::mutate(dplyr::across("pod", ~ ifelse(
@@ -196,7 +196,7 @@ get_variants <- function(r) {
 }
 
 get_model_run_distribution <- function(r, pod, measure, site_codes) {
-  filtered_results <- r$results$default |>
+  filtered_results <- r[["results"]][["default"]] |>
     dplyr::filter(
       .data$pod %in% .env$pod,
       .data$measure %in% .env$measure
@@ -224,7 +224,7 @@ get_principal_change_factors <- function(r, activity_type, sites) {
     "Invalid activity_type" = activity_type %in% c("aae", "ip", "op")
   )
 
-  r$results$step_counts |>
+  r[["results"]][["step_counts"]] |>
     dplyr::filter(.data$activity_type == .env$activity_type) |>
     dplyr::select(-where(is.list)) |>
     dplyr::mutate(dplyr::across("strategy", \(.x) tidyr::replace_na(.x, "-"))) |>
@@ -232,7 +232,7 @@ get_principal_change_factors <- function(r, activity_type, sites) {
 }
 
 get_bed_occupancy <- function(r) {
-  r$results$bed_occupancy |>
+  r[["results"]][["bed_occupancy"]] |>
     dplyr::select(
       "measure",
       "quarter",

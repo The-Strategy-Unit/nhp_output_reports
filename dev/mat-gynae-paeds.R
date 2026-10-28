@@ -133,7 +133,7 @@ prepare_all_activity_distribution_plots <- function(r, site_codes) {
 
   # Earlier model runs don't have A&E data when filtering by site, so provide
   # data for whole-scheme level.
-  if (r$params$app_version == "v1.0" & !is.null(site_codes[["aae"]])) {
+  if (r[["params"]][["app_version"]] == "v1.0" & !is.null(site_codes[["aae"]])) {
     activity_distribution_plots[["aae"]] <-
       possibly_plot_activity_distributions(
         data = r,
@@ -258,7 +258,7 @@ summary_table_mat <- make_summary_table(maternity = TRUE)
 mod_principal_summary_los_data <- function(r, sites, measure) {
   pods <- mod_principal_los_pods()
 
-  has_tretspef_los <- !is.null(r$results[["tretspef+los_group"]])
+  has_tretspef_los <- !is.null(r[["results"]][["tretspef+los_group"]])
 
   # NEW: Bespoke gynae check to use for filtering
   is_gynae <- getOption("results_type", default = "none") == "gynae"
@@ -267,11 +267,11 @@ mod_principal_summary_los_data <- function(r, sites, measure) {
     if (is_gynae) {
       stop("Can't produce an output for gynae, tretspef+los_group is missing.")
     }
-    los_data <- r$results[["los_group"]]
+    los_data <- r[["results"]][["los_group"]]
   }
 
   if (has_tretspef_los) {
-    los_data <- r$results[["tretspef+los_group"]]
+    los_data <- r[["results"]][["tretspef+los_group"]]
     if (is_gynae) {
       los_data <- los_data |> dplyr::filter(tretspef %in% c("502", "503"))
     }
@@ -392,7 +392,7 @@ prepare_all_principal_change_factors <- function(
 
   # Scenarios run under v1.0 don't have A&E data when filtering by site, so
   # provide results for whole-scheme level.
-  if (r$params$app_version == "v1.0" & !is.null(site_codes[["aae"]])) {
+  if (r[["params"]][["app_version"]] == "v1.0" & !is.null(site_codes[["aae"]])) {
     principal_change_data[["aae"]] <-
       possibly_prep_principal_change_factors(
         data = r,

@@ -9,7 +9,7 @@ get_covid_soc_cagr <- function (soc_scenario, site_codes){
 baseline <- get_stepcounts(soc_scenario) |>
   dplyr::filter(measure=="admissions" | measure == "beddays") |>
   dplyr::filter(change_factor == "baseline") |>
-  filter_sites_conditionally(site_codes$ip) |>
+  filter_sites_conditionally(site_codes[["ip"]]) |>
   dplyr::group_by(pod, measure) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::ungroup() |>
@@ -18,7 +18,7 @@ baseline <- get_stepcounts(soc_scenario) |>
 baseline_adjustment <- get_stepcounts(soc_scenario) |>
   dplyr::filter(measure=="admissions" | measure == "beddays") |>
   dplyr::filter(change_factor == "baseline_adjustment") |>
-  filter_sites_conditionally(site_codes$ip) |>
+  filter_sites_conditionally(site_codes[["ip"]]) |>
   dplyr::group_by(pod, measure) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::ungroup() |>
@@ -27,7 +27,7 @@ baseline_adjustment <- get_stepcounts(soc_scenario) |>
 covid_adjustment <- get_stepcounts(soc_scenario) |>
   dplyr::filter(measure=="admissions" | measure == "beddays") |>
   dplyr::filter(change_factor == "covid_adjustment") |>
-  filter_sites_conditionally(site_codes$ip) |>
+  filter_sites_conditionally(site_codes[["ip"]]) |>
   dplyr::group_by(pod, measure) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::ungroup() |>
@@ -35,7 +35,7 @@ covid_adjustment <- get_stepcounts(soc_scenario) |>
 
 all <- get_stepcounts(soc_scenario)   |>
   dplyr::filter(measure=="admissions" | measure == "beddays") |>
-  filter_sites_conditionally(site_codes$ip) |>
+  filter_sites_conditionally(site_codes[["ip"]]) |>
   dplyr::group_by(pod, measure) |>
   dplyr::summarise(value = sum(value)) |>
   dplyr::ungroup() |>
@@ -55,27 +55,27 @@ cov_cagr_ip <- dplyr::bind_rows(baseline, baseline_adjustment, covid_adjustment,
   baseline <- get_stepcounts(soc_scenario) |>
     dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(site_codes$op) |>
+    filter_sites_conditionally(site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment <- get_stepcounts(soc_scenario) |>
     dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(site_codes$op) |>
+    filter_sites_conditionally(site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment <- get_stepcounts(soc_scenario) |>
     dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(site_codes$op) |>
+    filter_sites_conditionally(site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   all <- get_stepcounts(soc_scenario)  |>
     dplyr::filter(measure=="attendances" | measure == "tele_attendances") |>
-    filter_sites_conditionally(site_codes$op) |>
+    filter_sites_conditionally(site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -88,7 +88,7 @@ cov_cagr_ip <- dplyr::bind_rows(baseline, baseline_adjustment, covid_adjustment,
   baseline <- get_stepcounts(soc_scenario) |>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(site_codes$aae) |>
+    filter_sites_conditionally(site_codes[["aae"]]) |>
     dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                          pod == "aae_type-05" ~ "sdec"),
                   measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
@@ -101,7 +101,7 @@ cov_cagr_ip <- dplyr::bind_rows(baseline, baseline_adjustment, covid_adjustment,
   baseline_adjustment <- get_stepcounts(soc_scenario) |>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(site_codes$aae) |>
+    filter_sites_conditionally(site_codes[["aae"]]) |>
     dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                          pod == "aae_type-05" ~ "sdec"),
                   measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
@@ -114,7 +114,7 @@ cov_cagr_ip <- dplyr::bind_rows(baseline, baseline_adjustment, covid_adjustment,
   covid_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(site_codes$aae) |>
+    filter_sites_conditionally(site_codes[["aae"]]) |>
     dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                          pod == "aae_type-05" ~ "sdec"),
                   measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
@@ -126,7 +126,7 @@ cov_cagr_ip <- dplyr::bind_rows(baseline, baseline_adjustment, covid_adjustment,
 
   all <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
-    filter_sites_conditionally(site_codes$aae) |>
+    filter_sites_conditionally(site_codes[["aae"]]) |>
     dplyr::mutate(pod = dplyr::case_when(pod %in% c("aae_type-01", "aae_type-03") ~ "ae",
                                          pod == "aae_type-05" ~ "sdec"),
                   measure = dplyr::case_when(pod == "ae" ~ "arrivals (type 1 & 3)",
