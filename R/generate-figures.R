@@ -158,7 +158,7 @@ prepare_all_principal_change_factors <- function(
 
   # Scenarios run under v1.0 don't have A&E data when filtering by site, so
   # provide results for whole-scheme level.
-  if (r$params$app_version == "v1.0" & !is.null(site_codes[["aae"]])) {
+  if (r[["params"]][["app_version"]] == "v1.0" & !is.null(site_codes[["aae"]])) {
     principal_change_data[["aae"]] <-
       possibly_prep_principal_change_factors(
         data = r,
@@ -181,7 +181,7 @@ prepare_all_principal_change_factors_plots <- function(
 
   pcf_data <- prepare_all_principal_change_factors(r, site_codes)
 
-  dats <- list(pcf_data$ip, pcf_data$ip, pcf_data$ip, pcf_data$op, pcf_data$aae)
+  dats <- list(pcf_data[["ip"]], pcf_data[["ip"]], pcf_data[["ip"]], pcf_data[["op"]], pcf_data[["aae"]])
   measures <- list("admissions", "beddays", "beddays", "attendances", "arrivals")
   change_factors <- list(
     "activity_avoidance",
@@ -258,7 +258,7 @@ prepare_all_activity_distribution_plots <- function(r, site_codes) {
 
   # Earlier model runs don't have A&E data when filtering by site, so provide
   # data for whole-scheme level.
-  if (r$params$app_version == "v1.0" & !is.null(site_codes[["aae"]])) {
+  if (r[["params"]][["app_version"]] == "v1.0" & !is.null(site_codes[["aae"]])) {
     activity_distribution_plots[["aae"]] <-
       possibly_plot_activity_distributions(
         data = r,

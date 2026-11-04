@@ -50,35 +50,35 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   baseline <- get_stepcounts(soc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment <- get_stepcounts(soc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment <- get_stepcounts(soc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment <- get_stepcounts(soc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment <- get_stepcounts(soc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -89,42 +89,42 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   birth_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "birth_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   health_status_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "health_status_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   waiting_list_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "waiting_list_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   model_interaction_term <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "model_interaction_term") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   activity_avoidance_op <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_op <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(soc_site_codes$op) |>
+    filter_sites_conditionally(soc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -139,35 +139,35 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   baseline <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -178,28 +178,28 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   birth_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "birth_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   health_status_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "health_status_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   waiting_list_adjustment <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "waiting_list_adjustment") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   model_interaction_term <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "model_interaction_term") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -207,14 +207,14 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   activity_avoidance_ae <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_ae <- get_stepcounts(soc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(soc_site_codes$aae) |>
+    filter_sites_conditionally(soc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -239,35 +239,35 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   baseline <- get_stepcounts(obc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment <- get_stepcounts(obc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment <- get_stepcounts(obc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment <- get_stepcounts(obc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment <- get_stepcounts(obc_scenario) |>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -278,42 +278,42 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   birth_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "birth_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   health_status_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "health_status_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   waiting_list_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "waiting_list_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   model_interaction_term <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "model_interaction_term") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   activity_avoidance_op <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_op <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "op") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(obc_site_codes$op) |>
+    filter_sites_conditionally(obc_site_codes[["op"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -328,35 +328,35 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   baseline <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   baseline_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "baseline_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   demographic_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "demographic_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   non_demographic_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "non-demographic_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   covid_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "covid_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
@@ -367,42 +367,42 @@ get_validation_cagr_table <- function(soc_scenario, obc_scenario, soc_site_codes
   birth_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "birth_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   health_status_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "health_status_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   waiting_list_adjustment <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "waiting_list_adjustment") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   model_interaction_term <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "model_interaction_term") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   activity_avoidance_ae <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "activity_avoidance") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 
   efficiencies_ae <- get_stepcounts(obc_scenario)|>
     dplyr::filter(activity_type == "aae") |>
     dplyr::filter(change_factor == "efficiencies") |>
-    filter_sites_conditionally(obc_site_codes$aae) |>
+    filter_sites_conditionally(obc_site_codes[["aae"]]) |>
     dplyr::summarise(value = sum(value)) |>
     dplyr::pull()
 

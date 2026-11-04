@@ -7,7 +7,7 @@ get_impact_data <- function(soc_scenario, obc_scenario, soc_site_codes, obc_site
     dplyr::group_split(activity_type) |>
     purrr::set_names(c("aae", "ip", "op")) |>
     purrr::map2(
-      list(soc_site_codes$aae, soc_site_codes$ip, soc_site_codes$op),
+      list(soc_site_codes[["aae"]], soc_site_codes[["ip"]], soc_site_codes[["op"]]),
       \(df, sites) filter_sites_conditionally(df, sites)
     )|>
     dplyr::bind_rows() |>
@@ -22,7 +22,7 @@ get_impact_data <- function(soc_scenario, obc_scenario, soc_site_codes, obc_site
     dplyr::group_split(activity_type) |>
     purrr::set_names(c("aae", "ip", "op")) |>
     purrr::map2(
-      list(obc_site_codes$aae, obc_site_codes$ip, obc_site_codes$op),
+      list(obc_site_codes[["aae"]], obc_site_codes[["ip"]], obc_site_codes[["op"]]),
       \(df, sites) filter_sites_conditionally(df, sites)
     )|>
     dplyr::bind_rows() |>
