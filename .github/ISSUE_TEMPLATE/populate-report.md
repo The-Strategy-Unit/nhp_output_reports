@@ -10,7 +10,7 @@ Replace instances of [NAME] below with the name of the person who will complete 
 
 After receiving a request in the Data Science team inbox for a new output report:
 
-- [ ] Get from the model-relationship manager (MRM) the type of report to run ('final', 'refresh', etc); the scenario names for both non-demographic growth (NDG) variants and their creation datetimes; and the list of sites to filter by (may be separate site sets for inpatients, outpatients and A&E), if any [NAME]
+- [ ] Get from the model-relationship manager (MRM) the type of report to run ('final', 'validation', etc); the scenario names for both non-demographic growth (NDG) variants and their creation datetimes; and the list of sites to filter by (may be separate site sets for inpatients, outpatients and A&E), if any [NAME]
 - [ ] Create a new entity in the tagged-runs lookup (in Azure Table Storage) with the scenario's metadata and site details [NAME]
 - [ ] Refresh [the 'tagged runs and sites' report](https://connect.strategyunitwm.nhs.uk/nhp/tagged_runs/) on Connect to check the previous step was completed correctly [NAME]
 - [ ] Run off the report and populate the document fields with the custom properties ([see the README](https://github.com/The-Strategy-Unit/nhp_final_reports/blob/main/README.md) for instructions) [NAME]

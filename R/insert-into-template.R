@@ -22,7 +22,7 @@
 #' @param template_path Character. Location of the output report template.
 #'   Defaults to `NULL`, which fetches the template from SharePoint.
 #' @param report_type Character. Option for either "final" for final report OR
-#'   "addendum" for addendum report. Defaults to `NULL`.
+#'   "validation" for validation report. Defaults to `NULL`.
 #'
 #' @return Nothing. A populated folder structure in `outputs/`.
 #'
@@ -35,7 +35,7 @@ populate_template <- function(
   run_stages = NULL,
   scenario_files = NULL,
   template_path = NULL,
-  report_type = c("final", "addendum")
+  report_type = c("final", "validation")
 ) {
   report_type <- match.arg(report_type)
 
@@ -122,7 +122,7 @@ populate_template <- function(
     "- secondary variant: {secondary_file}\n"
   ))
 
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     finalreportndg2_file <- get_final_report_result(
       scheme_code,
       result_sets,
@@ -196,7 +196,7 @@ populate_template <- function(
   r_primary <- get_nhp_results(results_path = primary_file)
   r_secondary <- get_nhp_results(results_path = secondary_file)
 
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     r_finalreportndg2_file <- get_nhp_results(results_path = finalreportndg2_file)
     r_finalreportndg1_file <- get_nhp_results(results_path = finalreportndg1_file)
   }
@@ -219,7 +219,7 @@ populate_template <- function(
     tibble::enframe(name = "item") |>
     tidyr::unnest(value)
   val_dir <- file.path(output_dir, "values")
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     # get the final report sites
     finalreportndg2_site_codes <- get_sites(result_sets,finalreportndg2_file)
     finalreportndg1_site_codes <- get_sites(result_sets,finalreportndg1_file)
@@ -238,7 +238,7 @@ populate_template <- function(
     dir.create(val_dir)
   }
   values_path <- file.path(val_dir, glue::glue("{output_dir_name}_values.csv"))
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     if (!dir.exists(val_dir_final)) {
       dir.create(val_dir_final)
     }
@@ -251,7 +251,7 @@ populate_template <- function(
     "* Writing values to {paste0(values_path, '/...')}"
   ))
   readr::write_csv(values_df, values_path)
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     readr::write_csv(values_df_final, values_path_final)
   }
 
@@ -282,7 +282,7 @@ populate_template <- function(
     glue::glue("{output_dir_name}_mitigators.csv")
   )
 
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     check_list_final <- generate_check_values(
       r_finalreportndg2_file,
       r_finalreportndg1_file,
@@ -311,7 +311,7 @@ populate_template <- function(
     "* Writing checklist values to {paste0(checklist_path, '/...')}"
   ))
   readr::write_csv(check_list_df, checklist_path)
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     logr::log_print(glue::glue(
       "* Writing checklist values to {paste0(checklist_final_path, '/...')}"
     ))
@@ -322,7 +322,7 @@ populate_template <- function(
   ))
   readr::write_csv(mitigators_df, mitigators_path)
 
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     logr::log_print(glue::glue(
       "* Writing mitigator values to {paste0(mitigators_final_path, '/...')}"
     ))
@@ -337,14 +337,14 @@ populate_template <- function(
 
   # Generate, write and insert plots and tables
   fig_dir <- file.path(output_dir, "figures")
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     fig_dir_final <- file.path(output_dir, "figures_final")
   }
   if (!dir.exists(fig_dir)) {
     dir.create(fig_dir)
   }
   logr::log_print(glue::glue("* Writing figures to {paste0(fig_dir, '/...')}"))
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     if (!dir.exists(fig_dir_final)) {
       dir.create(fig_dir_final)
     }
@@ -355,7 +355,7 @@ populate_template <- function(
 
   write_all_figures(r_primary, r_secondary, primary_site_codes, secondary_site_codes, fig_dir)
 
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     write_all_figures(
       r_finalreportndg2_file,
       r_finalreportndg1_file,
@@ -401,7 +401,7 @@ read_template_docx <- function(
   if (report_type == "final") {
     template_path <- Sys.getenv("SP_TEMPLATE_PATH")
   }
-  if (report_type == "addendum") {
+  if (report_type == "validation") {
     template_path <- Sys.getenv("SP_TEMPLATE_PATH_ADD")
   }
 

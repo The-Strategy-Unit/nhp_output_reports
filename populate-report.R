@@ -16,5 +16,5 @@ populate_template(
   ),
   scenario_files = NULL,  # ...or provide arbitrary results filepaths
   template_path = NULL,  # NULL to read from SharePoint
-  report_type = "final"  # or 'addendum'
+  report_type = "final"  # or 'validation'
 )
