@@ -1,13 +1,12 @@
+# Note that image dimensions are in inches because that's what {officer} deals
+# with and vary by charts to accommodate varying lengths of y-axis labels
+
+
 write_all_figures <- function(r_primary, r_secondary, primary_site_codes, secondary_site_codes, fig_dir) {
 
   # Chromote setting needed in this function to webshot the figures
   op <- options(chromote.headless = "new")
   on.exit(options(op), add = TRUE)
-
-  # Set up image dimensions (inches, because that's what {officer} deals with)
-  w <- 6.5
-  h <- 4
-  h_dist <- 2.5  # distribution plots (beeswarm and s-curves)
 
   # Expat/repat figures (unnumbered)
 
@@ -35,13 +34,14 @@ write_all_figures <- function(r_primary, r_secondary, primary_site_codes, second
 
   # Figures 8.2, 8.3, 8.4, 8.5, 8.6
 
-  plots_pcf <- prepare_all_principal_change_factors_plots(r_primary, primary_site_codes)
+  plots_pcf <- prepare_all_principal_change_factors_plots(r = r_primary,
+                                                          site_codes = primary_site_codes)
 
   purrr::walk2(
     paste0(fig_dir, "/figure_8.", 2:6, ".png"),
     plots_pcf,
     \(filename, plot) {
-      ggplot2::ggsave(filename, plot, width = w, height = h)
+      ggplot2::ggsave(filename, plot, width = 6.5, height = 7.5)
       cli::cli_text("- Wrote to {filename}")
     }
   )
@@ -55,7 +55,7 @@ write_all_figures <- function(r_primary, r_secondary, primary_site_codes, second
     paste0(fig_dir, "/figure_9.", c(1:2, 6:9), ".png"),
     plots_activity_distribution,
     \(filename, plot) {
-      ggplot2::ggsave(filename, plot, width = w, height = h_dist)
+      ggplot2::ggsave(filename, plot, width = 6.5, height = 2.5)
       cli::cli_text("- Wrote to {filename}")
     }
   )
@@ -80,8 +80,8 @@ write_all_figures <- function(r_primary, r_secondary, primary_site_codes, second
     mod_principal_change_factor_effects_cf_plot() |>
     ggplot2::ggsave(
       filename = path_9.4,
-      width = w,
-      height = h
+      width = 6.5,
+      height = 4
     )
   cli::cli_text("- Wrote to {path_9.4}")
 
@@ -107,8 +107,8 @@ write_all_figures <- function(r_primary, r_secondary, primary_site_codes, second
       ggplot2::ggsave(
         filename,
         plot,
-        width = w,
-        height = h_dist
+        width = 6.5,
+        height = 2.5
       )
       cli::cli_text("- Wrote to {filename}")
     }
@@ -121,7 +121,7 @@ prepare_all_principal_change_factors <- function(
     site_codes = list(ip = NULL,  op = NULL, aae = NULL)  # character vectors
 ) {
 
-  mitigators_lookup <- read_mitigators()
+  mitigators_lookup <- read_mitigators(remove_codes = TRUE)
   atmpo_lookup <- read_atmpo()
 
   activity_types_long <- list("inpatients", "outpatients", "aae")
