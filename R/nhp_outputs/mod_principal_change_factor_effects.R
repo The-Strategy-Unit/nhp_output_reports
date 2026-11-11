@@ -107,5 +107,16 @@ mod_principal_change_factor_effects_ind_plot <- function(data, change_factor, co
       breaks = scales::breaks_extended(5),
       labels = scales::comma
     ) +
-    ggplot2::labs(title = title, x = x_axis_label, y = "")
+    ggplot2::geom_col(
+      fill = "#2c2825",
+      width = 0.9
+    ) +
+    ggplot2::scale_y_discrete(
+      labels = \(x) stringr::str_wrap(x, width = 45)
+    ) +
+    ggplot2::labs(title = title, x = x_axis_label, y = "") +
+    ggplot2::theme(
+      plot.title.position = "plot",
+      axis.text.y = ggplot2::element_text(size = 10)
+    )
 }
